@@ -89,13 +89,13 @@ export default class UnitListCard extends React.Component<
             mutation={gql`
               mutation updateCardMeta(
                 $CardID: Int!
-                $conneName: String
-                $nickName: String
+                $ConneName: String
+                $NickName: String
               ) {
                 updateCardMeta(
                   CardID: $CardID
-                  conneName: $conneName
-                  nickName: $nickName
+                  ConneName: $ConneName
+                  NickName: $NickName
                 ) {
                   ConneName
                   NickName
@@ -144,8 +144,8 @@ export default class UnitListCard extends React.Component<
                         updateCardMeta({
                           variables: {
                             CardID: card.CardID,
-                            conneName: this.state.conneName,
-                            nickName: this.state.nickName,
+                            ConneName: this.state.conneName,
+                            NickName: this.state.nickName,
                           },
                         })
                       }
