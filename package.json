@@ -44,7 +44,7 @@
   },
   "scripts": {
     "start": "react-app-rewired start --scripts-version react-scripts-ts",
-    "build": "react-app-rewired build --scripts-version react-scripts-ts && rm -rf docs && mv build docs",
+    "build": "react-app-rewired build --scripts-version react-scripts-ts && rm -rf docs && mv build docs && cp CNAME docs/",
     "test": "react-app-rewired test --scripts-version react-scripts-ts"
   }
 }
