@@ -1,6 +1,6 @@
 import { Layout } from 'antd';
 import * as React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { onError } from 'apollo-link-error';
@@ -43,7 +43,7 @@ const client = new ApolloClient({
 class App extends React.Component {
   public render() {
     return (
-      <BrowserRouter>
+      <HashRouter>
         <LocaleProvider locale={zhCN}>
           <ApolloProvider client={client}>
             <Layout className="App" style={{ height: '100%' }}>
@@ -54,7 +54,7 @@ class App extends React.Component {
             </Layout>
           </ApolloProvider>
         </LocaleProvider>
-      </BrowserRouter>
+      </HashRouter>
     );
   }
 }
