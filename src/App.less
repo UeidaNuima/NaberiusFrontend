@@ -1,0 +1,118 @@
+@import '~antd/dist/antd.less';
+
+#root {
+  height: 100%;
+}
+.App {
+  min-height: 100%;
+  background: #f5f6fa;
+}
+
+.header {
+  z-index: 1;
+  background: #fff;
+  padding: 0;
+  border-bottom: 1px solid #e5e6eb;
+  .logo {
+    height: 64px;
+    padding-left: 10px;
+    transition: transform 0.3s ease-out;
+    &:hover {
+      transform: rotate(360deg);
+    }
+  }
+  .headerMenu {
+    float: right;
+    line-height: 62px;
+    border-bottom: none;
+    margin-right: 50px;
+  }
+}
+
+.list-card {
+  background: #fff;
+  line-height: 22px;
+  display: block;
+  border: 1px solid rgba(0, 0, 0, 0);
+  border-radius: 3px;
+  padding: 12px 10px;
+  margin: 0 0 10px 0;
+  transition: all 0.5s ease-out;
+  color: #a5aabd;
+  cursor: pointer;
+  .important {
+    color: rgba(0, 0, 0, 0.65);
+    font-weight: bold;
+  }
+  .filter {
+    transition: color 0.5s ease-out;
+    &:hover {
+      color: rgba(0, 0, 0, 0.65);
+    }
+  }
+
+  &:hover {
+    box-shadow: 0 3px 15px 0 #e2e3e8;
+    border: 1px solid #4c84ff;
+  }
+  overflow: hidden;
+  .list-card-addon {
+    position: absolute;
+    top: 0;
+    right: calc(-70% + 30px);
+    height: 100px;
+    line-height: 22px;
+    padding: 12px 10px;
+    background-color: #4c84ff;
+    color: #fff;
+    transition: all 0.5s ease-out;
+    width: 70%;
+    cursor: default;
+    &.active {
+      right: 0;
+    }
+    &.success {
+      background-color: #42d442;
+    }
+    .ant-input {
+      display: inline-block;
+      width: 80%;
+      padding: 0;
+      border: none;
+      height: 22px;
+      background: none;
+      color: #fff;
+    }
+  }
+}
+.sorter-block {
+  padding: 20px 10px;
+  background: fade(#f5f6fa, 80%);
+  color: #a5aabd;
+  a {
+    color: #a5aabd;
+    transition: color 0.5s ease-out;
+    &:hover {
+      color: rgba(0, 0, 0, 0.65);
+    }
+  }
+}
+
+.container {
+  padding: 30px;
+  min-height: 100%;
+  // background: #fff;
+}
+
+.ant-table-thead > tr > th {
+  background: #f5f6fa !important;
+}
+
+.ant-table-footer {
+  background: #f5f6fa !important;
+}
+
+.label {
+  font-weight: bold;
+  margin-right: 8px;
+}

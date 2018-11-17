@@ -1,0 +1,137 @@
+.unit-containter {
+  background: #fff;
+  text-align: center;
+  flex: none;
+  .unit-title {
+    vertical-align: middle;
+    span {
+      vertical-align: middle;
+    }
+  }
+  .table-footer-divider {
+    border: none;
+    border-bottom: 1px dashed #e5e6eb;
+  }
+}
+
+.harem-container {
+  transition: all 0.5s;
+  &.active {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.8);
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    overflow: auto;
+    .harlem-text-tabs {
+      display: block;
+    }
+  }
+  color: #fff;
+  .harlem-text-tabs {
+    display: none;
+    &.harlem-text-tabs-2,
+    &.harlem-text-tabs-3 {
+      .ant-tabs-bar .ant-tabs-tab:nth-last-child(1):hover,
+      .ant-tabs-bar .ant-tabs-tab:nth-last-child(2):hover {
+        color: #f55;
+      }
+      .ant-tabs-bar .ant-tabs-tab:nth-last-child(1).ant-tabs-tab-active,
+      .ant-tabs-bar .ant-tabs-tab:nth-last-child(2).ant-tabs-tab-active {
+        color: #f11;
+      }
+    }
+
+    &.harlem-text-tabs-3 {
+      .ant-tabs-bar .ant-tabs-tab:nth-last-child(3):hover {
+        color: #f55;
+      }
+      .ant-tabs-bar .ant-tabs-tab:nth-last-child(3).ant-tabs-tab-active {
+        color: #f11;
+      }
+    }
+
+    color: #fff;
+    & > .ant-tabs-bar .ant-tabs-tab {
+      background: none;
+      border-color: transparent;
+      &.ant-tabs-tab-active {
+        border-color: #e8e8e8;
+      }
+    }
+  }
+}
+
+.ant-carousel {
+  width: 66vw;
+  margin: 0 auto;
+}
+.ant-carousel {
+  .slick-slider {
+    &.cg-3 .slick-dots {
+      li:nth-last-child(1) button,
+      li.slick-active:nth-last-child(1) button,
+      li:nth-last-child(2) button,
+      li.slick-active:nth-last-child(1) button,
+      li:nth-last-child(3) button,
+      li.slick-active:nth-last-child(3) button {
+        background: #f00;
+      }
+    }
+    &.cg-2 .slick-dots {
+      li:nth-last-child(1) button,
+      li.slick-active:nth-last-child(1) button,
+      li:nth-last-child(2) button,
+      li.slick-active:nth-last-child(1) button {
+        background: #f00;
+      }
+    }
+    &.cg-1 .slick-dots {
+      li:nth-last-child(1) button,
+      li.slick-active:nth-last-child(1) button {
+        background: #f00;
+      }
+    }
+    .slick-dots {
+      li.slick-active button,
+      li button {
+        background: #000;
+      }
+    }
+    .slick-slide {
+      text-align: center;
+      height: 44vw;
+      overflow: hidden;
+      img {
+        height: 44vw;
+        margin: 0 auto;
+      }
+    }
+  }
+}
+
+.ant-table table {
+  background: #fff;
+  tr:hover td {
+    background: inherit;
+  }
+}
+.ant-table-middle
+  > .ant-table-content
+  > .ant-table-body
+  > table
+  > .ant-table-thead
+  > tr
+  > th,
+.ant-table-middle
+  > .ant-table-content
+  > .ant-table-body
+  > table
+  > .ant-table-tbody
+  > tr
+  > td,
+.ant-table-footer {
+  padding: 8px 8px;
+}

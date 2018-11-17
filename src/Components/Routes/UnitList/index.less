@@ -1,0 +1,115 @@
+.rarity-circle {
+  position: relative;
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 30%;
+  margin-right: 10px;
+  vertical-align: middle;
+  box-sizing: content-box;
+
+  &:before {
+    line-height: 1.5em;
+    display: flex;
+    justify-content: center;
+    color: #fff;
+  }
+
+  &.rarity-circle-iron,
+  &.rarity-circle-0 {
+    background: #6c6c6c;
+    &:before {
+      content: '铁';
+    }
+  }
+  &.rarity-circle-bronze,
+  &.rarity-circle-1 {
+    background: #b64000;
+    &:before {
+      content: '铜';
+    }
+  }
+  &.rarity-circle-silver,
+  &.rarity-circle-2 {
+    background: #b2b2b2;
+    &:before {
+      content: '银';
+    }
+  }
+  &.rarity-circle-gold,
+  &.rarity-circle-3 {
+    background: #ffbd0a;
+    &:before {
+      content: '金';
+    }
+  }
+  &.rarity-circle-platinum,
+  &.rarity-circle-4 {
+    background: #fff;
+    border: 1px solid #e5e6eb;
+    &:before {
+      content: '白';
+      color: #000;
+    }
+  }
+  &.rarity-circle-black,
+  &.rarity-circle-5 {
+    background: #000;
+    &:before {
+      content: '黑';
+    }
+  }
+  &.rarity-circle-sapphire,
+  &.rarity-circle-7 {
+    background: #0011eb;
+    &:before {
+      content: '蓝';
+    }
+  }
+}
+
+.rarity-text {
+  vertical-align: middle;
+}
+
+.unitRaritySider {
+  border-right: 1px solid #e5e6eb;
+  .unitRarityMenu {
+    border-right: none;
+  }
+}
+
+.unitListContent {
+  padding: 30px 50px;
+}
+
+.gender {
+  &:before {
+    display: inline;
+  }
+  &.gender-0 {
+    &:before {
+      content: '♂';
+      color: #00f;
+    }
+  }
+  &.gender-1 {
+    &:before {
+      content: '♂';
+      color: #f00;
+    }
+  }
+  &.gender-2 {
+    &:before {
+      content: '⚲';
+      color: #f0f;
+    }
+  }
+  &.gender-3,
+  &.gender-4 {
+    &:before {
+      content: '○';
+      color: #000;
+    }
+  }
+}

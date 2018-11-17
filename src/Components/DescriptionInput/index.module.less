@@ -1,0 +1,54 @@
+@import '../../style.less';
+.influenceItem {
+  line-height: 22px;
+  padding: 12px 10px;
+  margin: 0 0 10px 0;
+  width: 100%;
+  transition: all 0.5s;
+  &.success {
+    background: @success-color;
+  }
+  &.error {
+    background: @error-color;
+  }
+  .influenceInput {
+    display: inline-block;
+    width: 100%;
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.65);
+    border-radius: 0;
+    vertical-align: middle;
+  }
+  .actionCol {
+    text-align: center;
+    font-size: 1.5em;
+    cursor: pointer;
+  }
+  .valueCol {
+    padding: 4px 11px;
+    border-bottom: 1px solid transparent;
+    &:hover {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.65);
+    }
+    &:after {
+      display: inline;
+      position: relative;
+      content: '*';
+      opacity: 0;
+    }
+  }
+  .IDTag {
+    cursor: pointer;
+    display: inline-block;
+    padding: 10px;
+    transition: all 0.5s;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    &.active {
+      color: #1890ff;
+      background: #e6f7ff;
+      border-color: #91d5ff;
+    }
+  }
+}
