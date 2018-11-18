@@ -5,7 +5,7 @@ import { Spin, Layout, Row, Col, Tag, Popover, Switch } from 'antd';
 import { RouteComponentProps } from 'react-router-dom';
 import { ICO_URL, ENEMY_DOT_URL, ENEMY_CHANGE_COND } from '../../../consts';
 import _ from 'lodash';
-import './index.less';
+import styles from './index.module.less';
 
 const { Content } = Layout;
 
@@ -116,11 +116,11 @@ export default class Quest extends React.Component<
         variables={{ id }}
       >
         {({ loading, error, data }) => (
-          <Content className="quest-container container">
+          <Content className={styles.questContainer + ' container'}>
             <Spin spinning={loading}>
               {!error && data.quest && (
                 <div>
-                  <h1 className="quest-title">{data.quest.Name}</h1>
+                  <h1 className={styles.questTitle}>{data.quest.Name}</h1>
                   <div>
                     {data.quest.Charisma ? (
                       <Tag color="green">
@@ -135,7 +135,7 @@ export default class Quest extends React.Component<
                       </Tag>
                     ) : null}
                   </div>
-                  <Row gutter={8} className="quest-info">
+                  <Row gutter={8} className={styles.questInfo}>
                     <Col md={12} sm={24}>
                       <img
                         style={{ width: '100%' }}
@@ -148,13 +148,15 @@ export default class Quest extends React.Component<
                           __html: data.quest.Message.replace(/\n/g, '<br />'),
                         }}
                       />
-                      <Row className="quest-info-list">
+                      <Row className={styles.questInfoList}>
                         <Col span={12}>
-                          <span className="quest-info-list-name">经验:</span>
+                          <span className={styles.questInfoListName}>
+                            经验:
+                          </span>
                           {data.quest.RankExp}
                         </Col>
                         <Col span={12}>
-                          <span className="quest-info-list-name">钱:</span>
+                          <span className={styles.questInfoListName}>钱:</span>
                           {data.quest.Gold}
                         </Col>
                       </Row>
@@ -193,7 +195,7 @@ export default class Quest extends React.Component<
                       </table>
                     </Col>
                   </Row>
-                  <div>
+                  <div className={styles.tableActions}>
                     重复行
                     <Switch
                       checked={this.state.showDuplicated}
