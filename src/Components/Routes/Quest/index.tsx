@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Spin, Layout, Row, Col, Tag, Popover } from 'antd';
+import { Spin, Layout, Row, Col, Tag, Popover, Switch } from 'antd';
 import { RouteComponentProps } from 'react-router-dom';
 import { ICO_URL, ENEMY_DOT_URL, ENEMY_CHANGE_COND } from '../../../consts';
 import _ from 'lodash';
@@ -13,6 +13,7 @@ interface QuestStates {
   treasureDrop: {
     [key: number]: number[];
   };
+  showDuplicated: boolean;
 }
 
 export default class Quest extends React.Component<
@@ -21,12 +22,19 @@ export default class Quest extends React.Component<
 > {
   public state = {
     treasureDrop: { 0: [], 1: [], 2: [], 3: [], 4: [] },
+    showDuplicated: false,
   };
+
   public pushDrop = (treasureDrop: number[][]) => {
     this.setState({
       treasureDrop,
     });
   };
+
+  public handleDuplicatedChange = () => {
+    this.setState(state => ({ showDuplicated: !state.showDuplicated }));
+  };
+
   public render() {
     const id = this.props.match.params.QuestID;
     return (
@@ -185,10 +193,20 @@ export default class Quest extends React.Component<
                       </table>
                     </Col>
                   </Row>
+                  <div>
+                    重复行
+                    <Switch
+                      checked={this.state.showDuplicated}
+                      onChange={this.handleDuplicatedChange}
+                      checkedChildren="显示"
+                      unCheckedChildren="隐藏"
+                    />
+                  </div>
                   <EnemyTable
                     battleTalks={data.battleTalks}
                     quest={data.quest}
                     onDrop={this.pushDrop}
+                    showDuplicated={this.state.showDuplicated}
                   />
                 </div>
               )}
@@ -207,6 +225,7 @@ interface EnemyTableProps {
     Name: string;
   }>;
   onDrop: Quest['pushDrop'];
+  showDuplicated: boolean;
 }
 
 class EnemyTable extends React.Component<EnemyTableProps> {
@@ -296,8 +315,15 @@ class EnemyTable extends React.Component<EnemyTableProps> {
       return enemy;
     };
     entries.Entries.forEach((entry: any) => {
+      // ids between 0 and 1000 are true enemies
       if (entry.EnemyID >= 0 && entry.EnemyID < 1000) {
         const enemy = parseEnemy(entry);
+        if (
+          !this.props.showDuplicated &&
+          parsedEnemies.find((e: any) => e.EnemyID === enemy.EnemyID)
+        ) {
+          enemy.duplicated = true;
+        }
         if (enemy.Param_ChangeParam) {
           const changes = [enemy];
           while (changes[changes.length - 1].Param_ChangeParam) {
@@ -339,6 +365,9 @@ class EnemyTable extends React.Component<EnemyTableProps> {
               </thead>
               <tbody className="ant-table-tbody">
                 {parsedEnemies.map((enemy: any, index: number) => {
+                  if (enemy.duplicated) {
+                    return null;
+                  }
                   if (enemy.EnemyID >= 0 && enemy.EnemyID < 1000) {
                     if (enemy.Param_ChangeParam) {
                       return (
