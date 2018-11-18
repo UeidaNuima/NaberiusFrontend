@@ -6,7 +6,8 @@ import moment from 'moment';
 import Card from '../../Card';
 import Pill from '../../Pill';
 import logo from '../../../logo.png';
-import './index.less';
+import payImage from './pay.png';
+import styles from './index.module.less';
 
 const { Content } = Layout;
 
@@ -26,7 +27,7 @@ export default class Home extends React.Component {
           <Tooltip title={time.format('YYYY-MM-DD HH:mm:ss ddd')}>
             <Pill bordered={!outDated} type={outDated ? 'danger' : 'default'}>
               {file.Name}
-              <small className="updateTime">{time.fromNow()}</small>
+              <small className={styles.updateTime}>{time.fromNow()}</small>
             </Pill>
           </Tooltip>
         </Col>
@@ -47,9 +48,9 @@ export default class Home extends React.Component {
         `}
       >
         {({ loading, error, data }) => (
-          <Content className="content">
-            <div className="logoblock">
-              <img src={logo} className="topLogo" />
+          <Content className={styles.content}>
+            <div className={styles.logoblock}>
+              <img src={logo} className={styles.topLogo} />
               <h1>Naberius</h1>
             </div>
             <Card loading={loading}>
@@ -60,6 +61,12 @@ export default class Home extends React.Component {
                 </div>
               )}
             </Card>
+            <div className={styles.beg}>
+              <p>
+                <del>生活所迫只能要饭了</del>, 支付宝
+              </p>
+              <img src={payImage} alt="支付宝@13021225563" />
+            </div>
           </Content>
         )}
       </Query>
