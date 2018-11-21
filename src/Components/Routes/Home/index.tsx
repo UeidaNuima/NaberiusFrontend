@@ -8,6 +8,7 @@ import Pill from '../../Pill';
 import logo from '../../../logo.png';
 import payImage from './pay.png';
 import styles from './index.module.less';
+import { STATIC_URL } from '../../../consts';
 
 const { Content } = Layout;
 
@@ -44,6 +45,7 @@ export default class Home extends React.Component {
               Name
             }
             serverStatus
+            posters
           }
         `}
       >
@@ -67,6 +69,15 @@ export default class Home extends React.Component {
               </p>
               <img src={payImage} alt="支付宝@13021225563" />
             </div>
+            {!loading && (
+              <div className={styles.postContainer}>
+                <img
+                  src={`${STATIC_URL}/poster/${
+                    data.posters[data.posters.length - 1]
+                  }.jpg`}
+                />
+              </div>
+            )}
           </Content>
         )}
       </Query>
