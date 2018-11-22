@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Layout, Row, Col, Tooltip, Badge } from 'antd';
+import { Layout, Row, Col, Tooltip, Badge, Popover } from 'antd';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import moment from 'moment';
@@ -65,10 +65,12 @@ export default class Home extends React.Component {
                 )}
               </Card>
               <div className={styles.beg}>
-                <p>
-                  <del>生活所迫只能要饭了</del>, 支付宝
-                </p>
-                <img src={payImage} alt="支付宝@13021225563" />
+                <Popover
+                  placement="bottom"
+                  content={<img src={payImage} width={500} />}
+                >
+                  <del>我就不要脸了要饭了你打我啊！</del>
+                </Popover>
               </div>
               {!loading && <Poster posters={data.posters} />}
             </Content>
