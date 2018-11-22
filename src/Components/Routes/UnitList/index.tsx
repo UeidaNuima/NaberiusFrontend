@@ -124,7 +124,10 @@ export default class UnitList extends React.Component<
   };
 
   public showUnit = (cardID: number) => {
-    this.props.history.push(`/unit/${cardID}`);
+    this.props.history.push({
+      pathname: `/unit/${cardID}`,
+      state: { modal: true },
+    });
   };
 
   public render() {
