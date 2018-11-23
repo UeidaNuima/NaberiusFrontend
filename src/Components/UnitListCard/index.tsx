@@ -51,12 +51,22 @@ export default class UnitListCard extends React.Component<
         <Col span={5} className="important">
           {card.Name}
         </Col>
-        <Col
-          span={3}
-          className="filter"
-          onClick={setTextSearcher.bind(null, `种族:${card.Race}`)}
-        >
-          {card.Race}
+        <Col span={3} className="filter">
+          {card.Race && (
+            <span onClick={setTextSearcher.bind(null, `种族:${card.Race}`)}>
+              &lt;{card.Race}&gt;
+            </span>
+          )}
+          {card.Assign && (
+            <span onClick={setTextSearcher.bind(null, `出身:${card.Assign}`)}>
+              &lt;{card.Assign}&gt;
+            </span>
+          )}
+          {card.Identity && (
+            <span onClick={setTextSearcher.bind(null, `不死:${card.Identity}`)}>
+              &lt;{card.Identity}&gt;
+            </span>
+          )}
         </Col>
         <Col
           span={5}

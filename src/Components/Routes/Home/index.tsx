@@ -72,7 +72,9 @@ export default class Home extends React.Component {
                   <del>我就不要脸了要饭了你打我啊！</del>
                 </Popover>
               </div>
-              {!loading && <Poster posters={data.posters} />}
+              {!loading && data.posters.length !== 0 && (
+                <Poster posters={data.posters} />
+              )}
             </Content>
           );
         }}

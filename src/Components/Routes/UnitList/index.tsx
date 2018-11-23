@@ -93,6 +93,12 @@ export default class UnitList extends React.Component<
         case '种族':
           param = 'Race';
           break;
+        case '出身':
+          param = 'Assign';
+          break;
+        case '不死':
+          param = 'Identity';
+          break;
         case '职业':
           param = 'Class.ClassInit.Name';
           break;
@@ -142,6 +148,8 @@ export default class UnitList extends React.Component<
               Kind
               Illust
               Race
+              Assign
+              Identity
               NickName
               ConneName
               Class {

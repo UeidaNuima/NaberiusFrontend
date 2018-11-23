@@ -155,6 +155,8 @@ export default class Unit extends React.Component<
               BonusType2
               BonusNum2
               Race
+              Assign
+              Identity
               Illust
               Dots {
                 Name
@@ -386,7 +388,15 @@ export default class Unit extends React.Component<
                       <span className={`gender gender-${data.card.Kind}`} />
                       <span>{data.card.Name}</span>
                     </h1>
-                    <p>{data.card.Race}</p>
+                    <p>
+                      {data.card.Race && <span>&lt;{data.card.Race}&gt;</span>}
+                      {data.card.Assign && (
+                        <span>&lt;{data.card.Assign}&gt;</span>
+                      )}
+                      {data.card.Identity && (
+                        <span>&lt;{data.card.Identity}&gt;</span>
+                      )}
+                    </p>
                     <div
                       className={
                         'harem-container ' + (this.state.harlemMode && 'active')
