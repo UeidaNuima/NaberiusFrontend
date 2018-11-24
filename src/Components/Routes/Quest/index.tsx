@@ -291,7 +291,6 @@ class EnemyTable extends React.Component<EnemyTableProps> {
   public render() {
     const quest = this.props.quest;
     const enemies = quest.Mission.Enemies;
-    console.log(quest);
     const entries: any = _.find(quest.Map.Entries, {
       EntryID: quest.EntryNo,
     });

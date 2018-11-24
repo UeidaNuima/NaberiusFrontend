@@ -48,7 +48,7 @@ class App extends React.Component {
           <ApolloProvider client={client}>
             <Layout className="App" style={{ height: '100%' }}>
               <Header />
-              <Layout style={{ height: '100%', overflow: 'auto' }}>
+              <Layout>
                 <Router />
               </Layout>
             </Layout>
