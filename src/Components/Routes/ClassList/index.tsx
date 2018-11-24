@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Layout, Row, Col, Spin, Pagination, Input } from 'antd';
+import { Layout, Row, Col, Spin, Pagination, Input, Affix } from 'antd';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import _ from 'lodash';
@@ -139,14 +139,16 @@ export default class ClassList extends React.Component<any, ClassListStates> {
                   }}
                   enterButton
                 />
-                <Row className="sorter-block">
-                  <Col span={2}>#</Col>
-                  <Col span={3}>职业</Col>
-                  <Col span={3}>转职目标</Col>
-                  <Col span={6}>转职素材</Col>
-                  <Col span={5}>珠子</Col>
-                  <Col span={5}>二觉目标</Col>
-                </Row>
+                <Affix>
+                  <Row className="sorter-block">
+                    <Col span={2}>#</Col>
+                    <Col span={3}>职业</Col>
+                    <Col span={3}>转职目标</Col>
+                    <Col span={6}>转职素材</Col>
+                    <Col span={5}>珠子</Col>
+                    <Col span={5}>二觉目标</Col>
+                  </Row>
+                </Affix>
                 {data.classes &&
                   this.classes
                     .filter(this.classFilter)

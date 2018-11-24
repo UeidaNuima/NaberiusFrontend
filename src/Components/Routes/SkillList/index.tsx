@@ -1,5 +1,17 @@
 import * as React from 'react';
-import { Spin, Layout, Col, Row, Pagination, Popover, Input, Tag } from 'antd';
+import {
+  Spin,
+  Layout,
+  Col,
+  Row,
+  Pagination,
+  Popover,
+  Input,
+  Tag,
+  Affix,
+  Drawer,
+  Icon,
+} from 'antd';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import classNames from 'classnames';
@@ -9,13 +21,14 @@ import DescriptionInput from '../../DescriptionInput';
 import SkillInfluenceTable from '../../SkillInfluenceTable';
 import styles from './index.module.less';
 
-const { Content, Sider } = Layout;
+const { Content } = Layout;
 const { Search } = Input;
 
 interface SkillListStates {
   currentPage: number;
   search: string;
   IDFilter: number[];
+  drawerVisible: boolean;
 }
 
 class SkillList extends React.Component<any, SkillListStates> {
@@ -23,13 +36,17 @@ class SkillList extends React.Component<any, SkillListStates> {
     currentPage: 1,
     search: '',
     IDFilter: [],
+    drawerVisible: false,
   };
+
   public handleIDFilterChange = (newFilter: number[]) => {
     this.setState({ IDFilter: newFilter, currentPage: 1 });
   };
+
   public setSearch = (search: string) => {
     this.setState({ search, currentPage: 1 });
   };
+
   public skillFilter = (skill: any) => {
     if (this.state.IDFilter.length > 0) {
       for (const ID of this.state.IDFilter) {
@@ -49,9 +66,11 @@ class SkillList extends React.Component<any, SkillListStates> {
     }
     return true;
   };
+
   private findIDindex(ID: number) {
     return this.state.IDFilter.findIndex(fiteredID => fiteredID === ID);
   }
+
   private handleToggleFilter(ID: number) {
     const index = this.findIDindex(ID);
     const { IDFilter } = this.state;
@@ -63,6 +82,11 @@ class SkillList extends React.Component<any, SkillListStates> {
       this.setState({ IDFilter: [...IDFilter, ID] });
     }
   }
+
+  private handleToggleDrawer = () => {
+    this.setState(state => ({ drawerVisible: !state.drawerVisible }));
+  };
+
   public render() {
     return (
       <Query
@@ -115,7 +139,16 @@ class SkillList extends React.Component<any, SkillListStates> {
           }
           return (
             <>
-              <Sider className={styles.sider}>
+              <div
+                className={styles.drawerTrigger}
+                onClick={this.handleToggleDrawer}
+              >
+                <Icon type="setting" />
+              </div>
+              <Drawer
+                visible={this.state.drawerVisible}
+                onClose={this.handleToggleDrawer}
+              >
                 <Spin spinning={loading}>
                   {data.skillInfluenceMetas &&
                     Array.apply(null, { length: maxInfluenceID }).map(
@@ -140,7 +173,7 @@ class SkillList extends React.Component<any, SkillListStates> {
                       },
                     )}
                 </Spin>
-              </Sider>
+              </Drawer>
               <Content
                 className={classNames(['container', styles.skillListContainer])}
               >
@@ -165,14 +198,16 @@ class SkillList extends React.Component<any, SkillListStates> {
                     }}
                     enterButton
                   />
-                  <Row className="sorter-block">
-                    <Col span={4}>技能名</Col>
-                    <Col span={8}>效果</Col>
-                    <Col span={3}>持续</Col>
-                    <Col span={3}>再动</Col>
-                    <Col span={3}>技能等级</Col>
-                    <Col span={3}>&lt;POW_I&gt;</Col>
-                  </Row>
+                  <Affix>
+                    <Row className="sorter-block">
+                      <Col span={4}>技能名</Col>
+                      <Col span={8}>效果</Col>
+                      <Col span={3}>持续</Col>
+                      <Col span={3}>再动</Col>
+                      <Col span={3}>技能等级</Col>
+                      <Col span={3}>&lt;POW_I&gt;</Col>
+                    </Row>
+                  </Affix>
                   {data.skills &&
                     data.skills
                       .filter(this.skillFilter)

@@ -1,5 +1,17 @@
 import * as React from 'react';
-import { Spin, Layout, Col, Row, Pagination, Popover, Input, Tag } from 'antd';
+import {
+  Spin,
+  Layout,
+  Col,
+  Row,
+  Pagination,
+  Popover,
+  Input,
+  Tag,
+  Affix,
+  Drawer,
+  Icon,
+} from 'antd';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import classNames from 'classnames';
@@ -9,13 +21,14 @@ import DescriptionInput from '../../DescriptionInput';
 import AbilityConfigTable from '../../AbilityConfigTable';
 import styles from './index.module.less';
 
-const { Content, Sider } = Layout;
+const { Content } = Layout;
 const { Search } = Input;
 
 interface AbilityListStates {
   currentPage: number;
   search: string;
   IDFilter: number[];
+  drawerVisible: boolean;
 }
 
 class AbilityList extends React.Component<any, AbilityListStates> {
@@ -23,6 +36,7 @@ class AbilityList extends React.Component<any, AbilityListStates> {
     currentPage: 1,
     search: '',
     IDFilter: [],
+    drawerVisible: false,
   };
   public setSearch = (search: string) => {
     this.setState({ search, currentPage: 1 });
@@ -49,9 +63,11 @@ class AbilityList extends React.Component<any, AbilityListStates> {
     }
     return true;
   };
+
   private findIDindex(ID: number) {
     return this.state.IDFilter.findIndex(fiteredID => fiteredID === ID);
   }
+
   private handleToggleFilter(ID: number) {
     const index = this.findIDindex(ID);
     const { IDFilter } = this.state;
@@ -63,6 +79,11 @@ class AbilityList extends React.Component<any, AbilityListStates> {
       this.setState({ IDFilter: [...IDFilter, ID] });
     }
   }
+
+  private handleToggleDrawer = () => {
+    this.setState(state => ({ drawerVisible: !state.drawerVisible }));
+  };
+
   public render() {
     return (
       <Query
@@ -108,7 +129,16 @@ class AbilityList extends React.Component<any, AbilityListStates> {
           }
           return (
             <>
-              <Sider className={styles.sider}>
+              <div
+                className={styles.drawerTrigger}
+                onClick={this.handleToggleDrawer}
+              >
+                <Icon type="setting" />
+              </div>
+              <Drawer
+                visible={this.state.drawerVisible}
+                onClose={this.handleToggleDrawer}
+              >
                 <Spin spinning={loading}>
                   {data.abilityConfigMetas &&
                     Array.apply(null, { length: maxID }).map(
@@ -132,7 +162,7 @@ class AbilityList extends React.Component<any, AbilityListStates> {
                       },
                     )}
                 </Spin>
-              </Sider>
+              </Drawer>
               <Content
                 className={classNames([
                   'container',
@@ -160,10 +190,12 @@ class AbilityList extends React.Component<any, AbilityListStates> {
                     }}
                     enterButton
                   />
-                  <Row className="sorter-block">
-                    <Col span={8}>名称</Col>
-                    <Col span={16}>描述</Col>
-                  </Row>
+                  <Affix>
+                    <Row className="sorter-block">
+                      <Col span={8}>名称</Col>
+                      <Col span={16}>描述</Col>
+                    </Row>
+                  </Affix>
                   {data.abilities &&
                     data.abilities
                       .filter(this.abilityFilter)
