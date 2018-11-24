@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Spin, Layout, Row, Col, Tag, Popover, Switch } from 'antd';
+import { Spin, Layout, Row, Col, Tag, Popover, Switch, Affix } from 'antd';
 import { RouteComponentProps } from 'react-router-dom';
 import { ICO_URL, ENEMY_DOT_URL, ENEMY_CHANGE_COND } from '../../../consts';
 import _ from 'lodash';
@@ -344,150 +344,186 @@ class EnemyTable extends React.Component<EnemyTableProps> {
       }
     });
     return (
-      <div className="ant-table ant-table-bordered ant-table-middle">
-        <div className="ant-table-content">
-          <div className="ant-table-body">
-            <table style={{ textAlign: 'center' }}>
-              <thead className="ant-table-thead">
-                <tr>
-                  <th>点阵</th>
-                  <th>重复</th>
-                  <th>属性</th>
-                  <th>攻击属性</th>
-                  <th>攻速</th>
-                  <th>射程</th>
-                  <th>HP</th>
-                  <th>攻击</th>
-                  <th>防御</th>
-                  <th>魔抗</th>
-                  <th>暗杀补正</th>
-                  <th>掉落</th>
-                </tr>
-              </thead>
-              <tbody className="ant-table-tbody">
-                {parsedEnemies.map((enemy: any, index: number) => {
-                  if (enemy.duplicated) {
-                    return null;
-                  }
-                  if (enemy.EnemyID >= 0 && enemy.EnemyID < 1000) {
-                    if (enemy.Param_ChangeParam) {
-                      return (
-                        <Popover
-                          key={`enemy-table-${index}`}
-                          content={
-                            <div className="ant-table ant-table-bordered ant-table-middle">
-                              <div className="ant-table-content">
-                                <div className="ant-table-body">
-                                  <table>
-                                    <thead className="ant-table-thead">
-                                      <tr>
-                                        <th>点阵</th>
-                                        <th>属性</th>
-                                        <th>攻击属性</th>
-                                        <th>攻速</th>
-                                        <th>射程</th>
-                                        <th>HP</th>
-                                        <th>攻击</th>
-                                        <th>防御</th>
-                                        <th>魔抗</th>
-                                        <th>暗杀补正</th>
-                                        <th>变身条件</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody className="ant-table-tbody">
-                                      {enemy.Changes.map(
-                                        (enemyChange: any, index: number) =>
-                                          this.trGen(
-                                            enemyChange,
-                                            index,
-                                            drops,
-                                            true,
-                                          ),
-                                      )}
-                                    </tbody>
-                                  </table>
+      <>
+        <Affix>
+          <div className="ant-table ant-table-bordered ant-table-middle">
+            <div className="ant-table-content">
+              <div className="ant-table-body">
+                <table style={{ textAlign: 'center' }}>
+                  <thead className="ant-table-thead" style={{ width: '100%' }}>
+                    <tr>
+                      <th style={{ width: '13%' }}>点阵</th>
+                      <th style={{ width: '5%' }}>重复</th>
+                      <th style={{ width: '13%' }}>属性</th>
+                      <th style={{ width: '13%' }}>攻击属性</th>
+                      <th style={{ width: '5%' }}>攻速</th>
+                      <th style={{ width: '5%' }}>射程</th>
+                      <th style={{ width: '5%' }}>HP</th>
+                      <th style={{ width: '5%' }}>攻击</th>
+                      <th style={{ width: '5%' }}>防御</th>
+                      <th style={{ width: '5%' }}>魔抗</th>
+                      <th style={{ width: '13%' }}>暗杀补正</th>
+                      <th style={{ width: '13%' }}>掉落</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+        </Affix>
+        <div className="ant-table ant-table-bordered ant-table-middle">
+          <div className="ant-table-content">
+            <div className="ant-table-body">
+              <table style={{ textAlign: 'center' }}>
+                <colgroup style={{ width: '13%' }} />
+                <colgroup style={{ width: '5%' }} />
+                <colgroup style={{ width: '13%' }} />
+                <colgroup style={{ width: '13%' }} />
+                <colgroup style={{ width: '5%' }} />
+                <colgroup style={{ width: '5%' }} />
+                <colgroup style={{ width: '5%' }} />
+                <colgroup style={{ width: '5%' }} />
+                <colgroup style={{ width: '5%' }} />
+                <colgroup style={{ width: '5%' }} />
+                <colgroup style={{ width: '13%' }} />
+                <colgroup style={{ width: '13%' }} />
+
+                <tbody className="ant-table-tbody">
+                  {parsedEnemies.map((enemy: any, index: number) => {
+                    if (enemy.duplicated) {
+                      return null;
+                    }
+                    if (enemy.EnemyID >= 0 && enemy.EnemyID < 1000) {
+                      if (enemy.Param_ChangeParam) {
+                        return (
+                          <Popover
+                            key={`enemy-table-${index}`}
+                            content={
+                              <div className="ant-table ant-table-bordered ant-table-middle">
+                                <div className="ant-table-content">
+                                  <div className="ant-table-body">
+                                    <table>
+                                      <thead className="ant-table-thead">
+                                        <tr>
+                                          <th>点阵</th>
+                                          <th>属性</th>
+                                          <th>攻击属性</th>
+                                          <th>攻速</th>
+                                          <th>射程</th>
+                                          <th>HP</th>
+                                          <th>攻击</th>
+                                          <th>防御</th>
+                                          <th>魔抗</th>
+                                          <th>暗杀补正</th>
+                                          <th>变身条件</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody className="ant-table-tbody">
+                                        {enemy.Changes.map(
+                                          (enemyChange: any, index: number) =>
+                                            this.trGen(
+                                              enemyChange,
+                                              index,
+                                              drops,
+                                              true,
+                                            ),
+                                        )}
+                                      </tbody>
+                                    </table>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
+                            }
+                          >
+                            {this.trGen(enemy, index, drops)}
+                          </Popover>
+                        );
+                      }
+                      return this.trGen(enemy, index, drops);
+                    } else if (enemy.EnemyID === -1) {
+                      // wait
+                      return null;
+                    } else if (enemy.EnemyID === 2000) {
+                      // exclution mark
+                      return null;
+                    } else if (enemy.EnemyID >= 1000 && enemy.EnemyID < 2000) {
+                      // quest event text
+                      return (
+                        <tr key={`enemy-table-${index}`}>
+                          <td colSpan={12}>
+                            <span
+                              style={{ fontWeight: 'bold', marginRight: 8 }}
+                            >
+                              {
+                                this.props.battleTalks[enemy.EnemyID - 1000]
+                                  .Name
+                              }
+                              :
+                            </span>
+                            {
+                              this.props.battleTalks[enemy.EnemyID - 1000]
+                                .Message
+                            }
+                          </td>
+                        </tr>
+                      );
+                    } else if (enemy.EnemyID === 4201) {
+                      // command, play se or call a event, etc
+                      const command = enemy.EntryCommand;
+                      const match = /CallEvent\(([\d,]+)\)/.exec(command);
+                      if (match) {
+                        return match[1].split(',').map(s => {
+                          const recordIndex = Number.parseInt(s, 10);
+                          const talk: any = _.find(
+                            this.props.quest.Mission.BattleTalks,
+                            {
+                              RecordIndex: recordIndex,
+                            },
+                          );
+                          if (!talk) {
+                            return null;
                           }
+                          return (
+                            <tr
+                              key={`enemy-table-${index}-event-${recordIndex}`}
+                            >
+                              <td colSpan={12}>
+                                <span
+                                  style={{ fontWeight: 'bold', marginRight: 8 }}
+                                >
+                                  {talk.Name}:
+                                </span>
+                                {talk.Message}
+                              </td>
+                            </tr>
+                          );
+                        });
+                      }
+                      return (
+                        <tr
+                          style={{ display: 'none' }}
+                          key={`enemy-table-${index}`}
                         >
-                          {this.trGen(enemy, index, drops)}
-                        </Popover>
+                          <td colSpan={12}>{enemy.EntryCommand}</td>
+                        </tr>
+                      );
+                    } else {
+                      return (
+                        <tr
+                          style={{ display: 'none' }}
+                          key={`enemy-table-${index}`}
+                        >
+                          <td colSpan={12}>{JSON.stringify(enemy)}</td>
+                        </tr>
                       );
                     }
-                    return this.trGen(enemy, index, drops);
-                  } else if (enemy.EnemyID === -1) {
-                    // wait
-                    return null;
-                  } else if (enemy.EnemyID === 2000) {
-                    // exclution mark
-                    return null;
-                  } else if (enemy.EnemyID >= 1000 && enemy.EnemyID < 2000) {
-                    // quest event text
-                    return (
-                      <tr key={`enemy-table-${index}`}>
-                        <td colSpan={12}>
-                          <span style={{ fontWeight: 'bold', marginRight: 8 }}>
-                            {this.props.battleTalks[enemy.EnemyID - 1000].Name}:
-                          </span>
-                          {this.props.battleTalks[enemy.EnemyID - 1000].Message}
-                        </td>
-                      </tr>
-                    );
-                  } else if (enemy.EnemyID === 4201) {
-                    // command, play se or call a event, etc
-                    const command = enemy.EntryCommand;
-                    const match = /CallEvent\(([\d,]+)\)/.exec(command);
-                    if (match) {
-                      return match[1].split(',').map(s => {
-                        const recordIndex = Number.parseInt(s, 10);
-                        const talk: any = _.find(
-                          this.props.quest.Mission.BattleTalks,
-                          {
-                            RecordIndex: recordIndex,
-                          },
-                        );
-                        if (!talk) {
-                          return null;
-                        }
-                        return (
-                          <tr key={`enemy-table-${index}-event-${recordIndex}`}>
-                            <td colSpan={12}>
-                              <span
-                                style={{ fontWeight: 'bold', marginRight: 8 }}
-                              >
-                                {talk.Name}:
-                              </span>
-                              {talk.Message}
-                            </td>
-                          </tr>
-                        );
-                      });
-                    }
-                    return (
-                      <tr
-                        style={{ display: 'none' }}
-                        key={`enemy-table-${index}`}
-                      >
-                        <td colSpan={12}>{enemy.EntryCommand}</td>
-                      </tr>
-                    );
-                  } else {
-                    return (
-                      <tr
-                        style={{ display: 'none' }}
-                        key={`enemy-table-${index}`}
-                      >
-                        <td colSpan={12}>{JSON.stringify(enemy)}</td>
-                      </tr>
-                    );
-                  }
-                })}
-              </tbody>
-            </table>
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 }
