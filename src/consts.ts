@@ -1,6 +1,7 @@
 export const BASE_SERVER_URL = 'https://aigisapi.naberi.us';
 // export const BASE_SERVER_URL = 'http://localhost:4000';
 export const BASE_GAME_URL = 'http://assets.millennium-war.net';
+export const GAME_POSTER_URL = BASE_GAME_URL + '/00/html/image';
 export const API_URL = BASE_SERVER_URL + '/graphql';
 export const STATIC_URL = BASE_SERVER_URL + '/static';
 export const PLAYER_DOT_URL = STATIC_URL + '/playerdot';

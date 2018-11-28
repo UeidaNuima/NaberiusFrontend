@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Radio } from 'antd';
 import classNames from 'classnames';
 import styles from './index.module.less';
-import { STATIC_URL } from '../../consts';
+import { GAME_POSTER_URL } from '../../consts';
 
 interface PosterProps {
   posters: string[];
@@ -75,7 +75,7 @@ class Poster extends React.Component<PosterProps, PosterStates> {
         </div>
         <img
           className={styles.poster}
-          src={`${STATIC_URL}/poster/${this.state.selectedPoster}.jpg`}
+          src={`${GAME_POSTER_URL}/event${this.state.selectedPoster}.jpg`}
         />
       </div>
     );

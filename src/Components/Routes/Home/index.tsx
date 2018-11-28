@@ -73,7 +73,11 @@ export default class Home extends React.Component {
                 </Popover>
               </div>
               {!loading && data.posters.length !== 0 && (
-                <Poster posters={data.posters} />
+                <Poster
+                  posters={data.posters.map((poster: string) =>
+                    poster.replace('event', ''),
+                  )}
+                />
               )}
             </Content>
           );
