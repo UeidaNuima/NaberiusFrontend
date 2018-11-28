@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { Query } from 'react-apollo';
-import { Spin, Popover, Tooltip, Row, Col, Layout, Tabs } from 'antd';
+import { Spin, Popover, Tooltip, Layout, Tabs } from 'antd';
 import Slider from 'react-slick';
 import { RouteComponentProps } from 'react-router-dom';
 import gql from 'graphql-tag';
 import SkillInfluenceTable from '../../SkillInfluenceTable';
 import AbilityConfigTable from '../../AbilityConfigTable';
 import DotAnimation from '../../DotAnimation';
-import { BASE_GAME_URL, ICO_URL } from '../../../consts';
+import { BASE_GAME_URL, ICO_URL, PLAYER_DOT_URL } from '../../../consts';
 import './index.less';
 
 const BONUS_TYPE = [null, 'HP +', '攻击 +', '防御 +', '射程 +', null, '后摇 -'];
@@ -734,22 +734,67 @@ export default class Unit extends React.Component<
                     {data.card.Dots && (
                       <div>
                         <h2>点阵</h2>
-                        <Row type="flex" gutter={8}>
-                          {data.card.Dots.map((dot: any, index: number) => (
-                            <Col
-                              lg={4}
-                              md={6}
-                              sm={8}
-                              xs={12}
-                              key={index + dot.Name}
-                            >
-                              <DotAnimation
-                                dot={dot}
-                                cardID={data.card.CardID}
-                              />
-                            </Col>
-                          ))}
-                        </Row>
+                        <div className="ant-table ant-table-bordered ant-table-middle">
+                          <div className="ant-table-content">
+                            <div className="ant-table-body">
+                              <table>
+                                <tbody className="ant-table-tbody">
+                                  {data.card.Dots.map(
+                                    (dot: any, index: number) => (
+                                      <Popover
+                                        key={index + dot.Name}
+                                        content={
+                                          <DotAnimation
+                                            dot={dot}
+                                            cardID={data.card.CardID}
+                                          />
+                                        }
+                                      >
+                                        <tr>
+                                          <td
+                                            style={{
+                                              background: '#f5f6fa',
+                                              fontWeight: 500,
+                                              color: 'rgba(0, 0, 0, 0.85)',
+                                            }}
+                                          >
+                                            {dot.Name}
+                                          </td>
+                                          <td>
+                                            {dot.Entries.map((entry: any) =>
+                                              entry.Sprites.map(
+                                                (
+                                                  sprite: any,
+                                                  index: number,
+                                                ) => {
+                                                  return (
+                                                    <div
+                                                      key={`${entry}${index}`}
+                                                      style={{
+                                                        display: 'inline-block',
+                                                        width: sprite.Width,
+                                                        height: sprite.Height,
+                                                        backgroundImage: `url("${PLAYER_DOT_URL}/${
+                                                          data.card.CardID
+                                                        }.png")`,
+                                                        backgroundPositionX: -sprite.X,
+                                                        backgroundPositionY: -sprite.Y,
+                                                      }}
+                                                    />
+                                                  );
+                                                },
+                                              ),
+                                            )}
+                                          </td>
+                                        </tr>
+                                      </Popover>
+                                    ),
+                                  )}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>

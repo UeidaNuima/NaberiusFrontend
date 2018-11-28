@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Card } from 'antd';
 import * as PIXI from 'pixi.js';
 import _ from 'lodash';
 import './index.less';
@@ -153,7 +152,7 @@ interface DotAnimationProps {
 export default class DotAnimation extends React.Component<DotAnimationProps> {
   public render() {
     return (
-      <Card title={this.props.dot.Name} className="animate-card">
+      <div>
         {this.props.dot.Entries.map((entry: any, index: number) => (
           <DotAnimationSingleEntry
             key={entry.Name}
@@ -162,7 +161,7 @@ export default class DotAnimation extends React.Component<DotAnimationProps> {
             EntryID={index}
           />
         ))}
-      </Card>
+      </div>
     );
   }
 }
