@@ -207,7 +207,12 @@ class AbilityList extends React.Component<any, AbilityListStates> {
                         return (
                           <Popover
                             key={index}
-                            content={<AbilityConfigTable ability={ability} />}
+                            content={
+                              <AbilityConfigTable
+                                ability={ability}
+                                configs={data.abilityConfigMetas}
+                              />
+                            }
                           >
                             <Row
                               className="list-card"

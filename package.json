@@ -1,6 +1,7 @@
 {
   "name": "naberius-frontend",
   "version": "0.1.0",
+  "homepage": "https://beta.aigis.naberi.us",
   "private": true,
   "dependencies": {
     "@types/apollo-upload-client": "^8.1.1",

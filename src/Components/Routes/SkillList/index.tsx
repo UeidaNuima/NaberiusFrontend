@@ -100,7 +100,6 @@ class SkillList extends React.Component<any, SkillListStates> {
               LevelMax
               Text
               InfluenceConfig {
-                Description
                 Type_Collision
                 Type_CollisionState
                 Type_ChangeFunction
@@ -218,7 +217,12 @@ class SkillList extends React.Component<any, SkillListStates> {
                       .map((skill: any, index: number) => (
                         <Popover
                           key={index}
-                          content={<SkillInfluenceTable skill={skill} />}
+                          content={
+                            <SkillInfluenceTable
+                              skill={skill}
+                              influences={data.skillInfluenceMetas}
+                            />
+                          }
                         >
                           <Row
                             className="list-card"

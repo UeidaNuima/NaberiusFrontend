@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-const AbilityConfigTable = ({ ability }: any) => (
+const AbilityConfigTable = ({ ability, configs }: any) => (
   <div className="ant-table ant-table-bordered ant-table-middle">
     <div className="ant-table-content">
       <div className="ant-table-body">
@@ -19,19 +19,27 @@ const AbilityConfigTable = ({ ability }: any) => (
             </tr>
           </thead>
           <tbody className="ant-table-tbody">
-            {ability.Config.map((config: any, index: number) => (
-              <tr key={index}>
-                <td>{config._InfluenceType}</td>
-                <td>{config._Param1}</td>
-                <td>{config._Param2}</td>
-                <td>{config._Param3}</td>
-                <td>{config._Param4}</td>
-                <td>{config._Command}</td>
-                <td>{config._ActivateCommand}</td>
-                <td>{config._InvokeType}</td>
-                <td>{config._TargetType}</td>
-              </tr>
-            ))}
+            {ability.Config.map((config: any, index: number) => {
+              const description = configs.find(
+                (c: any) => c.ID === config._InfluenceType,
+              );
+              return (
+                <tr key={index}>
+                  <td>
+                    {config._InfluenceType}
+                    {description && ` / ${description.Description}`}
+                  </td>
+                  <td>{config._Param1}</td>
+                  <td>{config._Param2}</td>
+                  <td>{config._Param3}</td>
+                  <td>{config._Param4}</td>
+                  <td>{config._Command}</td>
+                  <td>{config._ActivateCommand}</td>
+                  <td>{config._InvokeType}</td>
+                  <td>{config._TargetType}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
