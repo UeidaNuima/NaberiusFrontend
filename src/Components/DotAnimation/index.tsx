@@ -1,7 +1,6 @@
 import * as React from 'react';
 import * as PIXI from 'pixi.js';
 import _ from 'lodash';
-import './index.less';
 import { PLAYER_DOT_URL } from '../../consts';
 
 interface DotAnimationSingleEntryProps {
@@ -135,9 +134,13 @@ class DotAnimationSingleEntry extends React.Component<
   }
   public render() {
     return (
-      <div>
+      <div
+        style={{
+          display: 'inline-block',
+        }}
+      >
         <div ref={ref => (this.div = ref)} />
-        <span>{this.state.currentFrame}</span>/
+        <span>{this.state.currentFrame}</span>f/
         <span>{this.props.dot.Length}</span>f
       </div>
     );
