@@ -22,14 +22,20 @@ const SkillInfluenceTable = ({ skill, influences }: any) => (
           </thead>
           <tbody className="ant-table-tbody">
             {skill.InfluenceConfig.map((config: any, index: number) => {
-              const description = influences.find(
-                (influence: any) => influence.ID === config.Data_InfluenceType,
-              );
+              // no configs in unit page
+              const description = influences
+                ? influences.find(
+                    (influence: any) =>
+                      influence.ID === config.Data_InfluenceType,
+                  )
+                : config;
               return (
                 <tr key={index}>
                   <td>
                     {config.Data_InfluenceType}
-                    {description && ` / ${description.Description}`}
+                    {description &&
+                      description.Description &&
+                      ` / ${description.Description}`}
                   </td>
                   <td>{config.Data_MulValue}</td>
                   <td>{config.Data_MulValue2}</td>

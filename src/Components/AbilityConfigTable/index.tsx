@@ -20,14 +20,17 @@ const AbilityConfigTable = ({ ability, configs }: any) => (
           </thead>
           <tbody className="ant-table-tbody">
             {ability.Config.map((config: any, index: number) => {
-              const description = configs.find(
-                (c: any) => c.ID === config._InfluenceType,
-              );
+              // no configs in unit page
+              const description = configs
+                ? configs.find((c: any) => c.ID === config._InfluenceType)
+                : config;
               return (
                 <tr key={index}>
                   <td>
                     {config._InfluenceType}
-                    {description && ` / ${description.Description}`}
+                    {description &&
+                      description.Description &&
+                      ` / ${description.Description}`}
                   </td>
                   <td>{config._Param1}</td>
                   <td>{config._Param2}</td>
