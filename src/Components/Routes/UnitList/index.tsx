@@ -188,6 +188,15 @@ export default class UnitList extends React.Component<
                         <Col span={5}>{this.genSorter('画师', 'Illust')}</Col>
                       </Row>
                     </Affix>
+                    {data.cards && (
+                      <Pagination
+                        defaultCurrent={1}
+                        defaultPageSize={50}
+                        onChange={page => this.setState({ currentPage: page })}
+                        total={data.cards.filter(this.cardFilter).length}
+                        style={{ marginBottom: 16 }}
+                      />
+                    )}
                     {data.cards &&
                       data.cards
                         .slice()
