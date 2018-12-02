@@ -13,7 +13,7 @@ interface UnitListCardStates {
   active: boolean;
   success: boolean;
   conneName: string;
-  nickName: string;
+  nickName: string[];
 }
 
 export default class UnitListCard extends React.Component<
@@ -24,7 +24,7 @@ export default class UnitListCard extends React.Component<
     active: false,
     success: false,
     conneName: this.props.card.ConneName,
-    nickName: this.props.card.NickName,
+    nickName: this.props.card.NickName || [],
   };
 
   public flashSuccess = () => {
@@ -100,7 +100,7 @@ export default class UnitListCard extends React.Component<
               mutation updateCardMeta(
                 $CardID: Int!
                 $ConneName: String
-                $NickName: String
+                $NickName: [String]
               ) {
                 updateCardMeta(
                   CardID: $CardID
@@ -130,9 +130,11 @@ export default class UnitListCard extends React.Component<
                   <Col span={10}>
                     <span className="label">昵称:</span>
                     <Input
-                      value={this.state.nickName}
+                      value={this.state.nickName.join(',')}
                       onChange={e =>
-                        this.setState({ nickName: e.target.value })
+                        this.setState({
+                          nickName: e.target.value.split(/[,， ]/),
+                        })
                       }
                     />
                   </Col>

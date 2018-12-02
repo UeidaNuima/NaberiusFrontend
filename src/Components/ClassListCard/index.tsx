@@ -14,7 +14,7 @@ interface ClassListCardStates {
   active: boolean;
   success: boolean;
   cnName: string;
-  nickName: string;
+  nickName: string[];
 }
 
 export default class ClassListCard extends React.Component<
@@ -25,7 +25,7 @@ export default class ClassListCard extends React.Component<
     active: false,
     success: false,
     cnName: this.props.class.CnName,
-    nickName: this.props.class.NickName,
+    nickName: this.props.class.NickName || [],
   };
 
   public flashSuccess = () => {
@@ -134,7 +134,7 @@ export default class ClassListCard extends React.Component<
                   mutation updateClassMeta(
                     $ClassID: Int!
                     $CnName: String
-                    $NickName: String
+                    $NickName: [String]
                   ) {
                     updateClassMeta(
                       ClassID: $ClassID
@@ -175,9 +175,11 @@ export default class ClassListCard extends React.Component<
                       <Col span={10}>
                         <span className="label">昵称:</span>
                         <Input
-                          value={this.state.nickName}
+                          value={this.state.nickName.join(',')}
                           onChange={e =>
-                            this.setState({ nickName: e.target.value })
+                            this.setState({
+                              nickName: e.target.value.split(/[,， ]/),
+                            })
                           }
                         />
                       </Col>
