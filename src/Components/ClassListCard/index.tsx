@@ -13,7 +13,6 @@ interface ClassListCardProps {
 interface ClassListCardStates {
   active: boolean;
   success: boolean;
-  cnName: string;
   nickName: string[];
 }
 
@@ -24,7 +23,6 @@ export default class ClassListCard extends React.Component<
   public state = {
     active: false,
     success: false,
-    cnName: this.props.class.CnName,
     nickName: this.props.class.NickName || [],
   };
 
@@ -133,15 +131,9 @@ export default class ClassListCard extends React.Component<
                 mutation={gql`
                   mutation updateClassMeta(
                     $ClassID: Int!
-                    $CnName: String
                     $NickName: [String]
                   ) {
-                    updateClassMeta(
-                      ClassID: $ClassID
-                      CnName: $CnName
-                      NickName: $NickName
-                    ) {
-                      CnName
+                    updateClassMeta(ClassID: $ClassID, NickName: $NickName) {
                       NickName
                     }
                   }
@@ -163,16 +155,7 @@ export default class ClassListCard extends React.Component<
                           theme="outlined"
                         />
                       </Col>
-                      <Col span={10}>
-                        <span className="label">翻译:</span>
-                        <Input
-                          value={this.state.cnName}
-                          onChange={e =>
-                            this.setState({ cnName: e.target.value })
-                          }
-                        />
-                      </Col>
-                      <Col span={10}>
+                      <Col span={20}>
                         <span className="label">昵称:</span>
                         <Input
                           value={this.state.nickName.join(',')}
@@ -192,7 +175,6 @@ export default class ClassListCard extends React.Component<
                             updateClassMeta({
                               variables: {
                                 ClassID: unitClass.ClassID,
-                                CnName: this.state.cnName,
                                 NickName: this.state.nickName,
                               },
                             })

@@ -83,7 +83,6 @@ export default class ClassList extends React.Component<any, ClassListStates> {
               AwakeType1
               AwakeType2
               NickName
-              CnName
             }
           }
         `}
