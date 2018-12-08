@@ -741,53 +741,46 @@ export default class Unit extends React.Component<
                                 <tbody className="ant-table-tbody">
                                   {data.card.Dots.map(
                                     (dot: any, index: number) => (
-                                      <Popover
-                                        key={index + dot.Name}
-                                        content={
+                                      <tr key={index + dot.Name}>
+                                        <td
+                                          style={{
+                                            background: '#f5f6fa',
+                                            fontWeight: 500,
+                                            color: 'rgba(0, 0, 0, 0.85)',
+                                          }}
+                                        >
+                                          {dot.Name}
+                                        </td>
+                                        <td>
+                                          {dot.Entries.map((entry: any) =>
+                                            entry.Sprites.map(
+                                              (sprite: any, index: number) => {
+                                                return (
+                                                  <div
+                                                    key={`${entry}${index}`}
+                                                    style={{
+                                                      display: 'inline-block',
+                                                      width: sprite.Width,
+                                                      height: sprite.Height,
+                                                      backgroundImage: `url("${PLAYER_DOT_URL}/${
+                                                        data.card.CardID
+                                                      }.png")`,
+                                                      backgroundPositionX: -sprite.X,
+                                                      backgroundPositionY: -sprite.Y,
+                                                    }}
+                                                  />
+                                                );
+                                              },
+                                            ),
+                                          )}
+                                        </td>
+                                        <td>
                                           <DotAnimation
                                             dot={dot}
                                             cardID={data.card.CardID}
                                           />
-                                        }
-                                      >
-                                        <tr>
-                                          <td
-                                            style={{
-                                              background: '#f5f6fa',
-                                              fontWeight: 500,
-                                              color: 'rgba(0, 0, 0, 0.85)',
-                                            }}
-                                          >
-                                            {dot.Name}
-                                          </td>
-                                          <td>
-                                            {dot.Entries.map((entry: any) =>
-                                              entry.Sprites.map(
-                                                (
-                                                  sprite: any,
-                                                  index: number,
-                                                ) => {
-                                                  return (
-                                                    <div
-                                                      key={`${entry}${index}`}
-                                                      style={{
-                                                        display: 'inline-block',
-                                                        width: sprite.Width,
-                                                        height: sprite.Height,
-                                                        backgroundImage: `url("${PLAYER_DOT_URL}/${
-                                                          data.card.CardID
-                                                        }.png")`,
-                                                        backgroundPositionX: -sprite.X,
-                                                        backgroundPositionY: -sprite.Y,
-                                                      }}
-                                                    />
-                                                  );
-                                                },
-                                              ),
-                                            )}
-                                          </td>
-                                        </tr>
-                                      </Popover>
+                                        </td>
+                                      </tr>
                                     ),
                                   )}
                                 </tbody>

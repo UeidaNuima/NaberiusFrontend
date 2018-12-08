@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as PIXI from 'pixi.js';
 import _ from 'lodash';
 import { PLAYER_DOT_URL } from '../../consts';
 
@@ -9,129 +8,121 @@ interface DotAnimationSingleEntryProps {
   EntryID: number;
 }
 
-interface DotAnimationSingleEntryStates {
-  currentFrame: number;
-}
-
 class DotAnimationSingleEntry extends React.Component<
-  DotAnimationSingleEntryProps,
-  DotAnimationSingleEntryStates
+  DotAnimationSingleEntryProps
 > {
-  public app: PIXI.Application;
-  public div: HTMLDivElement | null;
-  public state = {
-    currentFrame: 0,
-  };
+  public canvas: HTMLCanvasElement;
   public componentDidMount() {
-    let maxWidth = 0;
-    let maxHeight = 0;
-    let maxOriginX = 0;
-    let maxOriginY = 0;
-    this.props.dot.Entries[this.props.EntryID].Sprites.forEach(
-      (sprite: any) => {
-        if (sprite.Width + maxOriginX > maxWidth) {
-          maxWidth = sprite.Width + maxOriginX;
-        }
-        if (sprite.Height + maxOriginY > maxHeight) {
-          maxHeight = sprite.Height + maxOriginY;
-        }
-        if (sprite.OriginX > maxOriginX) {
-          maxOriginX = sprite.OriginX;
-        }
-        if (sprite.OriginY > maxOriginY) {
-          maxOriginY = sprite.OriginY;
-        }
+    //
+    let top = 0;
+    let bottom = 0;
+    let left = 0;
+    let right = 0;
+    let canvasWidth = 0;
+    let canvasHeight = 0;
+    let blankWidth = 99999;
+    let blankHeight = 99999;
+    const tickNum: number = this.props.dot.Length;
+    interface Sprite {
+      X: number;
+      Y: number;
+      Width: number;
+      Height: number;
+      OriginX: number;
+      OriginY: number;
+    }
+    const sprites: Sprite[] = this.props.dot.Entries[
+      this.props.EntryID
+    ].Sprites.map((sprite: any) => ({
+      X: sprite.X,
+      Y: sprite.Y,
+      Width: sprite.Width,
+      Height: sprite.Height,
+      OriginX: sprite.OriginX > 1000 ? 0 : sprite.OriginX,
+      OriginY: sprite.OriginY > 1000 ? 0 : sprite.OriginY,
+    }));
+
+    // map sprite to frames
+    let frames: Array<{
+      Sprite: Sprite;
+      Time: number;
+    }> = this.props.dot.Entries[this.props.EntryID].PatternNo.map(
+      (pat: any) => {
+        return { Sprite: sprites[pat.Data], Time: pat.Time };
       },
     );
-    const options: any = {
-      width: Math.min(maxWidth, 200),
-      height: Math.min(maxHeight, 200),
-      backgroundColor: 0xffffff,
-    };
-    this.app = new PIXI.Application(options);
-    PIXI.loader
-      .reset()
-      .add(this.props.image)
-      .load(() => {
-        const texture = PIXI.loader.resources[this.props.image].texture;
 
-        const frames: PIXI.Texture[] = [];
+    // get frame length
+    frames = frames
+      .map((pat, index) => ({
+        ...pat,
+        Time:
+          index === frames.length - 1
+            ? tickNum - pat.Time
+            : frames[index + 1].Time - pat.Time,
+      }))
+      .filter(pat => pat.Time !== 0);
 
-        this.props.dot.Entries[this.props.EntryID].Sprites.forEach(
-          (sprite: any) => {
-            const frame = new PIXI.Rectangle(
-              sprite.X,
-              sprite.Y,
-              sprite.Width,
-              sprite.Height,
-            );
+    // count the container size of images
+    sprites.forEach(sprite => {
+      left = Math.max(left, sprite.OriginX);
+      right = Math.min(right, sprite.OriginX - sprite.Width);
 
-            const trim = new PIXI.Rectangle(
-              -sprite.OriginX,
-              -sprite.OriginY,
-              sprite.Width,
-              sprite.Height,
-            );
+      top = Math.max(top, sprite.OriginY);
+      bottom = Math.min(bottom, sprite.OriginY - sprite.Height);
+    });
+    canvasWidth = left - right;
+    canvasHeight = top - bottom;
 
-            frames.push(
-              new PIXI.Texture(texture.baseTexture, frame, undefined, trim),
-            );
-          },
-        );
-        const animateFrames: PIXI.Texture[] = [];
-        let j = 0;
-        for (let i = 0; i <= this.props.dot.Length; i++) {
-          const pattern: any = _.find(
-            this.props.dot.Entries[this.props.EntryID].PatternNo,
-            {
-              Time: i,
-            },
-          );
-          if (pattern) {
-            j = pattern.Data;
-          }
-          animateFrames.push(frames[j]);
+    // count the top-left blank block size
+    sprites.forEach(sprite => {
+      blankWidth = Math.min(blankWidth, canvasWidth - sprite.OriginX);
+      blankHeight = Math.min(blankHeight, canvasHeight - sprite.OriginY);
+    });
+    this.canvas.width = canvasWidth;
+    this.canvas.height = canvasHeight;
+
+    // load image
+    const image = new Image();
+    image.src = this.props.image;
+    const ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
+
+    let currentTick = 0;
+    let currentFrame = -1;
+
+    const imageLoop = () => {
+      // request next tick
+      window.requestAnimationFrame(imageLoop);
+      // when tick goes 0, shift to next frame
+      if (currentTick === 0) {
+        currentFrame += 1;
+        if (currentFrame === frames.length) {
+          currentFrame = 0;
         }
+        // set tick to frame length
+        currentTick = frames[currentFrame].Time;
+      }
+      // minus in every tick
+      currentTick--;
+      // draw the sprite
+      const sprite = frames[currentFrame].Sprite;
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      ctx.drawImage(
+        image,
+        sprite.X,
+        sprite.Y,
+        sprite.Width,
+        sprite.Height,
+        canvasWidth - sprite.OriginX - blankWidth,
+        canvasHeight - sprite.OriginY - blankHeight,
+        sprite.Width,
+        sprite.Height,
+      );
+    };
 
-        const anim = new PIXI.extras.AnimatedSprite(animateFrames);
-
-        anim.x = maxOriginX;
-        anim.y = maxOriginY;
-        anim.anchor.set(0);
-        anim.animationSpeed = 1;
-        anim.play();
-
-        anim.onFrameChange = () => {
-          this.setState({ currentFrame: anim.currentFrame });
-        };
-
-        this.app.stage.interactive = true;
-        this.app.stage.buttonMode = true;
-        this.app.stage.hitArea = new PIXI.Rectangle(
-          0,
-          0,
-          this.app.screen.width,
-          this.app.screen.height,
-        );
-
-        this.app.stage.on('click', () => {
-          if (anim.playing) {
-            anim.stop();
-          } else {
-            anim.play();
-          }
-        });
-
-        this.app.stage.addChild(anim);
-      });
-    if (this.div) {
-      this.div.appendChild(this.app.view);
-    }
+    image.onload = imageLoop;
   }
-  public componentWillUnmount() {
-    this.app.destroy();
-    console.log('destroyed');
-  }
+
   public render() {
     return (
       <div
@@ -139,8 +130,7 @@ class DotAnimationSingleEntry extends React.Component<
           display: 'inline-block',
         }}
       >
-        <div ref={ref => (this.div = ref)} />
-        <span>{this.state.currentFrame}</span>f/
+        <canvas ref={ref => ref && (this.canvas = ref)} />
         <span>{this.props.dot.Length}</span>f
       </div>
     );
