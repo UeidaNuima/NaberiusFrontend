@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { Tooltip } from 'antd';
+import * as GIF from 'gif.js';
 import _ from 'lodash';
 import { PLAYER_DOT_URL } from '../../consts';
 
@@ -6,14 +8,15 @@ interface DotAnimationSingleEntryProps {
   dot: any;
   image: string;
   EntryID: number;
+  cardID: number;
 }
 
 class DotAnimationSingleEntry extends React.Component<
   DotAnimationSingleEntryProps
 > {
   public canvas: HTMLCanvasElement;
+  public gif: any;
   public componentDidMount() {
-    //
     let top = 0;
     let bottom = 0;
     let left = 0;
@@ -82,22 +85,40 @@ class DotAnimationSingleEntry extends React.Component<
     this.canvas.width = canvasWidth;
     this.canvas.height = canvasHeight;
 
+    // use #08D422 as transparent color
+    // just a random color
+    this.gif = new GIF({
+      workers: 2,
+      quality: 1,
+      workerScript: '/gif.worker.js',
+      width: canvasWidth,
+      height: canvasHeight,
+      background: '#08D422',
+      transparent: '0x08D422',
+    });
+
     // load image
     const image = new Image();
+    image.crossOrigin = 'anonymous';
     image.src = this.props.image;
     const ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
 
     let currentTick = 0;
     let currentFrame = -1;
 
+    let gifStatus = true;
+
     const imageLoop = () => {
       // request next tick
       window.requestAnimationFrame(imageLoop);
+      let frameChanged = false;
       // when tick goes 0, shift to next frame
       if (currentTick === 0) {
         currentFrame += 1;
+        frameChanged = true;
         if (currentFrame === frames.length) {
           currentFrame = 0;
+          gifStatus = false;
         }
         // set tick to frame length
         currentTick = frames[currentFrame].Time;
@@ -118,6 +139,21 @@ class DotAnimationSingleEntry extends React.Component<
         sprite.Width,
         sprite.Height,
       );
+      if (gifStatus && frameChanged) {
+        // copy canvas image to a temp canvas and add background
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.height = canvasHeight;
+        tempCanvas.width = canvasWidth;
+        const tempCtx = tempCanvas.getContext('2d') as CanvasRenderingContext2D;
+        // fill the 'transparent' background
+        tempCtx.fillStyle = '#08D422';
+        tempCtx.fillRect(0, 0, canvasWidth, canvasHeight);
+        tempCtx.drawImage(this.canvas, 0, 0);
+        this.gif.addFrame(tempCtx, {
+          copy: true,
+          delay: frames[currentFrame].Time * (1000 / 60),
+        });
+      }
     };
 
     image.onload = imageLoop;
@@ -125,13 +161,28 @@ class DotAnimationSingleEntry extends React.Component<
 
   public render() {
     return (
-      <div
-        style={{
-          display: 'inline-block',
-        }}
-      >
-        <canvas ref={ref => ref && (this.canvas = ref)} />
-        <span>{this.props.dot.Length}</span>f
+      <div>
+        <Tooltip title="点击下载gif">
+          <canvas
+            onClick={() => {
+              this.gif.on('finished', (blob: Blob) => {
+                // crate a anchor
+                const url: string = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.style.display = 'none';
+                a.download = `${this.props.cardID}-${this.props.dot.Name}-${
+                  this.props.EntryID
+                }.gif`;
+                // and click it
+                a.click();
+              });
+              this.gif.render();
+            }}
+            style={{ cursor: 'pointer' }}
+            ref={ref => ref && (this.canvas = ref)}
+          />
+        </Tooltip>
       </div>
     );
   }
@@ -151,6 +202,7 @@ export default class DotAnimation extends React.Component<DotAnimationProps> {
             key={entry.Name}
             dot={this.props.dot}
             image={PLAYER_DOT_URL + `/${this.props.cardID}.png`}
+            cardID={this.props.cardID}
             EntryID={index}
           />
         ))}

@@ -24,6 +24,7 @@
     "apollo-link-http": "^1.5.5",
     "apollo-upload-client": "^9.1.0",
     "classnames": "^2.2.6",
+    "gif.js": "^0.2.0",
     "graphql": "^14.0.2",
     "graphql-tag": "^2.10.0",
     "lodash": "^4.17.11",

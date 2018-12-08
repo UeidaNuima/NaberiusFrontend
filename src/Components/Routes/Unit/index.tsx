@@ -751,26 +751,38 @@ export default class Unit extends React.Component<
                                         >
                                           {dot.Name}
                                         </td>
+                                        <td>{dot.Length}f</td>
                                         <td>
-                                          {dot.Entries.map((entry: any) =>
-                                            entry.Sprites.map(
-                                              (sprite: any, index: number) => {
-                                                return (
-                                                  <div
-                                                    key={`${entry}${index}`}
-                                                    style={{
-                                                      display: 'inline-block',
-                                                      width: sprite.Width,
-                                                      height: sprite.Height,
-                                                      backgroundImage: `url("${PLAYER_DOT_URL}/${
-                                                        data.card.CardID
-                                                      }.png")`,
-                                                      backgroundPositionX: -sprite.X,
-                                                      backgroundPositionY: -sprite.Y,
-                                                    }}
-                                                  />
-                                                );
-                                              },
+                                          {dot.Entries.map(
+                                            (
+                                              entry: any,
+                                              entryIndex: number,
+                                            ) => (
+                                              <div key={entryIndex}>
+                                                {entry.Sprites.map(
+                                                  (
+                                                    sprite: any,
+                                                    index: number,
+                                                  ) => {
+                                                    return (
+                                                      <div
+                                                        key={`${entryIndex}-${index}`}
+                                                        style={{
+                                                          display:
+                                                            'inline-block',
+                                                          width: sprite.Width,
+                                                          height: sprite.Height,
+                                                          backgroundImage: `url("${PLAYER_DOT_URL}/${
+                                                            data.card.CardID
+                                                          }.png")`,
+                                                          backgroundPositionX: -sprite.X,
+                                                          backgroundPositionY: -sprite.Y,
+                                                        }}
+                                                      />
+                                                    );
+                                                  },
+                                                )}
+                                              </div>
                                             ),
                                           )}
                                         </td>
