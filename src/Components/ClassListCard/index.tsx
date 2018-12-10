@@ -36,29 +36,11 @@ export default class ClassListCard extends React.Component<
   public getClass(classID: number, genLink = false, index: number) {
     const unitClass = _.find(this.props.classes, ['ClassID', classID]);
     if (unitClass) {
-      // if (genLink) {
-      //   return (
-      //     <a
-      //       href={'#' + classID}
-      //       key={`link-to-${classID}-${index}`}
-      //       className="label"
-      //       // onClick={e => {
-      //       //   const hash = window.location.hash.slice(1);
-      //       //   if (hash === classID.toString()) {
-      //       //     this.props.onHashChange(e as any);
-      //       //   }
-      //       // }}
-      //     >
-      //       {unitClass.Name}
-      //     </a>
-      //   );
-      // } else {
       return (
         <span key={`link-to-${classID}-${index}`} className="label">
           {unitClass.Name}
         </span>
       );
-      // }
     } else {
       return null;
     }

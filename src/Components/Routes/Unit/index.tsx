@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Query } from 'react-apollo';
-import { Spin, Popover, Tooltip, Layout, Tabs } from 'antd';
+import { Spin, Popover, Layout, Tabs } from 'antd';
 import Slider from 'react-slick';
 import { RouteComponentProps } from 'react-router-dom';
 import gql from 'graphql-tag';
@@ -194,6 +194,19 @@ export default class Unit extends React.Component<
                   Explanation
                   Cost
                   AttackWait
+                  ClassAbilityConfig1 {
+                    _InvokeType
+                    _TargetType
+                    _InfluenceType
+                    _Param1
+                    _Param2
+                    _Param3
+                    _Param4
+                    _Command
+                    _ActivateCommand
+                    Description
+                  }
+                  ClassAbilityPower1
                 }
                 ClassCC {
                   Name
@@ -210,6 +223,19 @@ export default class Unit extends React.Component<
                   Explanation
                   Cost
                   AttackWait
+                  ClassAbilityConfig1 {
+                    _InvokeType
+                    _TargetType
+                    _InfluenceType
+                    _Param1
+                    _Param2
+                    _Param3
+                    _Param4
+                    _Command
+                    _ActivateCommand
+                    Description
+                  }
+                  ClassAbilityPower1
                 }
                 ClassEvo {
                   Name
@@ -226,6 +252,19 @@ export default class Unit extends React.Component<
                   Explanation
                   Cost
                   AttackWait
+                  ClassAbilityConfig1 {
+                    _InvokeType
+                    _TargetType
+                    _InfluenceType
+                    _Param1
+                    _Param2
+                    _Param3
+                    _Param4
+                    _Command
+                    _ActivateCommand
+                    Description
+                  }
+                  ClassAbilityPower1
                 }
                 ClassEvo2a {
                   Name
@@ -242,6 +281,19 @@ export default class Unit extends React.Component<
                   Explanation
                   Cost
                   AttackWait
+                  ClassAbilityConfig1 {
+                    _InvokeType
+                    _TargetType
+                    _InfluenceType
+                    _Param1
+                    _Param2
+                    _Param3
+                    _Param4
+                    _Command
+                    _ActivateCommand
+                    Description
+                  }
+                  ClassAbilityPower1
                 }
                 ClassEvo2b {
                   Name
@@ -258,6 +310,19 @@ export default class Unit extends React.Component<
                   Explanation
                   Cost
                   AttackWait
+                  ClassAbilityConfig1 {
+                    _InvokeType
+                    _TargetType
+                    _InfluenceType
+                    _Param1
+                    _Param2
+                    _Param3
+                    _Param4
+                    _Command
+                    _ActivateCommand
+                    Description
+                  }
+                  ClassAbilityPower1
                 }
               }
               ImageCG
@@ -508,7 +573,7 @@ export default class Unit extends React.Component<
                                 >
                                   <td rowSpan={2}>{stat.stat}</td>
                                   <td rowSpan={2}>
-                                    <Tooltip
+                                    {/* <Tooltip
                                       title={
                                         <span
                                           dangerouslySetInnerHTML={{
@@ -523,9 +588,9 @@ export default class Unit extends React.Component<
                                           }}
                                         />
                                       }
-                                    >
-                                      {stat.data.className}
-                                    </Tooltip>
+                                    > */}
+                                    {stat.data.className}
+                                    {/* </Tooltip> */}
                                   </td>
                                   <td rowSpan={2}>
                                     {(() => {
@@ -733,6 +798,55 @@ export default class Unit extends React.Component<
                         </div>
                       </div>
                     )}
+                    <div>
+                      <h2>职业</h2>
+                      <div className="ant-table ant-table-bordered ant-table-middle">
+                        <div className="ant-table-content">
+                          <div className="ant-table-body">
+                            <table>
+                              <thead className="ant-table-thead">
+                                <tr>
+                                  <th>职业</th>
+                                  <th>描述</th>
+                                  <th>后摇</th>
+                                  <th>被动强度</th>
+                                </tr>
+                              </thead>
+                              <tbody className="ant-table-tbody">
+                                {Object.keys(data.card.Class).map(key => {
+                                  const classData = data.card.Class[key];
+                                  if (
+                                    !classData ||
+                                    typeof classData !== 'object'
+                                  ) {
+                                    return null;
+                                  }
+                                  return (
+                                    <Popover
+                                      content={
+                                        <AbilityConfigTable
+                                          configs={
+                                            classData.ClassAbilityConfig1
+                                          }
+                                        />
+                                      }
+                                      key={key}
+                                    >
+                                      <tr key={key}>
+                                        <td>{classData.Name}</td>
+                                        <td>{classData.Explanation}</td>
+                                        <td>{classData.AttackWait}</td>
+                                        <td>{classData.ClassAbilityPower1}</td>
+                                      </tr>
+                                    </Popover>
+                                  );
+                                })}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     {data.card.Dots && (
                       <div>
                         <h2>点阵</h2>
