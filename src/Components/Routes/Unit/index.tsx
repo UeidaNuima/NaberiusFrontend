@@ -276,6 +276,7 @@ export default class Unit extends React.Component<
                   _Param4
                   _Command
                   _ActivateCommand
+                  Description
                 }
               }
               AbilityInitInfo {
@@ -292,6 +293,7 @@ export default class Unit extends React.Component<
                   _Param4
                   _Command
                   _ActivateCommand
+                  Description
                 }
               }
               ClassLV0SkillID
@@ -631,7 +633,7 @@ export default class Unit extends React.Component<
                                       <Popover
                                         content={
                                           <AbilityConfigTable
-                                            ability={ability}
+                                            configs={ability.Config}
                                           />
                                         }
                                         key={ability.AbilityName}

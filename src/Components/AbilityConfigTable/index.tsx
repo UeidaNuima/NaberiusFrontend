@@ -1,7 +1,10 @@
 import * as React from 'react';
 
-const AbilityConfigTable = ({ ability, configs }: any) => (
-  <div className="ant-table ant-table-bordered ant-table-middle">
+const AbilityConfigTable = ({ configs, configMetas, style }: any) => (
+  <div
+    className="ant-table ant-table-bordered ant-table-middle"
+    style={{ ...style }}
+  >
     <div className="ant-table-content">
       <div className="ant-table-body">
         <table>
@@ -19,10 +22,10 @@ const AbilityConfigTable = ({ ability, configs }: any) => (
             </tr>
           </thead>
           <tbody className="ant-table-tbody">
-            {ability.Config.map((config: any, index: number) => {
+            {configs.map((config: any, index: number) => {
               // no configs in unit page
-              const description = configs
-                ? configs.find((c: any) => c.ID === config._InfluenceType)
+              const description = configMetas
+                ? configMetas.find((c: any) => c.ID === config._InfluenceType)
                 : config;
               return (
                 <tr key={index}>

@@ -209,8 +209,8 @@ class AbilityList extends React.Component<any, AbilityListStates> {
                             key={index}
                             content={
                               <AbilityConfigTable
-                                ability={ability}
-                                configs={data.abilityConfigMetas}
+                                configs={ability.Config}
+                                configMetas={data.abilityConfigMetas}
                               />
                             }
                           >

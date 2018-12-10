@@ -1,9 +1,20 @@
 import * as React from 'react';
-import { Layout, Row, Col, Spin, Pagination, Input, Affix } from 'antd';
+import {
+  Layout,
+  Row,
+  Col,
+  Spin,
+  Pagination,
+  Input,
+  Affix,
+  Popover,
+  Alert,
+} from 'antd';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import ClassListCard from '../../ClassListCard';
+import AbilityConfigTable from '../../AbilityConfigTable';
 
 const { Content } = Layout;
 const { Search } = Input;
@@ -28,46 +39,9 @@ export default class ClassList extends React.Component<any, ClassListStates> {
     return JSON.stringify(unitClass).includes(this.state.search);
   };
 
-  public onHashChange = (e: Event) => {
-    e.preventDefault();
-    const hash = window.location.hash.slice(1);
-    const classID = Number.parseInt(hash, 10);
-    const index = _.findIndex(this.classes, ['ClassID', classID]);
-    if (index >= 0) {
-      this.setState({ currentPage: Math.floor(index / 50) + 1 }, () => {
-        const element = document.getElementById(classID.toString());
-        if (element) {
-          window.scrollTo(0, element.offsetTop);
-          element.style.backgroundColor = '#ff0';
-          setTimeout(() => {
-            element.style.backgroundColor = '#fff';
-          }, 500);
-        }
-      });
-    }
-  };
-
-  public componentDidMount() {
-    window.addEventListener('hashchange', this.onHashChange, false);
-  }
-
-  public componentWillUnmount() {
-    window.removeEventListener('hashchange', this.onHashChange, false);
-  }
-
-  public shouldComponentUpdate(nextProps: any, nextState: ClassListStates) {
-    if (nextState.currentPage === this.state.currentPage) {
-      return false;
-    }
-    return true;
-  }
-
   public render() {
     return (
       <Query
-        onCompleted={() => {
-          this.onHashChange(new Event('dummy'));
-        }}
         query={gql`
           query {
             classes {
@@ -83,6 +57,22 @@ export default class ClassList extends React.Component<any, ClassListStates> {
               AwakeType1
               AwakeType2
               NickName
+              ClassAbilityConfig1 {
+                _InvokeType
+                _TargetType
+                _InfluenceType
+                _Param1
+                _Param2
+                _Param3
+                _Param4
+                _Command
+                _ActivateCommand
+              }
+              ClassAbilityPower1
+            }
+            abilityConfigMetas {
+              ID
+              Description
             }
           }
         `}
@@ -129,6 +119,12 @@ export default class ClassList extends React.Component<any, ClassListStates> {
 
           return (
             <Content className="container">
+              <Alert
+                message="由于职业的被动信息和角色的被动一样（via轴），请去被动页面修改被动描述。"
+                type="warning"
+                showIcon
+                style={{ marginBottom: 16 }}
+              />
               <Spin spinning={loading}>
                 <Search
                   placeholder="搜索职业"
@@ -157,12 +153,49 @@ export default class ClassList extends React.Component<any, ClassListStates> {
                     )
                     .map((unitClass: any) => {
                       return (
-                        <ClassListCard
-                          class={unitClass}
-                          classes={this.classes}
+                        <Popover
+                          content={
+                            <div>
+                              <div className="ant-table ant-table-bordered ant-table-middle">
+                                <div className="ant-table-content">
+                                  <div className="ant-table-body">
+                                    <table>
+                                      <thead className="ant-table-thead">
+                                        <tr>
+                                          <th>职业名</th>
+                                          <th>职业描述</th>
+                                          <th>被动强度</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody className="ant-table-tbody">
+                                        <tr>
+                                          <td>{unitClass.Name}</td>
+                                          <td>{unitClass.Explanation}</td>
+                                          <td>
+                                            {unitClass.ClassAbilityPower1}
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              </div>
+                              {unitClass.ClassAbilityConfig1.length > 0 && (
+                                <AbilityConfigTable
+                                  style={{ marginTop: 8 }}
+                                  configs={unitClass.ClassAbilityConfig1}
+                                  configMetas={data.abilityConfigMetas}
+                                />
+                              )}
+                            </div>
+                          }
                           key={unitClass.ClassID}
-                          onHashChange={this.onHashChange}
-                        />
+                        >
+                          <ClassListCard
+                            class={unitClass}
+                            classes={this.classes}
+                          />
+                        </Popover>
                       );
                     })}
                 {data.classes && (
