@@ -77,6 +77,7 @@ export default class Quest extends React.Component<
                   Param_ChangeParam
                   Param_ChangeCondition
                   TypeAttack
+                  DotLength
                 }
                 BattleTalks {
                   Message
@@ -104,6 +105,29 @@ export default class Quest extends React.Component<
                     EntryCommand
                     DeadCommand
                   }
+                }
+                Enemies {
+                  SpecialEffect
+                  PatternID
+                  Types
+                  HP
+                  HP_MAX
+                  ATTACK_POWER
+                  ATTACK_TYPE
+                  ATTACK_RANGE
+                  ATTACK_SPEED
+                  ARMOR_DEFENSE
+                  MAGIC_DEFENSE
+                  SkyFlag
+                  GainCost
+                  EffectHeight
+                  MagicAttack
+                  AttackWait
+                  Param_ResistanceAssassin
+                  Param_ChangeParam
+                  Param_ChangeCondition
+                  TypeAttack
+                  DotLength
                 }
               }
             }
@@ -231,6 +255,17 @@ interface EnemyTableProps {
 }
 
 class EnemyTable extends React.Component<EnemyTableProps> {
+  private getAttackSpeed(enemy: any) {
+    // don't know why
+    if (!enemy.DotLength) {
+      return null;
+    }
+    let attackSpeed = enemy.AttackWait * 2 + enemy.DotLength;
+    if (!enemy.ATTACK_RANGE) {
+      attackSpeed += enemy.ATTACK_SPEED;
+    }
+    return attackSpeed;
+  }
   private trGen = (
     enemy: any,
     index: number,
@@ -253,7 +288,7 @@ class EnemyTable extends React.Component<EnemyTableProps> {
           ? '魔法'
           : '物理'}
       </td>
-      <td>0</td>
+      <td>{this.getAttackSpeed(enemy)}</td>
       <td>{enemy.ATTACK_RANGE ? enemy.ATTACK_RANGE : '近接'}</td>
       <td>{enemy.HP}</td>
       <td>{enemy.ATTACK_POWER}</td>
@@ -290,7 +325,7 @@ class EnemyTable extends React.Component<EnemyTableProps> {
   }
   public render() {
     const quest = this.props.quest;
-    const enemies = quest.Mission.Enemies;
+    const enemies = quest.Map.Enemies || quest.Mission.Enemies;
     const entries: any = _.find(quest.Map.Entries, {
       EntryID: quest.EntryNo,
     });
