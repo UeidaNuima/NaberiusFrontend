@@ -14,7 +14,7 @@ interface DotAnimationSingleEntryProps {
 class DotAnimationSingleEntry extends React.Component<
   DotAnimationSingleEntryProps
 > {
-  public canvas: HTMLCanvasElement;
+  public canvas?: HTMLCanvasElement;
   public gif: any;
   public componentDidMount() {
     let top = 0;
@@ -82,8 +82,8 @@ class DotAnimationSingleEntry extends React.Component<
       blankWidth = Math.min(blankWidth, canvasWidth - sprite.OriginX);
       blankHeight = Math.min(blankHeight, canvasHeight - sprite.OriginY);
     });
-    this.canvas.width = canvasWidth;
-    this.canvas.height = canvasHeight;
+    this.canvas!.width = canvasWidth;
+    this.canvas!.height = canvasHeight;
 
     // use #08D422 as transparent color
     // just a random color
@@ -101,7 +101,7 @@ class DotAnimationSingleEntry extends React.Component<
     const image = new Image();
     image.crossOrigin = 'anonymous';
     image.src = this.props.image;
-    const ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
+    const ctx = this.canvas!.getContext('2d') as CanvasRenderingContext2D;
 
     let currentTick = 0;
     let currentFrame = -1;
@@ -148,7 +148,7 @@ class DotAnimationSingleEntry extends React.Component<
         // fill the 'transparent' background
         tempCtx.fillStyle = '#08D422';
         tempCtx.fillRect(0, 0, canvasWidth, canvasHeight);
-        tempCtx.drawImage(this.canvas, 0, 0);
+        tempCtx.drawImage(this.canvas!, 0, 0);
         this.gif.addFrame(tempCtx, {
           copy: true,
           delay: frames[currentFrame].Time * (1000 / 60),

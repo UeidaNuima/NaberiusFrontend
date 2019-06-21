@@ -10,6 +10,26 @@ import './index.less';
 const { Content } = Layout;
 const { Search } = Input;
 
+interface Data {
+  cards: Array<{
+    CardID: number;
+    Name: string;
+    Rare: number;
+    Kind: number;
+    Illust: number;
+    Race: number;
+    Assign: number;
+    Identity: number;
+    NickName: string;
+    ConneName: string;
+    Class: {
+      ClassInit: {
+        Name: string;
+      };
+    };
+  }>;
+}
+
 interface UnitListStates {
   sorter: string;
   order: boolean;
@@ -138,7 +158,7 @@ export default class UnitList extends React.Component<
 
   public render() {
     return (
-      <Query
+      <Query<Data>
         query={gql`
           query {
             cards {
@@ -188,7 +208,7 @@ export default class UnitList extends React.Component<
                         <Col span={5}>{this.genSorter('画师', 'Illust')}</Col>
                       </Row>
                     </Affix>
-                    {data.cards && (
+                    {data && data.cards && (
                       <Pagination
                         defaultCurrent={1}
                         defaultPageSize={50}
@@ -197,7 +217,8 @@ export default class UnitList extends React.Component<
                         style={{ marginBottom: 16 }}
                       />
                     )}
-                    {data.cards &&
+                    {data &&
+                      data.cards &&
                       data.cards
                         .slice()
                         .sort(this.cardSorter)
@@ -216,7 +237,7 @@ export default class UnitList extends React.Component<
                             />
                           );
                         })}
-                    {data.cards && (
+                    {data && data.cards && (
                       <Pagination
                         defaultCurrent={1}
                         defaultPageSize={50}

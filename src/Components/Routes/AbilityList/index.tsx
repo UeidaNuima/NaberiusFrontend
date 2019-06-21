@@ -24,6 +24,33 @@ import styles from './index.module.less';
 const { Content } = Layout;
 const { Search } = Input;
 
+interface Data {
+  abilities: Array<{
+    AbilityID: number;
+    Text: string;
+    AbilityName: string;
+    Config: {
+      _InvokeType: number;
+      _TargetType: number;
+      _InfluenceType: number;
+      _Param1: number;
+      _Param2: number;
+      _Param3: number;
+      _Param4: number;
+      _Command: string;
+      _ActivateCommand: string;
+    };
+    CardHave: {
+      CardID: number;
+      Name: string;
+    };
+  }>;
+  abilityConfigMetas: Array<{
+    ID: number;
+    Description: string;
+  }>;
+}
+
 interface AbilityListStates {
   currentPage: number;
   search: string;
@@ -86,7 +113,7 @@ class AbilityList extends React.Component<any, AbilityListStates> {
 
   public render() {
     return (
-      <Query
+      <Query<Data>
         query={gql`
           query {
             abilities {
@@ -118,7 +145,7 @@ class AbilityList extends React.Component<any, AbilityListStates> {
       >
         {({ loading, error, data }) => {
           let maxID = 1;
-          if (data.abilities) {
+          if (data && data.abilities) {
             data.abilities.forEach((ability: any) => {
               ability.Config.forEach((config: any) => {
                 if (config._InfluenceType > maxID) {
@@ -140,27 +167,26 @@ class AbilityList extends React.Component<any, AbilityListStates> {
                 onClose={this.handleToggleDrawer}
               >
                 <Spin spinning={loading}>
-                  {data.abilityConfigMetas &&
-                    Array.apply(null, { length: maxID }).map(
-                      (dummy: any, index: number) => {
-                        const config: any = _.find(data.abilityConfigMetas, {
-                          ID: index + 1,
-                        });
+                  {data &&
+                    data.abilityConfigMetas &&
+                    Array.apply(maxID).map((dummy: any, index: number) => {
+                      const config: any = _.find(data.abilityConfigMetas, {
+                        ID: index + 1,
+                      });
 
-                        return (
-                          <DescriptionInput
-                            key={index + 1}
-                            ID={index + 1}
-                            config={config}
-                            mutationFunction="updateAbilityConfigMeta"
-                            active={this.findIDindex(index + 1) > -1}
-                            onToggleFilter={() =>
-                              this.handleToggleFilter(index + 1)
-                            }
-                          />
-                        );
-                      },
-                    )}
+                      return (
+                        <DescriptionInput
+                          key={index + 1}
+                          ID={index + 1}
+                          config={config}
+                          mutationFunction="updateAbilityConfigMeta"
+                          active={this.findIDindex(index + 1) > -1}
+                          onToggleFilter={() =>
+                            this.handleToggleFilter(index + 1)
+                          }
+                        />
+                      );
+                    })}
                 </Spin>
               </Drawer>
               <Content
@@ -196,7 +222,8 @@ class AbilityList extends React.Component<any, AbilityListStates> {
                       <Col span={16}>描述</Col>
                     </Row>
                   </Affix>
-                  {data.abilities &&
+                  {data &&
+                    data.abilities &&
                     data.abilities
                       .filter(this.abilityFilter)
                       .slice(
@@ -239,7 +266,7 @@ class AbilityList extends React.Component<any, AbilityListStates> {
                           </Popover>
                         );
                       })}
-                  {data.abilities && (
+                  {data && data.abilities && (
                     <Pagination
                       defaultCurrent={1}
                       defaultPageSize={50}

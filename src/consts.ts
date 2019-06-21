@@ -8,7 +8,7 @@ export const PLAYER_DOT_URL = STATIC_URL + '/playerdot';
 export const EMOJI_URL = STATIC_URL + '/cqp';
 export const ICO_URL = STATIC_URL + '/ico';
 export const ENEMY_DOT_URL = STATIC_URL + '/enemydot';
-export const ENEMY_CHANGE_COND = {
+export const ENEMY_CHANGE_COND: { [k: number]: string } = {
   0: '条件切换',
   1: '阻挡切换',
   2: '死亡切换',

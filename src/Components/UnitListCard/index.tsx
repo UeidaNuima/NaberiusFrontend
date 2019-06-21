@@ -2,11 +2,12 @@ import * as React from 'react';
 import { Row, Col, Icon, Input, Spin } from 'antd';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
+import { nullLiteral } from '@babel/types';
 
 interface UnitListCardProps {
   card: any;
   showUnit: (cardID: number) => void;
-  setTextSearcher: (search: string, event: Event) => void;
+  setTextSearcher: (search: string, event: any) => void;
 }
 
 interface UnitListCardStates {
@@ -95,7 +96,14 @@ export default class UnitListCard extends React.Component<
             e.stopPropagation();
           }}
         >
-          <Mutation
+          <Mutation<
+            null,
+            {
+              CardID: number;
+              ConneName: string;
+              NickName: string[];
+            }
+          >
             mutation={gql`
               mutation updateCardMeta(
                 $CardID: Int!

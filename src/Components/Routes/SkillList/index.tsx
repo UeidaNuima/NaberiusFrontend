@@ -24,6 +24,39 @@ import styles from './index.module.less';
 const { Content } = Layout;
 const { Search } = Input;
 
+interface Data {
+  skills: Array<{
+    SkillName: string;
+    WaitTime: number;
+    ContTimeMax: number;
+    PowerMax: number;
+    LevelMax: number;
+    Text: string;
+    InfluenceConfig: Array<{
+      Type_Collision: number;
+      Type_CollisionState: number;
+      Type_ChangeFunction: string;
+      Data_Target: number;
+      Data_InfluenceType: number;
+      Data_MulValue: number;
+      Data_MulValue2: number;
+      Data_MulValue3: number;
+      Data_AddValue: number;
+      _HoldRatioUpperLimit: number;
+      _Expression: string;
+      _ExpressionActivate: string;
+    }>;
+    CardHave: Array<{
+      CardID: number;
+      Name: string;
+    }>;
+  }>;
+  skillInfluenceMetas: Array<{
+    ID: number;
+    Description: string;
+  }>;
+}
+
 interface SkillListStates {
   currentPage: number;
   search: string;
@@ -32,7 +65,7 @@ interface SkillListStates {
 }
 
 class SkillList extends React.Component<any, SkillListStates> {
-  public state = {
+  public state: SkillListStates = {
     currentPage: 1,
     search: '',
     IDFilter: [],
@@ -89,7 +122,7 @@ class SkillList extends React.Component<any, SkillListStates> {
 
   public render() {
     return (
-      <Query
+      <Query<Data>
         query={gql`
           query {
             skills {
@@ -127,7 +160,7 @@ class SkillList extends React.Component<any, SkillListStates> {
       >
         {({ loading, error, data }) => {
           let maxInfluenceID = 1;
-          if (data.skills) {
+          if (data && data.skills) {
             data.skills.forEach((skill: any) => {
               skill.InfluenceConfig.forEach((config: any) => {
                 if (config.Data_InfluenceType > maxInfluenceID) {
@@ -149,8 +182,9 @@ class SkillList extends React.Component<any, SkillListStates> {
                 onClose={this.handleToggleDrawer}
               >
                 <Spin spinning={loading}>
-                  {data.skillInfluenceMetas &&
-                    Array.apply(null, { length: maxInfluenceID }).map(
+                  {data &&
+                    data.skillInfluenceMetas &&
+                    Array.apply(maxInfluenceID).map(
                       (dummy: any, index: number) => {
                         const influence: any = _.find(
                           data.skillInfluenceMetas,
@@ -207,7 +241,8 @@ class SkillList extends React.Component<any, SkillListStates> {
                       <Col span={3}>&lt;POW_I&gt;</Col>
                     </Row>
                   </Affix>
-                  {data.skills &&
+                  {data &&
+                    data.skills &&
                     data.skills
                       .filter(this.skillFilter)
                       .slice(
@@ -251,7 +286,7 @@ class SkillList extends React.Component<any, SkillListStates> {
                           </Row>
                         </Popover>
                       ))}
-                  {data.skills && (
+                  {data && data.skills && (
                     <Pagination
                       defaultCurrent={1}
                       defaultPageSize={50}

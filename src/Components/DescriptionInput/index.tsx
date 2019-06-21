@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { Col, Row, Spin, Icon, Input } from 'antd';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -37,7 +37,7 @@ export default class DescriptionInput extends React.Component<
     editing: false,
   };
 
-  private ref: HTMLElement | null;
+  private ref?: HTMLElement | null;
   private update: any;
 
   private flash = (state: 'success' | 'error') => {
@@ -76,7 +76,13 @@ export default class DescriptionInput extends React.Component<
   public render() {
     const { ID } = this.props;
     return (
-      <Mutation
+      <Mutation<
+        {},
+        {
+          ID: number;
+          Description: string;
+        }
+      >
         key={ID}
         mutation={gql`
           mutation updateDescription(

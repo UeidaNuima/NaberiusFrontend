@@ -9,7 +9,7 @@ import './index.less';
 const { Content } = Layout;
 const Panel = Collapse.Panel;
 
-const MISSION_TYPE = {
+const MISSION_TYPE: { [k: string]: string } = {
   Story: '主线',
   Emergency: '紧急',
   Reproduce: '复刻',
@@ -22,6 +22,13 @@ const MISSION_TYPE = {
   Tutorial: '教程',
   Raid: '神兽',
 };
+
+interface QuestData {
+  Name: string;
+  QuestID: number;
+  Charisma: number;
+  ActionPoint: number;
+}
 
 interface QuestListState {
   show: string;
@@ -77,7 +84,7 @@ export default class QuestList extends React.Component<
               }
             `}
           >
-            {({ loading, error, data }) => {
+            {({ loading, error, data }: any) => {
               return (
                 <div>
                   <Spin spinning={loading}>
@@ -102,7 +109,11 @@ export default class QuestList extends React.Component<
                                   </span>
                                 }
                               >
-                                <Query
+                                <Query<{
+                                  mission: {
+                                    Quests: QuestData[];
+                                  };
+                                }>
                                   query={gql`
                                     query($MissionID: Int!) {
                                       mission(MissionID: $MissionID) {
@@ -121,11 +132,15 @@ export default class QuestList extends React.Component<
                                     if (loading) {
                                       return <Spin />;
                                     }
-                                    if (data.mission.Quests.length === 0) {
+                                    if (
+                                      data &&
+                                      data.mission.Quests.length === 0
+                                    ) {
                                       return <div>该战役下没有关卡。</div>;
                                     }
-                                    return data.mission.Quests.map(
-                                      (quest: any) => (
+                                    return (
+                                      data &&
+                                      data.mission.Quests.map((quest: any) => (
                                         <Row
                                           key={quest.QuestID}
                                           className="list-card quest-list"
@@ -148,7 +163,7 @@ export default class QuestList extends React.Component<
                                             {quest.Name}
                                           </Col>
                                         </Row>
-                                      ),
+                                      ))
                                     );
                                   }}
                                 </Query>
@@ -164,7 +179,9 @@ export default class QuestList extends React.Component<
             }}
           </Query>
         ) : (
-          <Query
+          <Query<{
+            quests: QuestData[];
+          }>
             query={gql`
               query {
                 quests {
@@ -179,7 +196,7 @@ export default class QuestList extends React.Component<
             {({ loading, error, data }) => (
               <Spin spinning={loading}>
                 <Content className="quest-list-content">
-                  {!error &&
+                  {data &&
                     data.quests &&
                     _.sortBy(data.quests, 'QuestID').map((quest: any) => (
                       <Row

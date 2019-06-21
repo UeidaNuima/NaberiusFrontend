@@ -9,6 +9,7 @@ import Poster from '../../Poster';
 import logo from '../../../logo.png';
 import payImage from './pay.png';
 import styles from './index.module.less';
+import { number } from 'prop-types';
 
 const { Content } = Layout;
 
@@ -17,6 +18,15 @@ const status = {
   1: 'processing',
   2: 'error',
 };
+
+interface Data {
+  uploadFiles: Array<{
+    UpdateTime: number;
+    Name: string;
+  }>;
+  serverStatus: number;
+  posters: string[];
+}
 
 export default class Home extends React.Component {
   private filesToPills(files: any[]) {
@@ -37,7 +47,7 @@ export default class Home extends React.Component {
   }
   public render() {
     return (
-      <Query
+      <Query<Data>
         query={gql`
           query {
             uploadFiles {
@@ -57,9 +67,12 @@ export default class Home extends React.Component {
                 <h1>Naberius</h1>
               </div>
               <Card loading={loading}>
-                {!loading && (
+                {!loading && data && (
                   <div>
-                    <Badge status={status[data.serverStatus]} text="状态" />
+                    <Badge
+                      status={(status as any)[data.serverStatus]}
+                      text="状态"
+                    />
                     <Row>{this.filesToPills(data.uploadFiles)}</Row>
                   </div>
                 )}
@@ -72,7 +85,7 @@ export default class Home extends React.Component {
                   <del>我就不要脸了要饭了你打我啊！</del>
                 </Popover>
               </div>
-              {!loading && data.posters.length !== 0 && (
+              {!loading && data && data.posters.length !== 0 && (
                 <Poster
                   posters={data.posters.map((poster: string) =>
                     poster.replace('event', ''),

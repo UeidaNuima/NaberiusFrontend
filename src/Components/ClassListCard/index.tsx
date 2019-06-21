@@ -1,8 +1,9 @@
-import * as React from 'react';
+import React from 'react';
 import { Row, Col, Icon, Input, Spin } from 'antd';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import _ from 'lodash';
+import { any } from 'prop-types';
 
 interface ClassListCardProps {
   class: any;
@@ -20,7 +21,7 @@ export default class ClassListCard extends React.Component<
   ClassListCardProps,
   ClassListCardStates
 > {
-  public state = {
+  public state: ClassListCardStates = {
     active: false,
     success: false,
     nickName: this.props.class.NickName || [],
@@ -100,7 +101,7 @@ export default class ClassListCard extends React.Component<
               e.stopPropagation();
             }}
           >
-            <Mutation
+            <Mutation<{}, { ClassID: number; NickName: string[] }>
               mutation={gql`
                 mutation updateClassMeta($ClassID: Int!, $NickName: [String]) {
                   updateClassMeta(ClassID: $ClassID, NickName: $NickName) {

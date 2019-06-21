@@ -18,6 +18,15 @@ import { EMOJI_URL } from '../../../consts';
 
 const { Content } = Layout;
 
+interface Data {
+  emojis: Array<{
+    _id: string;
+    emoji: string;
+    name: string;
+    group: number[];
+  }>;
+}
+
 interface EmojiListStates {
   drawerVisible: boolean;
   currentEmoji: {
@@ -30,7 +39,7 @@ interface EmojiListStates {
   currentImage: string;
 }
 export default class EmojiList extends React.Component<any, EmojiListStates> {
-  public state = {
+  public state: EmojiListStates = {
     drawerVisible: false,
     currentEmoji: {
       _id: '',
@@ -52,7 +61,7 @@ export default class EmojiList extends React.Component<any, EmojiListStates> {
 
   public render() {
     return (
-      <Query
+      <Query<Data>
         query={gql`
           query {
             emojis {
@@ -74,7 +83,8 @@ export default class EmojiList extends React.Component<any, EmojiListStates> {
                 <Col span={6}>数量</Col>
               </Row>
             </Spin>
-            {data.emojis &&
+            {data &&
+              data.emojis &&
               data.emojis.map((emoji: any, index: number) => (
                 <Row
                   className="list-card"
@@ -105,7 +115,7 @@ export default class EmojiList extends React.Component<any, EmojiListStates> {
                         }
                       `}
                     >
-                      {(removeEmoji, { data }) => (
+                      {(removeEmoji: any, { data }: any) => (
                         <Popconfirm
                           title="是否要删除这个emoji？"
                           onConfirm={() => {
@@ -180,7 +190,7 @@ export default class EmojiList extends React.Component<any, EmojiListStates> {
                                 }
                               `}
                             >
-                              {removeEmojiItem => {
+                              {(removeEmojiItem: any) => {
                                 return (
                                   <Popconfirm
                                     title="是否要删除这个emoji？"
@@ -190,7 +200,7 @@ export default class EmojiList extends React.Component<any, EmojiListStates> {
                                           ID: this.state.currentEmoji._id,
                                           index,
                                         },
-                                      }).then(data => {
+                                      }).then((data: any) => {
                                         if (data && data.data.removeEmojiItem) {
                                           refetch();
                                           this.setState(({ currentEmoji }) => ({

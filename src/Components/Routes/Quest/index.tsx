@@ -6,8 +6,86 @@ import { RouteComponentProps } from 'react-router-dom';
 import { ICO_URL, ENEMY_DOT_URL, ENEMY_CHANGE_COND } from '../../../consts';
 import _ from 'lodash';
 import styles from './index.module.less';
+import { number } from 'prop-types';
 
 const { Content } = Layout;
+
+interface Enemy {
+  SpecialEffect: any;
+  PatternID: number;
+  Types: any;
+  HP: number;
+  HP_MAX: number;
+  ATTACK_POWER: number;
+  ATTACK_TYPE: number;
+  ATTACK_RANGE: number;
+  ATTACK_SPEED: number;
+  ARMOR_DEFENSE: number;
+  MAGIC_DEFENSE: number;
+  SkyFlag: number;
+  GainCost: number;
+  EffectHeight: number;
+  MagicAttack: number;
+  AttackWait: number;
+  Param_ResistanceAssassin: number;
+  Param_ChangeParam: number;
+  Param_ChangeCondition: number;
+  TypeAttack: number;
+  DotLength: number;
+}
+
+interface Data {
+  quest: {
+    Name: string;
+    Message: string;
+    Charisma: number;
+    EntryNo: number;
+    Level: number;
+    ActionPoint: number;
+    Treasure1: number;
+    Treasure2: number;
+    Treasure3: number;
+    Treasure4: number;
+    Treasure5: number;
+    RankExp: number;
+    Gold: number;
+    Mission: {
+      Enemies: Enemy[];
+      BattleTalks: Array<{
+        Message: string;
+        Name: string;
+        FaceID: number;
+        RecordIndex: number;
+      }>;
+    };
+    Map: {
+      Image: string;
+      Entries: Array<{
+        EntryID: number;
+        Entries: Array<{
+          EnemyID: number;
+          Wait: number;
+          RouteNo: number;
+          Loop: number;
+          Level: number;
+          PrizeEnemySpawnPercent: number;
+          PrizeCardID: number;
+          PrizeEnemyDropPercent: number;
+          RouteOffset: number;
+          IsAppear: number;
+          FreeCommand: string;
+          EntryCommand: string;
+          DeadCommand: string;
+        }>;
+      }>;
+      Enemies: Enemy[];
+    };
+  };
+  battleTalks: Array<{
+    Message: string;
+    Name: string;
+  }>;
+}
 
 interface QuestStates {
   treasureDrop: {
@@ -38,7 +116,7 @@ export default class Quest extends React.Component<
   public render() {
     const id = this.props.match.params.QuestID;
     return (
-      <Query
+      <Query<Data>
         query={gql`
           query($id: Int!) {
             quest(QuestID: $id) {
@@ -142,7 +220,7 @@ export default class Quest extends React.Component<
         {({ loading, error, data }) => (
           <Content className={styles.questContainer + ' container'}>
             <Spin spinning={loading}>
-              {!error && data.quest && (
+              {data && data.quest && (
                 <div>
                   <h1 className={styles.questTitle}>{data.quest.Name}</h1>
                   <div>
@@ -204,8 +282,8 @@ export default class Quest extends React.Component<
                                       style={{ width: '100%' }}
                                       src={`${ICO_URL}/0/${treasure}.png`}
                                     />
-                                    {this.state.treasureDrop[index].length ===
-                                      0 && (
+                                    {(this.state.treasureDrop as any)[index]
+                                      .length === 0 && (
                                       <Tag color="red" style={{ margin: 0 }}>
                                         COM
                                       </Tag>
@@ -228,12 +306,14 @@ export default class Quest extends React.Component<
                       unCheckedChildren="隐藏"
                     />
                   </div>
-                  <EnemyTable
-                    battleTalks={data.battleTalks}
-                    quest={data.quest}
-                    onDrop={this.pushDrop}
-                    showDuplicated={this.state.showDuplicated}
-                  />
+                  {data && (
+                    <EnemyTable
+                      battleTalks={data.battleTalks}
+                      quest={data.quest}
+                      onDrop={this.pushDrop}
+                      showDuplicated={this.state.showDuplicated}
+                    />
+                  )}
                 </div>
               )}
             </Spin>

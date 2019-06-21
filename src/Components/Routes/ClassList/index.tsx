@@ -19,6 +19,39 @@ import AbilityConfigTable from '../../AbilityConfigTable';
 const { Content } = Layout;
 const { Search } = Input;
 
+interface Data {
+  classes: Array<{
+    ClassID: number;
+    Name: string;
+    Explanation: string;
+    JobChange: number;
+    JobChangeMaterial1: number;
+    JobChangeMaterial2: number;
+    JobChangeMaterial3: number;
+    Data_ExtraAwakeOrb1: number;
+    Data_ExtraAwakeOrb2: number;
+    AwakeType1: number;
+    AwakeType2: number;
+    NickName: string;
+    ClassAbilityConfig1: {
+      _InvokeType: number;
+      _TargetType: number;
+      _InfluenceType: number;
+      _Param1: number;
+      _Param2: number;
+      _Param3: number;
+      _Param4: number;
+      _Command: string;
+      _ActivateCommand: string;
+    };
+    ClassAbilityPower1: number;
+  }>;
+  abilityConfigMetas: Array<{
+    ID: number;
+    Description: string;
+  }>;
+}
+
 interface ClassListStates {
   currentPage: number;
   search: string;
@@ -41,7 +74,7 @@ export default class ClassList extends React.Component<any, ClassListStates> {
 
   public render() {
     return (
-      <Query
+      <Query<Data>
         query={gql`
           query {
             classes {
@@ -78,7 +111,7 @@ export default class ClassList extends React.Component<any, ClassListStates> {
         `}
       >
         {({ loading, error, data }) => {
-          if (data.classes) {
+          if (data && data.classes) {
             this.classes = data.classes.slice();
             this.classes.forEach((unitClass: any) => {
               if (unitClass.JobChange) {
@@ -144,7 +177,8 @@ export default class ClassList extends React.Component<any, ClassListStates> {
                     <Col span={5}>二觉目标</Col>
                   </Row>
                 </Affix>
-                {data.classes &&
+                {data &&
+                  data.classes &&
                   this.classes
                     .filter(this.classFilter)
                     .slice(
@@ -198,7 +232,7 @@ export default class ClassList extends React.Component<any, ClassListStates> {
                         </Popover>
                       );
                     })}
-                {data.classes && (
+                {data && data.classes && (
                   <Pagination
                     defaultCurrent={1}
                     defaultPageSize={50}

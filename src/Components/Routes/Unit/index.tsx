@@ -15,6 +15,140 @@ const BONUS_TYPE = [null, 'HP +', '攻击 +', '防御 +', '射程 +', null, '后
 const { Content } = Layout;
 const { TabPane } = Tabs;
 
+interface ClassData {
+  Name: string;
+  InitHP: number;
+  MaxHP: number;
+  InitDef: number;
+  MaxDef: number;
+  InitAtk: number;
+  MaxAtk: number;
+  AtkArea: number;
+  BlockNum: number;
+  MaxLevel: number;
+  MaxLevelUnit: number;
+  Explanation: string;
+  Cost: number;
+  AttackWait: string;
+  ClassAbilityConfig1: Array<{
+    _InvokeType: number;
+    _TargetType: number;
+    _InfluenceType: number;
+    _Param1: number;
+    _Param2: number;
+    _Param3: number;
+    _Param4: number;
+    _Command: string;
+    _ActivateCommand: string;
+    Description: string;
+  }>;
+  ClassAbilityPower1: number;
+}
+
+interface SkillData {
+  SkillName: string;
+  WaitTime: number;
+  ContTimeMax: number;
+  PowerMax: number;
+  LevelMax: number;
+  Text: string;
+  InfluenceConfig: {
+    Type_Collision: number;
+    Type_CollisionState: number;
+    Type_ChangeFunction: number;
+    Data_Target: number;
+    Data_InfluenceType: number;
+    Data_MulValue: number;
+    Data_MulValue2: number;
+    Data_MulValue3: number;
+    Data_AddValue: number;
+    _HoldRatioUpperLimit: number;
+    _Expression: string;
+    _ExpressionActivate: string;
+    Description: string;
+  };
+}
+
+interface AbilityData {
+  AbilityID: number;
+  Text: string;
+  AbilityName: string;
+  Config: {
+    _InvokeType: number;
+    _TargetType: number;
+    _InfluenceType: number;
+    _Param1: number;
+    _Param2: number;
+    _Param3: number;
+    _Param4: number;
+    _Command: string;
+    _ActivateCommand: string;
+    Description: string;
+  };
+}
+
+interface Data {
+  card: {
+    CardID: number;
+    _AwakePattern: number;
+    HarlemTextR: string[];
+    HarlemTextA: string[];
+    Name: number;
+    Rare: number;
+    Kind: number;
+    MaxHPMod: number;
+    AtkMod: number;
+    DefMod: number;
+    CostModValue: number;
+    CostDecValue: number;
+    MagicResistance: number;
+    BonusType: number;
+    BonusNum: number;
+    BonusType2: number;
+    BonusNum2: number;
+    Race: number;
+    Assign: number;
+    Identity: number;
+    Illust: number;
+    Dots: Array<{
+      Name: string;
+      Length: number;
+      Entries: Array<{
+        Name: string;
+        Sprites: Array<{
+          X: number;
+          Y: number;
+          Width: number;
+          Height: number;
+          OriginX: number;
+          OriginY: number;
+        }>;
+        PatternNo: {
+          Time: number;
+          Data: number;
+        };
+      }>;
+      Image: string;
+    }>;
+    Class: {
+      ClassInit: ClassData;
+      ClassCC: ClassData;
+      ClassEvo: ClassData;
+      ClassEvo2a: ClassData;
+      ClassEvo2b: ClassData;
+    };
+    ImageCG: string[];
+    ImageStand: string[];
+    AbilityEvoInfo: AbilityData;
+    AbilityInitInfo: AbilityData;
+    ClassLV0SkillID: number;
+    ClassLV1SkillID: number;
+    SkillInit: SkillData[];
+    SkillCC: SkillData[];
+    SkillEvo: SkillData[];
+  };
+}
+
 interface UnitStates {
   harlemMode: boolean;
 }
@@ -23,7 +157,7 @@ export default class Unit extends React.Component<
   RouteComponentProps<{ CardID: string }>,
   UnitStates
 > {
-  public state = {
+  public state: UnitStates = {
     harlemMode: false,
   };
   public getStatus = (card: any) => {
@@ -133,7 +267,7 @@ export default class Unit extends React.Component<
   public render() {
     const id = this.props.match.params.CardID;
     return (
-      <Query
+      <Query<Data>
         query={gql`
           query($id: Int!) {
             card(CardID: $id) {
@@ -444,7 +578,7 @@ export default class Unit extends React.Component<
                 spinning={loading}
                 style={{ height: '100%', width: '100%' }}
               >
-                {!loading && (
+                {data && (
                   <div>
                     <h1 className="unit-title">
                       <span
@@ -814,7 +948,14 @@ export default class Unit extends React.Component<
                               </thead>
                               <tbody className="ant-table-tbody">
                                 {Object.keys(data.card.Class).map(key => {
-                                  const classData = data.card.Class[key];
+                                  if (!(key in data.card.Class)) {
+                                    throw Error('No such key');
+                                  }
+
+                                  const classData =
+                                    data.card.Class[
+                                      key as keyof Data['card']['Class']
+                                    ];
                                   if (
                                     !classData ||
                                     typeof classData !== 'object'
