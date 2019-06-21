@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Tooltip } from 'antd';
 import * as GIF from 'gif.js';
-import _ from 'lodash';
 import { PLAYER_DOT_URL } from '../../consts';
 
 interface DotAnimationSingleEntryProps {

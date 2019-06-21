@@ -6,7 +6,6 @@ import { RouteComponentProps } from 'react-router-dom';
 import { ICO_URL, ENEMY_DOT_URL, ENEMY_CHANGE_COND } from '../../../consts';
 import _ from 'lodash';
 import styles from './index.module.less';
-import { number } from 'prop-types';
 
 const { Content } = Layout;
 
@@ -240,6 +239,7 @@ export default class Quest extends React.Component<
                   <Row gutter={8} className={styles.questInfo}>
                     <Col md={12} sm={24}>
                       <img
+                        alt="map"
                         style={{ width: '100%' }}
                         src={data.quest.Map.Image}
                       />
@@ -279,6 +279,7 @@ export default class Quest extends React.Component<
                                 {treasure ? (
                                   <div>
                                     <img
+                                      alt={treasure.toString()}
                                       style={{ width: '100%' }}
                                       src={`${ICO_URL}/0/${treasure}.png`}
                                     />
@@ -357,7 +358,10 @@ class EnemyTable extends React.Component<EnemyTableProps> {
       className={enemy.Param_ChangeParam && 'ant-table-row-selected'}
     >
       <td>
-        <img src={`${ENEMY_DOT_URL}/${(enemy.PatternID >> 8) % 4096}.png`} />
+        <img
+          alt={((enemy.PatternID >> 8) % 4096).toString()}
+          src={`${ENEMY_DOT_URL}/${(enemy.PatternID >> 8) % 4096}.png`}
+        />
       </td>
       {!isChange && <td>{enemy.Loop}</td>}
       <td>{enemy.Types && enemy.Types.join(', ')}</td>
@@ -378,7 +382,10 @@ class EnemyTable extends React.Component<EnemyTableProps> {
       {!isChange && (
         <td>
           {enemy.PrizeCardID ? (
-            <img src={drops[enemy.PrizeCardID - 1]} />
+            <img
+              alt={(enemy.PrizeCardID - 1).toString()}
+              src={drops[enemy.PrizeCardID - 1]}
+            />
           ) : null}
         </td>
       )}

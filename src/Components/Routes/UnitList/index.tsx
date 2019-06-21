@@ -1,7 +1,17 @@
-import * as React from 'react';
+import React from 'react';
 import _ from 'lodash';
 import { RouteComponentProps } from 'react-router-dom';
-import { Layout, Input, Row, Col, Spin, Icon, Affix, Pagination } from 'antd';
+import {
+  Layout,
+  Input,
+  Row,
+  Col,
+  Spin,
+  Icon,
+  Affix,
+  Pagination,
+  Button,
+} from 'antd';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import UnitListCard from '../../UnitListCard';
@@ -66,12 +76,12 @@ export default class UnitList extends React.Component<
   };
   public genSorter = (title: string, sorter: string) => {
     return (
-      <a onClick={() => this.setSorter(sorter)}>
+      <Button type="link" onClick={() => this.setSorter(sorter)}>
         {title}{' '}
         {this.state.sorter === sorter && (
           <Icon type={this.state.order ? 'caret-down' : 'caret-up'} />
         )}
-      </a>
+      </Button>
     );
   };
 

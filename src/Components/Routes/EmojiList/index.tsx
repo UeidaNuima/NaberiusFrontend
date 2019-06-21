@@ -233,7 +233,7 @@ export default class EmojiList extends React.Component<any, EmojiListStates> {
                           </div>
                         </div>
                         {this.isImg(emoji) ? (
-                          <img src={`${EMOJI_URL}/${emoji}`} />
+                          <img alt={emoji} src={`${EMOJI_URL}/${emoji}`} />
                         ) : (
                           <span>{emoji}</span>
                         )}
@@ -250,7 +250,10 @@ export default class EmojiList extends React.Component<any, EmojiListStates> {
               style={{ textAlign: 'center' }}
             >
               {this.isImg(this.state.currentImage) ? (
-                <img src={`${EMOJI_URL}/${this.state.currentImage}`} />
+                <img
+                  alt={this.state.currentImage}
+                  src={`${EMOJI_URL}/${this.state.currentImage}`}
+                />
               ) : (
                 <span>{this.state.currentImage}</span>
               )}

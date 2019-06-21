@@ -33,7 +33,7 @@ export default withRouter(
       return (
         <Header className="header">
           <Link to="/">
-            <img src={logo} className="logo" />
+            <img alt="logo" src={logo} className="logo" />
           </Link>
           <Menu
             mode="horizontal"

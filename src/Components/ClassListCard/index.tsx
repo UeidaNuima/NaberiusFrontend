@@ -3,7 +3,6 @@ import { Row, Col, Icon, Input, Spin } from 'antd';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import _ from 'lodash';
-import { any } from 'prop-types';
 
 interface ClassListCardProps {
   class: any;

@@ -75,6 +75,7 @@ class Poster extends React.Component<PosterProps, PosterStates> {
         </div>
         <img
           className={styles.poster}
+          alt={this.state.selectedPoster}
           src={`${GAME_POSTER_URL}/event${this.state.selectedPoster}.jpg`}
         />
       </div>

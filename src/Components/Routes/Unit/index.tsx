@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { Query } from 'react-apollo';
 import { Spin, Popover, Layout, Tabs } from 'antd';
 import Slider from 'react-slick';
@@ -611,7 +611,7 @@ export default class Unit extends React.Component<
                           {[...data.card.ImageStand, ...data.card.ImageCG].map(
                             (img: string) => (
                               <div key={img}>
-                                <img src={`${BASE_GAME_URL}${img}`} />
+                                <img alt={img} src={`${BASE_GAME_URL}${img}`} />
                               </div>
                             ),
                           )}
@@ -747,6 +747,7 @@ export default class Unit extends React.Component<
                                       }
                                       return (
                                         <img
+                                          alt={data.card.CardID.toString()}
                                           src={`${url}/${data.card.CardID}.png`}
                                         />
                                       );

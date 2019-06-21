@@ -9,7 +9,6 @@ import Poster from '../../Poster';
 import logo from '../../../logo.png';
 import payImage from './pay.png';
 import styles from './index.module.less';
-import { number } from 'prop-types';
 
 const { Content } = Layout;
 
@@ -63,7 +62,7 @@ export default class Home extends React.Component {
           return (
             <Content className={styles.content}>
               <div className={styles.logoblock}>
-                <img src={logo} className={styles.topLogo} />
+                <img alt="logo" src={logo} className={styles.topLogo} />
                 <h1>Naberius</h1>
               </div>
               <Card loading={loading}>
@@ -80,7 +79,13 @@ export default class Home extends React.Component {
               <div className={styles.beg}>
                 <Popover
                   placement="bottom"
-                  content={<img src={payImage} width={500} />}
+                  content={
+                    <img
+                      alt="唯一指定邮箱minalinskyx@hotmail.com，您pay吗"
+                      src={payImage}
+                      width={500}
+                    />
+                  }
                 >
                   <del>我就不要脸了要饭了你打我啊！</del>
                 </Popover>

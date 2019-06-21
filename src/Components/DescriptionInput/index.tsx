@@ -3,7 +3,6 @@ import { Col, Row, Spin, Icon, Input } from 'antd';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import classNames from 'classnames';
-import _ from 'lodash';
 import styles from './index.module.less';
 
 interface DescriptionInputProps {
