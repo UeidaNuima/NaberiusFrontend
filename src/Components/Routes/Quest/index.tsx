@@ -35,6 +35,10 @@ interface Enemy {
 
 interface Data {
   quest: {
+    EventArcs: Array<{
+      _TalkerName: string;
+      _TalkText: string;
+    }>;
     Name: string;
     Message: string;
     Charisma: number;
@@ -119,6 +123,10 @@ export default class Quest extends React.Component<
         query={gql`
           query($id: Int!) {
             quest(QuestID: $id) {
+              EventArcs {
+                _TalkerName
+                _TalkText
+              }
               Name
               Message
               Charisma
@@ -314,6 +322,36 @@ export default class Quest extends React.Component<
                       onDrop={this.pushDrop}
                       showDuplicated={this.state.showDuplicated}
                     />
+                  )}
+                  {data && data.quest.EventArcs.length !== 0 && (
+                    <div>
+                      <h2>过场对话</h2>
+                      <div className="ant-table ant-table-bordered ant-table-middle">
+                        <div className="ant-table-content">
+                          <div className="ant-table-body">
+                            <table>
+                              <tbody className="ant-table-tbody">
+                                {data.quest.EventArcs.map((arc, index) => (
+                                  <tr key={index}>
+                                    <td
+                                      style={{
+                                        background: '#f5f6fa',
+                                        fontWeight: 'bold',
+                                        textAlign: 'center',
+                                        color: 'rgba(0, 0, 0, 0.85)',
+                                      }}
+                                    >
+                                      {arc._TalkerName}
+                                    </td>
+                                    <td>{arc._TalkText}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   )}
                 </div>
               )}
@@ -572,16 +610,17 @@ class EnemyTable extends React.Component<EnemyTableProps> {
                       // quest event text
                       return (
                         <tr key={`enemy-table-${index}`}>
-                          <td colSpan={12}>
-                            <span
-                              style={{ fontWeight: 'bold', marginRight: 8 }}
-                            >
-                              {
-                                this.props.battleTalks[enemy.EnemyID - 1000]
-                                  .Name
-                              }
-                              :
-                            </span>
+                          <td
+                            style={{
+                              background: '#f5f6fa',
+                              fontWeight: 'bold',
+                              textAlign: 'center',
+                              color: 'rgba(0, 0, 0, 0.85)',
+                            }}
+                          >
+                            {this.props.battleTalks[enemy.EnemyID - 1000].Name}
+                          </td>
+                          <td colSpan={11} style={{ textAlign: 'left' }}>
                             {
                               this.props.battleTalks[enemy.EnemyID - 1000]
                                 .Message
@@ -609,12 +648,17 @@ class EnemyTable extends React.Component<EnemyTableProps> {
                             <tr
                               key={`enemy-table-${index}-event-${recordIndex}`}
                             >
-                              <td colSpan={12}>
-                                <span
-                                  style={{ fontWeight: 'bold', marginRight: 8 }}
-                                >
-                                  {talk.Name}:
-                                </span>
+                              <td
+                                style={{
+                                  background: '#f5f6fa',
+                                  fontWeight: 'bold',
+                                  textAlign: 'center',
+                                  color: 'rgba(0, 0, 0, 0.85)',
+                                }}
+                              >
+                                {talk.Name}
+                              </td>
+                              <td colSpan={11} style={{ textAlign: 'left' }}>
                                 {talk.Message}
                               </td>
                             </tr>
