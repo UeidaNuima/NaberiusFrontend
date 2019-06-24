@@ -1,6 +1,6 @@
 import React from 'react';
 import { Query } from 'react-apollo';
-import { Spin, Popover, Layout, Tabs, Divider } from 'antd';
+import { Spin, Popover, Layout, Tabs, Divider, Button } from 'antd';
 import _ from 'lodash';
 import Slider from 'react-slick';
 import { RouteComponentProps } from 'react-router-dom';
@@ -156,7 +156,7 @@ interface Data {
 }
 
 interface UnitStates {
-  harlemMode: boolean;
+  tabActiveKey: string;
 }
 
 export default class Unit extends React.Component<
@@ -164,7 +164,7 @@ export default class Unit extends React.Component<
   UnitStates
 > {
   public state: UnitStates = {
-    harlemMode: false,
+    tabActiveKey: '',
   };
   public getStatus = (card: any) => {
     const hpMod = card.MaxHPMod / 100;
@@ -262,14 +262,12 @@ export default class Unit extends React.Component<
     }
   };
 
-  public switchHarlem = () => {
-    if (!this.state.harlemMode) {
-      document.body.style.overflowY = 'hidden';
-    } else {
-      document.body.style.overflowY = 'auto';
-    }
-    this.setState({ harlemMode: !this.state.harlemMode });
+  public handleTabChange = (tabActiveKey: string) => {
+    this.setState({
+      tabActiveKey,
+    });
   };
+
   public render() {
     const id = this.props.match.params.CardID;
     return (
@@ -606,12 +604,8 @@ export default class Unit extends React.Component<
                         <span>&lt;{data.card.Identity}&gt;</span>
                       )}
                     </p>
-                    <div
-                      className={
-                        'harem-container ' + (this.state.harlemMode && 'active')
-                      }
-                    >
-                      <div className="ant-carousel" onClick={this.switchHarlem}>
+                    <div className="harem-container">
+                      <div className="ant-carousel">
                         <Slider
                           dots
                           className={`cg-${data.card.ImageCG.length}`}
@@ -626,13 +620,14 @@ export default class Unit extends React.Component<
                         </Slider>
                       </div>
                       <Tabs
-                        defaultActiveKey="a-0"
+                        activeKey={this.state.tabActiveKey}
+                        onChange={this.handleTabChange}
                         className={
                           'harlem-text-tabs ' +
                           (data.card.HarlemTextR &&
                             `harlem-text-tabs-${data.card.HarlemTextR.length}`)
                         }
-                        type="card"
+                        // type="card"
                       >
                         {data.card.HarlemTextA &&
                           data.card.HarlemTextA.map(
@@ -641,11 +636,19 @@ export default class Unit extends React.Component<
                                 tab={`表${index + 1}`}
                                 key={`a-${index}`}
                               >
+                                <div>
+                                  <Button
+                                    onClick={() => this.handleTabChange('')}
+                                    type="danger"
+                                    shape="circle"
+                                    icon="close"
+                                  />
+                                </div>
                                 <span
                                   dangerouslySetInnerHTML={{
                                     __html: text
                                       .replace(
-                                        /(＠.*\r\n)/g,
+                                        /([＠@].*\r\n)/g,
                                         (match, p1) =>
                                           `<span style="font-weight: bold">${p1}</span>`,
                                       )
@@ -662,11 +665,19 @@ export default class Unit extends React.Component<
                                 tab={`里${index + 1}`}
                                 key={`r-${index}`}
                               >
+                                <div>
+                                  <Button
+                                    onClick={() => this.handleTabChange('')}
+                                    type="danger"
+                                    shape="circle"
+                                    icon="close"
+                                  />
+                                </div>
                                 <span
                                   dangerouslySetInnerHTML={{
                                     __html: text
                                       .replace(
-                                        /(＠.*\r\n)/g,
+                                        /([@＠].*\r\n)/g,
                                         (match, p1) =>
                                           `<span style="font-weight: bold">${p1}</span>`,
                                       )
