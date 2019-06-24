@@ -1,3 +1,4 @@
+import { DefaultGetter } from './utils';
 export const BASE_SERVER_URL = 'https://aigisapi.naberi.us';
 // export const BASE_SERVER_URL = 'http://localhost:4000';
 export const BASE_GAME_URL = 'http://assets.millennium-war.net';
@@ -16,3 +17,14 @@ export const ENEMY_CHANGE_COND: { [k: number]: string } = {
   4: '一次性攻击切换',
   5: '血量99%切换',
 };
+export const BONUS_TYPE = new DefaultGetter({
+  1: 'HP +',
+  2: '攻击 +',
+  3: '防御 +',
+  4: '射程 +',
+  5: '魔抗 +',
+  6: '后摇 -',
+  7: '技能持续 +',
+  8: '技能再动 -',
+  9: '物理攻击回避 +',
+});

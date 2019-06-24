@@ -1,16 +1,20 @@
 import React from 'react';
 import { Query } from 'react-apollo';
-import { Spin, Popover, Layout, Tabs } from 'antd';
+import { Spin, Popover, Layout, Tabs, Divider } from 'antd';
+import _ from 'lodash';
 import Slider from 'react-slick';
 import { RouteComponentProps } from 'react-router-dom';
 import gql from 'graphql-tag';
 import SkillInfluenceTable from '../../SkillInfluenceTable';
 import AbilityConfigTable from '../../AbilityConfigTable';
 import DotAnimation from '../../DotAnimation';
-import { BASE_GAME_URL, ICO_URL, PLAYER_DOT_URL } from '../../../consts';
+import {
+  BASE_GAME_URL,
+  ICO_URL,
+  PLAYER_DOT_URL,
+  BONUS_TYPE,
+} from '../../../consts';
 import './index.less';
-
-const BONUS_TYPE = [null, 'HP +', '攻击 +', '防御 +', '射程 +', null, '后摇 -'];
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
@@ -106,6 +110,8 @@ interface Data {
     BonusNum: number;
     BonusType2: number;
     BonusNum2: number;
+    BonusType3: number;
+    BonusNum3: number;
     Race: number;
     Assign: number;
     Identity: number;
@@ -288,6 +294,8 @@ export default class Unit extends React.Component<
               BonusNum
               BonusType2
               BonusNum2
+              BonusType3
+              BonusNum3
               Race
               Assign
               Identity
@@ -578,7 +586,7 @@ export default class Unit extends React.Component<
                 spinning={loading}
                 style={{ height: '100%', width: '100%' }}
               >
-                {data && (
+                {data && !_.isEmpty(data) && (
                   <div>
                     <h1 className="unit-title">
                       <span
@@ -706,26 +714,7 @@ export default class Unit extends React.Component<
                                   key={`${stat.stat}-1`}
                                 >
                                   <td rowSpan={2}>{stat.stat}</td>
-                                  <td rowSpan={2}>
-                                    {/* <Tooltip
-                                      title={
-                                        <span
-                                          dangerouslySetInnerHTML={{
-                                            __html:
-                                              stat.data.Explanation.replace(
-                                                /\n/,
-                                                '<br />',
-                                              ) +
-                                              '<div><span class="label">后摇:</span>' +
-                                              stat.data.AttackWait +
-                                              '</div>',
-                                          }}
-                                        />
-                                      }
-                                    > */}
-                                    {stat.data.className}
-                                    {/* </Tooltip> */}
-                                  </td>
+                                  <td rowSpan={2}>{stat.data.className}</td>
                                   <td rowSpan={2}>
                                     {(() => {
                                       let url = ICO_URL;
@@ -785,16 +774,28 @@ export default class Unit extends React.Component<
                         <div className="ant-table-footer">
                           {data.card.BonusType !== 0 && (
                             <span>
-                              <strong>{BONUS_TYPE[data.card.BonusType]}</strong>
+                              <strong>
+                                {BONUS_TYPE.get(data.card.BonusType)}
+                              </strong>
                               {Math.ceil(data.card.BonusNum * 1.2)}
                             </span>
-                          )}{' '}
+                          )}
                           {data.card.BonusType2 !== 0 && (
                             <span>
+                              <Divider type="vertical" />
                               <strong>
-                                {BONUS_TYPE[data.card.BonusType2]}
+                                {BONUS_TYPE.get(data.card.BonusType2)}
                               </strong>
                               {Math.ceil(data.card.BonusNum2 * 1.2)}
+                            </span>
+                          )}
+                          {data.card.BonusType3 !== 0 && (
+                            <span>
+                              <Divider>150%</Divider>
+                              <strong>
+                                {BONUS_TYPE.get(data.card.BonusType3)}
+                              </strong>
+                              {Math.ceil(data.card.BonusNum3)}
                             </span>
                           )}
                           {data.card.BonusType === 0 && <span>无好感</span>}
