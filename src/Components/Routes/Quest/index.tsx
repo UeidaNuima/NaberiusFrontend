@@ -1,96 +1,16 @@
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Spin, Layout, Row, Col, Tag, Popover, Switch, Affix } from 'antd';
+import { Spin, Layout, Row, Col, Tag, Switch } from 'antd';
 import { RouteComponentProps } from 'react-router-dom';
-import { ICO_URL, ENEMY_DOT_URL, ENEMY_CHANGE_COND } from '../../../consts';
-import _ from 'lodash';
+import { ICO_URL } from '../../../consts';
+import { Data } from './Types';
+import EnemyTable from './EnemyTable';
 import styles from './index.module.less';
 
 const { Content } = Layout;
 
-interface Enemy {
-  SpecialEffect: any;
-  PatternID: number;
-  Types: any;
-  HP: number;
-  HP_MAX: number;
-  ATTACK_POWER: number;
-  ATTACK_TYPE: number;
-  ATTACK_RANGE: number;
-  ATTACK_SPEED: number;
-  ARMOR_DEFENSE: number;
-  MAGIC_DEFENSE: number;
-  SkyFlag: number;
-  GainCost: number;
-  EffectHeight: number;
-  MagicAttack: number;
-  AttackWait: number;
-  Param_ResistanceAssassin: number;
-  Param_ChangeParam: number;
-  Param_ChangeCondition: number;
-  TypeAttack: number;
-  DotLength: number;
-}
-
-interface Data {
-  quest: {
-    EventArcs: Array<{
-      _TalkerName: string;
-      _TalkText: string;
-    }>;
-    Name: string;
-    Message: string;
-    Charisma: number;
-    EntryNo: number;
-    Level: number;
-    ActionPoint: number;
-    Treasure1: number;
-    Treasure2: number;
-    Treasure3: number;
-    Treasure4: number;
-    Treasure5: number;
-    RankExp: number;
-    Gold: number;
-    Mission: {
-      Enemies: Enemy[];
-      BattleTalks: Array<{
-        Message: string;
-        Name: string;
-        FaceID: number;
-        RecordIndex: number;
-      }>;
-    };
-    Map: {
-      Image: string;
-      Entries: Array<{
-        EntryID: number;
-        Entries: Array<{
-          EnemyID: number;
-          Wait: number;
-          RouteNo: number;
-          Loop: number;
-          Level: number;
-          PrizeEnemySpawnPercent: number;
-          PrizeCardID: number;
-          PrizeEnemyDropPercent: number;
-          RouteOffset: number;
-          IsAppear: number;
-          FreeCommand: string;
-          EntryCommand: string;
-          DeadCommand: string;
-        }>;
-      }>;
-      Enemies: Enemy[];
-    };
-  };
-  battleTalks: Array<{
-    Message: string;
-    Name: string;
-  }>;
-}
-
-interface QuestStates {
+export interface QuestStates {
   treasureDrop: {
     [key: number]: number[];
   };
@@ -195,6 +115,7 @@ export default class Quest extends React.Component<
                   SpecialEffect
                   PatternID
                   Types
+                  Weather
                   HP
                   HP_MAX
                   ATTACK_POWER
@@ -203,15 +124,20 @@ export default class Quest extends React.Component<
                   ATTACK_SPEED
                   ARMOR_DEFENSE
                   MAGIC_DEFENSE
+                  MOVE_SPEED
+                  SKILL
                   SkyFlag
                   GainCost
                   EffectHeight
                   MagicAttack
                   AttackWait
+                  MissileID
+                  DeadEffect
                   Param_ResistanceAssassin
                   Param_ChangeParam
                   Param_ChangeCondition
                   TypeAttack
+                  HeightOfs_Paralisys
                   DotLength
                 }
               }
@@ -359,337 +285,6 @@ export default class Quest extends React.Component<
           </Content>
         )}
       </Query>
-    );
-  }
-}
-
-interface EnemyTableProps {
-  quest: any;
-  battleTalks: Array<{
-    Message: string;
-    Name: string;
-  }>;
-  onDrop: Quest['pushDrop'];
-  showDuplicated: boolean;
-}
-
-class EnemyTable extends React.Component<EnemyTableProps> {
-  private getAttackSpeed(enemy: any) {
-    // don't know why
-    if (!enemy.DotLength) {
-      return null;
-    }
-    let attackSpeed = enemy.AttackWait * 2 + enemy.DotLength;
-    if (!enemy.ATTACK_RANGE) {
-      attackSpeed += enemy.ATTACK_SPEED;
-    }
-    return attackSpeed;
-  }
-  private trGen = (
-    enemy: any,
-    index: number,
-    drops: string[],
-    isChange: boolean = false,
-  ) => (
-    <tr
-      key={`enemy-table-${index}`}
-      className={enemy.Param_ChangeParam && 'ant-table-row-selected'}
-    >
-      <td>
-        <img
-          alt={((enemy.PatternID >> 8) % 4096).toString()}
-          src={`${ENEMY_DOT_URL}/${(enemy.PatternID >> 8) % 4096}.png`}
-        />
-      </td>
-      {!isChange && <td>{enemy.Loop}</td>}
-      <td>{enemy.Types && enemy.Types.join(', ')}</td>
-      <td>
-        {enemy.TypeAttack === 300
-          ? '真伤'
-          : enemy.MagicAttack
-          ? '魔法'
-          : '物理'}
-      </td>
-      <td>{this.getAttackSpeed(enemy)}</td>
-      <td>{enemy.ATTACK_RANGE ? enemy.ATTACK_RANGE : '近接'}</td>
-      <td>{enemy.HP}</td>
-      <td>{enemy.ATTACK_POWER}</td>
-      <td>{enemy.ARMOR_DEFENSE}</td>
-      <td>{enemy.MAGIC_DEFENSE}</td>
-      <td>{enemy.Param_ResistanceAssassin}</td>
-      {!isChange && (
-        <td>
-          {enemy.PrizeCardID ? (
-            <img
-              alt={(enemy.PrizeCardID - 1).toString()}
-              src={drops[enemy.PrizeCardID - 1]}
-            />
-          ) : null}
-        </td>
-      )}
-      {isChange && (
-        <td>
-          {enemy.Param_ChangeParam
-            ? ENEMY_CHANGE_COND[enemy.Param_ChangeCondition]
-            : '不切换'}
-        </td>
-      )}
-    </tr>
-  );
-  public componentDidMount() {
-    const entries: any = _.find(this.props.quest.Map.Entries, {
-      EntryID: this.props.quest.EntryNo,
-    });
-    const treasureDrop: number[][] = [[], [], [], [], []];
-    entries.Entries.forEach((entry: any, index: number) => {
-      if (entry.PrizeCardID) {
-        treasureDrop[entry.PrizeCardID - 1].push(index);
-      }
-    });
-    this.props.onDrop(treasureDrop);
-  }
-  public render() {
-    const quest = this.props.quest;
-    const enemies = quest.Map.Enemies || quest.Mission.Enemies;
-    const entries: any = _.find(quest.Map.Entries, {
-      EntryID: quest.EntryNo,
-    });
-    const mapLevel = quest.Level;
-    const drops = [
-      quest.Treasure1,
-      quest.Treasure2,
-      quest.Treasure3,
-      quest.Treasure4,
-      quest.Treasure5,
-    ].map((treasure: number, index: number) => `${ICO_URL}/0/${treasure}.png`);
-    const parsedEnemies: any = [];
-    const parseEnemy = (entry: any, enemyID: number = entry.EnemyID - 1) => {
-      const enemy = { ...enemies[enemyID], ...entry, EnemyID: enemyID };
-      if (!enemy.Level) {
-        enemy.Level = 100;
-      }
-      enemy.HP = (enemy.HP * mapLevel * enemy.Level) / 10000;
-      if (!enemy.ATTACK_RANGE) {
-        enemy.ATTACK_POWER =
-          (enemy.ATTACK_POWER * mapLevel * enemy.Level) / 10000;
-      }
-      return enemy;
-    };
-    entries.Entries.forEach((entry: any) => {
-      // ids between 0 and 1000 are true enemies
-      if (entry.EnemyID >= 0 && entry.EnemyID < 1000) {
-        const enemy = parseEnemy(entry);
-        if (
-          !this.props.showDuplicated &&
-          parsedEnemies.find((e: any) => e.EnemyID === enemy.EnemyID)
-        ) {
-          enemy.duplicated = true;
-        }
-        if (enemy.Param_ChangeParam) {
-          const changes = [enemy];
-          while (changes[changes.length - 1].Param_ChangeParam) {
-            const changeFrom = changes[changes.length - 1];
-            const enemyID = changeFrom.Param_ChangeParam - 1;
-            if (_.find(changes, ['EnemyID', enemyID])) {
-              break;
-            }
-            const newEnemy = parseEnemy(entry, enemyID);
-            changes.push(newEnemy);
-          }
-          enemy.Changes = changes;
-        }
-        parsedEnemies.push(enemy);
-      } else {
-        parsedEnemies.push(entry);
-      }
-    });
-    return (
-      <>
-        <Affix>
-          <div className="ant-table ant-table-bordered ant-table-middle">
-            <div className="ant-table-content">
-              <div className="ant-table-body">
-                <table style={{ textAlign: 'center' }}>
-                  <thead className="ant-table-thead" style={{ width: '100%' }}>
-                    <tr>
-                      <th style={{ width: '13%' }}>点阵</th>
-                      <th style={{ width: '5%' }}>重复</th>
-                      <th style={{ width: '13%' }}>属性</th>
-                      <th style={{ width: '13%' }}>攻击属性</th>
-                      <th style={{ width: '5%' }}>攻速</th>
-                      <th style={{ width: '5%' }}>射程</th>
-                      <th style={{ width: '5%' }}>HP</th>
-                      <th style={{ width: '5%' }}>攻击</th>
-                      <th style={{ width: '5%' }}>防御</th>
-                      <th style={{ width: '5%' }}>魔抗</th>
-                      <th style={{ width: '13%' }}>暗杀补正</th>
-                      <th style={{ width: '13%' }}>掉落</th>
-                    </tr>
-                  </thead>
-                </table>
-              </div>
-            </div>
-          </div>
-        </Affix>
-        <div className="ant-table ant-table-bordered ant-table-middle">
-          <div className="ant-table-content">
-            <div className="ant-table-body">
-              <table style={{ textAlign: 'center' }}>
-                <colgroup style={{ width: '13%' }} />
-                <colgroup style={{ width: '5%' }} />
-                <colgroup style={{ width: '13%' }} />
-                <colgroup style={{ width: '13%' }} />
-                <colgroup style={{ width: '5%' }} />
-                <colgroup style={{ width: '5%' }} />
-                <colgroup style={{ width: '5%' }} />
-                <colgroup style={{ width: '5%' }} />
-                <colgroup style={{ width: '5%' }} />
-                <colgroup style={{ width: '5%' }} />
-                <colgroup style={{ width: '13%' }} />
-                <colgroup style={{ width: '13%' }} />
-
-                <tbody className="ant-table-tbody">
-                  {parsedEnemies.map((enemy: any, index: number) => {
-                    if (enemy.duplicated) {
-                      return null;
-                    }
-                    if (enemy.EnemyID >= 0 && enemy.EnemyID < 1000) {
-                      if (enemy.Param_ChangeParam) {
-                        return (
-                          <Popover
-                            key={`enemy-table-${index}`}
-                            content={
-                              <div className="ant-table ant-table-bordered ant-table-middle">
-                                <div className="ant-table-content">
-                                  <div className="ant-table-body">
-                                    <table>
-                                      <thead className="ant-table-thead">
-                                        <tr>
-                                          <th>点阵</th>
-                                          <th>属性</th>
-                                          <th>攻击属性</th>
-                                          <th>攻速</th>
-                                          <th>射程</th>
-                                          <th>HP</th>
-                                          <th>攻击</th>
-                                          <th>防御</th>
-                                          <th>魔抗</th>
-                                          <th>暗杀补正</th>
-                                          <th>变身条件</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody className="ant-table-tbody">
-                                        {enemy.Changes.map(
-                                          (enemyChange: any, index: number) =>
-                                            this.trGen(
-                                              enemyChange,
-                                              index,
-                                              drops,
-                                              true,
-                                            ),
-                                        )}
-                                      </tbody>
-                                    </table>
-                                  </div>
-                                </div>
-                              </div>
-                            }
-                          >
-                            {this.trGen(enemy, index, drops)}
-                          </Popover>
-                        );
-                      }
-                      return this.trGen(enemy, index, drops);
-                    } else if (enemy.EnemyID === -1) {
-                      // wait
-                      return null;
-                    } else if (enemy.EnemyID === 2000) {
-                      // exclution mark
-                      return null;
-                    } else if (enemy.EnemyID >= 1000 && enemy.EnemyID < 2000) {
-                      // quest event text
-                      return (
-                        <tr key={`enemy-table-${index}`}>
-                          <td
-                            style={{
-                              background: '#f5f6fa',
-                              fontWeight: 'bold',
-                              textAlign: 'center',
-                              color: 'rgba(0, 0, 0, 0.85)',
-                            }}
-                          >
-                            {this.props.battleTalks[enemy.EnemyID - 1000].Name}
-                          </td>
-                          <td colSpan={11} style={{ textAlign: 'left' }}>
-                            {
-                              this.props.battleTalks[enemy.EnemyID - 1000]
-                                .Message
-                            }
-                          </td>
-                        </tr>
-                      );
-                    } else if (enemy.EnemyID === 4201) {
-                      // command, play se or call a event, etc
-                      const command = enemy.EntryCommand;
-                      const match = /CallEvent\(([\d,]+)\)/.exec(command);
-                      if (match) {
-                        return match[1].split(',').map(s => {
-                          const recordIndex = Number.parseInt(s, 10);
-                          const talk: any = _.find(
-                            this.props.quest.Mission.BattleTalks,
-                            {
-                              RecordIndex: recordIndex,
-                            },
-                          );
-                          if (!talk) {
-                            return null;
-                          }
-                          return (
-                            <tr
-                              key={`enemy-table-${index}-event-${recordIndex}`}
-                            >
-                              <td
-                                style={{
-                                  background: '#f5f6fa',
-                                  fontWeight: 'bold',
-                                  textAlign: 'center',
-                                  color: 'rgba(0, 0, 0, 0.85)',
-                                }}
-                              >
-                                {talk.Name}
-                              </td>
-                              <td colSpan={11} style={{ textAlign: 'left' }}>
-                                {talk.Message}
-                              </td>
-                            </tr>
-                          );
-                        });
-                      }
-                      return (
-                        <tr
-                          style={{ display: 'none' }}
-                          key={`enemy-table-${index}`}
-                        >
-                          <td colSpan={12}>{enemy.EntryCommand}</td>
-                        </tr>
-                      );
-                    } else {
-                      return (
-                        <tr
-                          style={{ display: 'none' }}
-                          key={`enemy-table-${index}`}
-                        >
-                          <td colSpan={12}>{JSON.stringify(enemy)}</td>
-                        </tr>
-                      );
-                    }
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </>
     );
   }
 }
