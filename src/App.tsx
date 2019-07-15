@@ -12,7 +12,7 @@ import zhCN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import './App.less';
-import Header from './Components/Header';
+import UserContext from './context/UserContext';
 import Router from './Components/Router';
 import { API_URL } from './consts';
 
@@ -46,12 +46,11 @@ class App extends React.Component {
       <HashRouter>
         <LocaleProvider locale={zhCN}>
           <ApolloProvider client={client}>
-            <Layout className="App" style={{ height: '100%' }}>
-              <Header />
-              <Layout>
+            <UserContext.Provider>
+              <Layout className="App" style={{ height: '100%' }}>
                 <Router />
               </Layout>
-            </Layout>
+            </UserContext.Provider>
           </ApolloProvider>
         </LocaleProvider>
       </HashRouter>
