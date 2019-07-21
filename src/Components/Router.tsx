@@ -44,8 +44,6 @@ const Router: React.FC<RouteComponentProps> = () => {
     prevLocationRef.current !== location
   ); // not initial render
 
-  console.log(isLoggedIn);
-
   return !isLoggedIn ? (
     <Switch>
       <Route path="/" exact component={Login} />

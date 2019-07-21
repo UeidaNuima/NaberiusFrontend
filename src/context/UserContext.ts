@@ -13,7 +13,6 @@ function useUser() {
       );
     },
     login(token: string) {
-      console.log(token);
       setState(token);
       localStorage.setItem('fuck', token);
     },

@@ -20,8 +20,10 @@ const { Content } = Layout;
 const { TabPane } = Tabs;
 
 interface ClassData {
+  ClassID: number;
   Name: string;
   InitHP: number;
+  AttackType: number;
   MaxHP: number;
   InitDef: number;
   MaxDef: number;
@@ -47,6 +49,17 @@ interface ClassData {
     Description: string;
   }>;
   ClassAbilityPower1: number;
+  BattleStyle?: {
+    Data_ID: number;
+    Type_BattleStyle: number;
+    _Param_01: number;
+    _Param_02: number;
+    _Range_01: number;
+    _Range_02: number;
+    _Range_03: number;
+    _Range_04: number;
+    _Range_05: number;
+  };
 }
 
 interface SkillData {
@@ -166,28 +179,39 @@ export default class Unit extends React.Component<
   public state: UnitStates = {
     tabActiveKey: '',
   };
-  public getStatus = (card: any) => {
+  public getStatus = (card: Data['card']) => {
     const hpMod = card.MaxHPMod / 100;
     const atkMod = card.AtkMod / 100;
     const defMod = card.DefMod / 100;
     const { CostDecValue: costDec, CostModValue: costMod } = card;
+    const { BattleStyle } = card.Class.ClassInit;
+    let ranges = [0, 0, 0, 0, 0];
+    if (BattleStyle) {
+      ranges = [
+        BattleStyle._Range_01,
+        BattleStyle._Range_02,
+        BattleStyle._Range_03,
+        BattleStyle._Range_04,
+        BattleStyle._Range_05,
+      ];
+    }
     // const rarity = card.Rare;
     const status = [
       {
         stat: '初始',
-        data: classDataToUnit(card.Class.ClassInit),
+        data: classDataToUnit(card.Class.ClassInit, 0),
       },
     ];
     if (card.Class.ClassCC) {
       status.push({
         stat: 'CC',
-        data: classDataToUnit(card.Class.ClassCC),
+        data: classDataToUnit(card.Class.ClassCC, 1),
       });
     }
     if (card.Class.ClassEvo) {
       status.push({
         stat: '觉醒',
-        data: classDataToUnit(card.Class.ClassEvo),
+        data: classDataToUnit(card.Class.ClassEvo, 2),
       });
     }
     if (
@@ -196,7 +220,7 @@ export default class Unit extends React.Component<
     ) {
       status.push({
         stat: '第二觉醒A',
-        data: classDataToUnit(card.Class.ClassEvo2a),
+        data: classDataToUnit(card.Class.ClassEvo2a, 3),
       });
     }
     if (
@@ -205,27 +229,31 @@ export default class Unit extends React.Component<
     ) {
       status.push({
         stat: '第二觉醒B',
-        data: classDataToUnit(card.Class.ClassEvo2b),
+        data: classDataToUnit(card.Class.ClassEvo2b, 4),
       });
     }
     return status;
-    function classDataToUnit({
-      InitHP,
-      MaxHP,
-      InitAtk,
-      MaxAtk,
-      InitDef,
-      MaxDef,
-      MaxLevel,
-      MaxLevelUnit,
-      Cost: cost,
-      AtkArea: range,
-      BlockNum: block,
-      Name: className,
-      Explanation,
-      MaxLevelUnit: maxLevelUnit,
-      AttackWait,
-    }: any) {
+    function classDataToUnit(
+      {
+        InitHP,
+        MaxHP,
+        InitAtk,
+        MaxAtk,
+        InitDef,
+        MaxDef,
+        MaxLevel,
+        MaxLevelUnit,
+        Cost: cost,
+        AtkArea: range,
+        BlockNum: block,
+        Name: className,
+        Explanation,
+        MaxLevelUnit: maxLevelUnit,
+        AttackWait,
+        ClassID,
+      }: ClassData,
+      rangeId: number,
+    ) {
       function countMinMax(
         min: number,
         max: number,
@@ -242,13 +270,18 @@ export default class Unit extends React.Component<
         hp: countMinMax(InitHP, MaxHP, MaxLevel, MaxLevelUnit, hpMod),
         atk: countMinMax(InitAtk, MaxAtk, MaxLevel, MaxLevelUnit, atkMod),
         def: countMinMax(InitDef, MaxDef, MaxLevel, MaxLevelUnit, defMod),
-        cost: [cost + costMod, cost + costMod - costDec] as number[],
-        range: range as number,
-        block: block as number,
-        className: className as string,
-        maxLevelUnit: maxLevelUnit as number,
-        Explanation: Explanation as string,
-        AttackWait: AttackWait as number,
+        cost: [cost + costMod, cost + costMod - costDec],
+        range:
+          ranges[rangeId] === 0
+            ? ClassID < 10000 || ClassID >= 100000
+              ? 0
+              : range
+            : ranges[rangeId],
+        block,
+        className,
+        maxLevelUnit,
+        Explanation,
+        AttackWait,
       };
     }
   };
@@ -320,6 +353,7 @@ export default class Unit extends React.Component<
               }
               Class {
                 ClassInit {
+                  ClassID
                   Name
                   InitHP
                   MaxHP
@@ -347,8 +381,20 @@ export default class Unit extends React.Component<
                     Description
                   }
                   ClassAbilityPower1
+                  BattleStyle {
+                    Data_ID
+                    Type_BattleStyle
+                    _Param_01
+                    _Param_02
+                    _Range_01
+                    _Range_02
+                    _Range_03
+                    _Range_04
+                    _Range_05
+                  }
                 }
                 ClassCC {
+                  ClassID
                   Name
                   InitHP
                   MaxHP
@@ -378,6 +424,7 @@ export default class Unit extends React.Component<
                   ClassAbilityPower1
                 }
                 ClassEvo {
+                  ClassID
                   Name
                   InitHP
                   MaxHP
@@ -407,6 +454,7 @@ export default class Unit extends React.Component<
                   ClassAbilityPower1
                 }
                 ClassEvo2a {
+                  ClassID
                   Name
                   InitHP
                   MaxHP
@@ -436,6 +484,7 @@ export default class Unit extends React.Component<
                   ClassAbilityPower1
                 }
                 ClassEvo2b {
+                  ClassID
                   Name
                   InitHP
                   MaxHP
@@ -760,7 +809,9 @@ export default class Unit extends React.Component<
                                   <td rowSpan={2}>
                                     {data.card.MagicResistance}
                                   </td>
-                                  <td rowSpan={2}>{stat.data.range}</td>
+                                  <td rowSpan={2}>
+                                    {stat.data.range ? stat.data.range : '近战'}
+                                  </td>
                                   <td rowSpan={2}>{stat.data.block}</td>
                                   <td rowSpan={2}>
                                     {stat.data.cost[0]}({stat.data.cost[1]})
