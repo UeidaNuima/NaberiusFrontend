@@ -1,5 +1,5 @@
 import React from 'react';
-import { Affix, Popover } from 'antd';
+import { Affix, Popover, Icon } from 'antd';
 import _ from 'lodash';
 import { ICO_URL, ENEMY_DOT_URL, ENEMY_CHANGE_COND } from '../../../consts';
 import styles from './index.module.less';
@@ -51,8 +51,23 @@ class EnemyTableRows extends React.Component<
             onClick={enemy.Changes ? this.handleRowClick : undefined}
             className={classNames({
               [styles.enemyRowWithChange]: enemy.Changes,
+              [styles.rowShow]: showChange,
             })}
           >
+            {index === 0 && (
+              <td rowSpan={enemies.length}>
+                {enemy.Changes && (
+                  <Icon
+                    style={{
+                      transform: showChange ? 'rotate(-90deg)' : undefined,
+                      transition: 'transform 0.3s',
+                    }}
+                    type="caret-down"
+                    theme="filled"
+                  />
+                )}
+              </td>
+            )}
             <td>
               <img
                 alt={((e.PatternID >> 8) % 4096).toString()}
@@ -88,9 +103,9 @@ class EnemyTableRows extends React.Component<
               placement="left"
             >
               <td>
-                {e.Param_ChangeParam && (
+                {e.Param_ChangeParam ? (
                   <p>{ENEMY_CHANGE_COND[e.Param_ChangeCondition]}</p>
-                )}
+                ) : null}
               </td>
             </Popover>
           </tr>
@@ -187,10 +202,11 @@ class EnemyTable extends React.Component<EnemyTableProps> {
                 <table style={{ textAlign: 'center' }}>
                   <thead className="ant-table-thead" style={{ width: '100%' }}>
                     <tr>
+                      <th style={{ width: '8%' }} />
                       <th style={{ width: '13%' }}>点阵</th>
                       <th style={{ width: '5%' }}>重复</th>
                       <th style={{ width: '13%' }}>属性</th>
-                      <th style={{ width: '13%' }}>攻击属性</th>
+                      <th style={{ width: '5%' }}>攻击属性</th>
                       <th style={{ width: '5%' }}>攻速</th>
                       <th style={{ width: '5%' }}>射程</th>
                       <th style={{ width: '5%' }}>HP</th>
@@ -211,10 +227,11 @@ class EnemyTable extends React.Component<EnemyTableProps> {
           <div className="ant-table-content">
             <div className="ant-table-body">
               <table style={{ textAlign: 'center' }}>
+                <colgroup style={{ width: '8%' }} />
                 <colgroup style={{ width: '13%' }} />
                 <colgroup style={{ width: '5%' }} />
                 <colgroup style={{ width: '13%' }} />
-                <colgroup style={{ width: '13%' }} />
+                <colgroup style={{ width: '5%' }} />
                 <colgroup style={{ width: '5%' }} />
                 <colgroup style={{ width: '5%' }} />
                 <colgroup style={{ width: '5%' }} />
@@ -258,7 +275,7 @@ class EnemyTable extends React.Component<EnemyTableProps> {
                           >
                             {this.props.battleTalks[enemy.EnemyID - 1000].Name}
                           </td>
-                          <td colSpan={11} style={{ textAlign: 'left' }}>
+                          <td colSpan={13} style={{ textAlign: 'left' }}>
                             {
                               this.props.battleTalks[enemy.EnemyID - 1000]
                                 .Message
@@ -296,7 +313,7 @@ class EnemyTable extends React.Component<EnemyTableProps> {
                               >
                                 {talk.Name}
                               </td>
-                              <td colSpan={12} style={{ textAlign: 'left' }}>
+                              <td colSpan={13} style={{ textAlign: 'left' }}>
                                 {talk.Message}
                               </td>
                             </tr>
@@ -308,7 +325,7 @@ class EnemyTable extends React.Component<EnemyTableProps> {
                           style={{ display: 'none' }}
                           key={`enemy-table-${index}`}
                         >
-                          <td colSpan={13}>{enemy.EntryCommand}</td>
+                          <td colSpan={14}>{enemy.EntryCommand}</td>
                         </tr>
                       );
                     } else {
@@ -317,7 +334,7 @@ class EnemyTable extends React.Component<EnemyTableProps> {
                           style={{ display: 'none' }}
                           key={`enemy-table-${index}`}
                         >
-                          <td colSpan={13}>{JSON.stringify(enemy)}</td>
+                          <td colSpan={14}>{JSON.stringify(enemy)}</td>
                         </tr>
                       );
                     }
