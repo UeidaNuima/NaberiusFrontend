@@ -198,7 +198,7 @@ export default class UnitList extends React.Component<
                 </Affix>
                 {data && data.cards && (
                   <Pagination
-                    defaultCurrent={1}
+                    current={this.state.currentPage}
                     defaultPageSize={50}
                     onChange={page => this.setState({ currentPage: page })}
                     total={data.cards.filter(this.cardFilter).length}
@@ -227,7 +227,7 @@ export default class UnitList extends React.Component<
                     })}
                 {data && data.cards && (
                   <Pagination
-                    defaultCurrent={1}
+                    current={this.state.currentPage}
                     defaultPageSize={50}
                     onChange={page => this.setState({ currentPage: page })}
                     total={data.cards.filter(this.cardFilter).length}
