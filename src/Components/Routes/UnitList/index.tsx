@@ -10,10 +10,11 @@ import {
   Icon,
   Affix,
   Pagination,
-  Button,
+  Select,
 } from 'antd';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
+import { Card } from './types';
 import UnitListCard from '../../UnitListCard';
 import './index.less';
 
@@ -21,39 +22,25 @@ const { Content } = Layout;
 const { Search } = Input;
 
 interface Data {
-  cards: Array<{
-    CardID: number;
-    Name: string;
-    Rare: number;
-    Kind: number;
-    Illust: number;
-    Race: number;
-    Assign: number;
-    Identity: number;
-    NickName: string;
-    ConneName: string;
-    Class: {
-      ClassInit: {
-        Name: string;
-      };
-    };
-  }>;
+  cards: Card[];
 }
 
 interface UnitListStates {
   sorter: string;
   order: boolean;
+  searchType: string;
   search: string;
   currentPage: number;
 }
 
 export default class UnitList extends React.Component<
-  RouteComponentProps<any>,
+  RouteComponentProps,
   UnitListStates
 > {
-  public state = {
+  public readonly state: UnitListStates = {
     sorter: 'CardID',
     order: true,
+    searchType: 'all',
     search: '',
     currentPage: 1,
   };
@@ -76,12 +63,12 @@ export default class UnitList extends React.Component<
   };
   public genSorter = (title: string, sorter: string) => {
     return (
-      <Button type="link" onClick={() => this.setSorter(sorter)}>
-        {title}{' '}
+      <div style={{ cursor: 'pointer' }} onClick={() => this.setSorter(sorter)}>
+        {title}
         {this.state.sorter === sorter && (
           <Icon type={this.state.order ? 'caret-down' : 'caret-up'} />
         )}
-      </Button>
+      </div>
     );
   };
 
@@ -109,54 +96,28 @@ export default class UnitList extends React.Component<
 
   public cardFilter = (card: any) => {
     const searchString = this.state.search;
-    if (searchString.includes(':')) {
-      const [key, value] = searchString.split(':');
-      let parsedValue: number | string = value;
-      let param: string;
-      switch (key) {
-        case '稀有':
-          param = 'Rare';
-          break;
-        case '名称':
-          param = 'Name';
-          break;
-        case '种族':
-          param = 'Race';
-          break;
-        case '出身':
-          param = 'Assign';
-          break;
-        case '不死':
-          param = 'Identity';
-          break;
-        case '职业':
-          param = 'Class.ClassInit.Name';
-          break;
-        case '画师':
-          param = 'Illust';
-          break;
-        default:
-          param = '';
-      }
-      const sourceValue = this.getParam(card, param);
+    const { searchType } = this.state;
+    if (searchType !== 'all') {
+      const sourceValue = this.getParam(card, searchType);
+      let parsedValue: number | string = searchString;
       if (typeof sourceValue === 'number') {
-        parsedValue = Number.parseInt(value, 10);
+        parsedValue = Number.parseInt(searchString, 10);
       }
       return sourceValue === parsedValue;
     }
+
     return JSON.stringify(card).includes(this.state.search);
   };
 
   /**
    * 点击搜索按钮的回调
    */
-  public setSearch = (search: string) => {
-    this.setState({ search, currentPage: 1 });
-  };
-
-  public setTextSearcher = (search: string, event: Event) => {
-    event.stopPropagation();
-    this.setSearch(search);
+  public setSearch = (search: string, searchType?: string) => {
+    this.setState(state => ({
+      search,
+      searchType: searchType || state.searchType,
+      currentPage: 1,
+    }));
   };
 
   public showUnit = (cardID: number) => {
@@ -180,8 +141,6 @@ export default class UnitList extends React.Component<
               Race
               Assign
               Identity
-              NickName
-              ConneName
               Class {
                 ClassInit {
                   Name
@@ -191,74 +150,91 @@ export default class UnitList extends React.Component<
           }
         `}
       >
-        {({ loading, error, data }) => {
+        {({ loading, data }) => {
           return (
-            <div>
-              <Spin spinning={loading}>
-                <Content className="unitListContent">
-                  <Search
-                    placeholder="搜索单位"
-                    value={this.state.search}
-                    onChange={event => {
-                      this.setSearch(event.target.value);
-                    }}
-                    enterButton
+            <Spin spinning={loading}>
+              <Content className="unitListContent">
+                <Search
+                  placeholder="搜索单位"
+                  value={this.state.search}
+                  onChange={event => {
+                    this.setSearch(event.target.value);
+                  }}
+                  enterButton
+                  addonBefore={
+                    <Select
+                      value={this.state.searchType}
+                      onChange={(value: string) => {
+                        console.log(value);
+                        this.setState({ searchType: value });
+                      }}
+                      style={{ width: 90 }}
+                    >
+                      <Select.Option value="all">全部</Select.Option>
+                      <Select.Option value="Rare">稀有</Select.Option>
+                      <Select.Option value="Name">名称</Select.Option>
+                      <Select.Option value="Race">种族</Select.Option>
+                      <Select.Option value="Assign">出身</Select.Option>
+                      <Select.Option value="Identity">不死</Select.Option>
+                      <Select.Option value="Class.ClassInit.Name">
+                        职业
+                      </Select.Option>
+                      <Select.Option value="Illust">画师</Select.Option>
+                    </Select>
+                  }
+                />
+                <Affix>
+                  <Row className="sorter-block">
+                    <Col span={1}>{this.genSorter('#', 'CardID')}</Col>
+                    <Col span={1}>{this.genSorter('性别', 'Kind')}</Col>
+                    <Col span={1}>{this.genSorter('稀有', 'Rare')}</Col>
+                    <Col span={5}>{this.genSorter('名称', 'Name')}</Col>
+                    <Col span={5}>{this.genSorter('种族', 'Race')}</Col>
+                    <Col span={5}>
+                      {this.genSorter('职业', 'Class.ClassInit.Name')}
+                    </Col>
+                    <Col span={5}>{this.genSorter('画师', 'Illust')}</Col>
+                  </Row>
+                </Affix>
+                {data && data.cards && (
+                  <Pagination
+                    defaultCurrent={1}
+                    defaultPageSize={50}
+                    onChange={page => this.setState({ currentPage: page })}
+                    total={data.cards.filter(this.cardFilter).length}
+                    style={{ marginBottom: 16 }}
                   />
-                  <div>
-                    <Affix>
-                      <Row className="sorter-block">
-                        <Col span={2}>{this.genSorter('#', 'CardID')}</Col>
-                        <Col span={2}>{this.genSorter('性别', 'Kind')}</Col>
-                        <Col span={2}>{this.genSorter('稀有', 'Rare')}</Col>
-                        <Col span={5}>{this.genSorter('名称', 'Name')}</Col>
-                        <Col span={3}>{this.genSorter('种族', 'Race')}</Col>
-                        <Col span={5}>
-                          {this.genSorter('职业', 'Class.ClassInit.Name')}
-                        </Col>
-                        <Col span={5}>{this.genSorter('画师', 'Illust')}</Col>
-                      </Row>
-                    </Affix>
-                    {data && data.cards && (
-                      <Pagination
-                        defaultCurrent={1}
-                        defaultPageSize={50}
-                        onChange={page => this.setState({ currentPage: page })}
-                        total={data.cards.filter(this.cardFilter).length}
-                        style={{ marginBottom: 16 }}
-                      />
-                    )}
-                    {data &&
-                      data.cards &&
-                      data.cards
-                        .slice()
-                        .sort(this.cardSorter)
-                        .filter(this.cardFilter)
-                        .slice(
-                          50 * (this.state.currentPage - 1),
-                          50 * this.state.currentPage,
-                        )
-                        .map((card: any) => {
-                          return (
-                            <UnitListCard
-                              key={card.CardID}
-                              card={card}
-                              showUnit={this.showUnit}
-                              setTextSearcher={this.setTextSearcher}
-                            />
-                          );
-                        })}
-                    {data && data.cards && (
-                      <Pagination
-                        defaultCurrent={1}
-                        defaultPageSize={50}
-                        onChange={page => this.setState({ currentPage: page })}
-                        total={data.cards.filter(this.cardFilter).length}
-                      />
-                    )}
-                  </div>
-                </Content>
-              </Spin>
-            </div>
+                )}
+                {data &&
+                  data.cards &&
+                  data.cards
+                    .slice()
+                    .sort(this.cardSorter)
+                    .filter(this.cardFilter)
+                    .slice(
+                      50 * (this.state.currentPage - 1),
+                      50 * this.state.currentPage,
+                    )
+                    .map((card: any) => {
+                      return (
+                        <UnitListCard
+                          key={card.CardID}
+                          card={card}
+                          showUnit={this.showUnit}
+                          setSearch={this.setSearch}
+                        />
+                      );
+                    })}
+                {data && data.cards && (
+                  <Pagination
+                    defaultCurrent={1}
+                    defaultPageSize={50}
+                    onChange={page => this.setState({ currentPage: page })}
+                    total={data.cards.filter(this.cardFilter).length}
+                  />
+                )}
+              </Content>
+            </Spin>
           );
         }}
       </Query>

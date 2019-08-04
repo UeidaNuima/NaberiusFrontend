@@ -1,100 +1,144 @@
-import * as React from 'react';
-import { Row, Col, Icon, Input, Spin } from 'antd';
-import { Mutation } from 'react-apollo';
+import React from 'react';
+import {
+  Row,
+  Col,
+  Icon,
+  Input,
+  Spin,
+  Popover,
+  Form,
+  Button,
+  message,
+  Tag,
+} from 'antd';
+import { Mutation, Query } from 'react-apollo';
 import gql from 'graphql-tag';
+import useForm from 'rc-form-hooks';
 
 interface UnitListCardProps {
   card: any;
   showUnit: (cardID: number) => void;
-  setTextSearcher: (search: string, event: any) => void;
+  setSearch: (search: string, searchType: string) => void;
 }
 
-interface UnitListCardStates {
-  active: boolean;
-  success: boolean;
+interface FormFields {
+  nickName: string;
   conneName: string;
-  nickName: string[];
 }
 
-export default class UnitListCard extends React.Component<
-  UnitListCardProps,
-  UnitListCardStates
-> {
-  public state = {
-    active: false,
-    success: false,
-    conneName: this.props.card.ConneName,
-    nickName: this.props.card.NickName || [],
-  };
-
-  public flashSuccess = () => {
-    this.setState({ success: true });
-    setTimeout(() => {
-      this.setState({ success: false });
-    }, 1000);
-  };
-
-  public render() {
-    const { card, showUnit, setTextSearcher } = this.props;
-    return (
-      <Row className="list-card" onClick={() => showUnit(card.CardID)}>
-        <Col span={2}>{card.CardID}</Col>
-        <Col span={2}>
-          <span className={`gender gender-${card.Kind}`} />
-        </Col>
-        <Col span={2}>
-          <span
-            className={`rarity-circle rarity-circle-${card.Rare} filter`}
-            onClick={setTextSearcher.bind(null, `稀有:${card.Rare}`)}
-          />
-        </Col>
-        <Col span={5} className="important">
-          {card.Name}
-        </Col>
-        <Col span={3} className="filter">
-          {card.Race && (
-            <span onClick={setTextSearcher.bind(null, `种族:${card.Race}`)}>
-              &lt;{card.Race}&gt;
-            </span>
-          )}
-          {card.Assign && (
-            <span onClick={setTextSearcher.bind(null, `出身:${card.Assign}`)}>
-              &lt;{card.Assign}&gt;
-            </span>
-          )}
-          {card.Identity && (
-            <span onClick={setTextSearcher.bind(null, `不死:${card.Identity}`)}>
-              &lt;{card.Identity}&gt;
-            </span>
-          )}
-        </Col>
-        <Col
-          span={5}
-          className="filter"
-          onClick={setTextSearcher.bind(
-            null,
-            `职业:${card.Class.ClassInit.Name}`,
-          )}
-        >
-          {card.Class.ClassInit.Name}
-        </Col>
-        <Col
-          span={5}
-          className="filter"
-          onClick={setTextSearcher.bind(null, `画师:${card.Illust}`)}
-        >
-          {card.Illust}
-        </Col>
-        <div
-          className={
-            `list-card-addon ` +
-            (this.state.active && 'active ') +
-            (this.state.success && 'success')
-          }
+const UnitListCard: React.FC<UnitListCardProps> = ({
+  card,
+  showUnit,
+  setSearch,
+}) => {
+  return (
+    <Row className="list-card" onClick={() => showUnit(card.CardID)}>
+      <Col span={1}>{card.CardID}</Col>
+      <Col span={1}>
+        <span className={`gender gender-${card.Kind}`} />
+      </Col>
+      <Col span={1}>
+        <span
+          className={`rarity-circle rarity-circle-${card.Rare} filter`}
           onClick={e => {
             e.stopPropagation();
+            setSearch(card.Rare, 'Rare');
           }}
+        />
+      </Col>
+      <Col span={5} className="important">
+        {card.Name}
+      </Col>
+      <Col span={5} className="filter">
+        {card.Race && (
+          <span
+            onClick={e => {
+              e.stopPropagation();
+              setSearch(card.Race, 'Race');
+            }}
+          >
+            <Tag>{card.Race}</Tag>
+          </span>
+        )}
+        {card.Assign && (
+          <span
+            onClick={e => {
+              e.stopPropagation();
+              setSearch(card.Assign, 'Assign');
+            }}
+          >
+            <Tag color="yellow">{card.Assign}</Tag>
+          </span>
+        )}
+        {card.Identity && (
+          <span
+            onClick={e => {
+              e.stopPropagation();
+              setSearch(card.Identity, 'Identity');
+            }}
+          >
+            <Tag color="black">{card.Identity}</Tag>
+          </span>
+        )}
+      </Col>
+      <Col
+        span={5}
+        className="filter"
+        onClick={e => {
+          e.stopPropagation();
+          setSearch(card.Class.ClassInit.Name, 'Class.ClassInit.Name');
+        }}
+      >
+        {card.Class.ClassInit.Name}
+      </Col>
+      <Col
+        span={5}
+        className="filter"
+        onClick={e => {
+          e.stopPropagation();
+          setSearch(card.Illust, 'Illust');
+        }}
+      >
+        {card.Illust}
+      </Col>
+      <Col span={1}>
+        <Popover
+          trigger="click"
+          placement="bottomLeft"
+          content={<PopoverContent card={card} />}
         >
+          <Icon
+            style={{ color: 'black' }}
+            onClick={e => e.stopPropagation()}
+            type="ellipsis"
+          />
+        </Popover>
+      </Col>
+    </Row>
+  );
+};
+
+const PopoverContent: React.FC<{ card: any }> = ({ card }) => {
+  const { getFieldDecorator, getFieldsValue } = useForm<FormFields>();
+  return (
+    <div
+      className={`list-card-addon `}
+      onClick={e => {
+        e.stopPropagation();
+      }}
+    >
+      <Query<any>
+        variables={{ id: card.CardID }}
+        query={gql`
+          query($id: Int!) {
+            card(CardID: $id) {
+              NickName
+              ConneName
+            }
+          }
+        `}
+      >
+        {({ data, loading: queryLoading }) => (
           <Mutation<
             null,
             {
@@ -119,63 +163,49 @@ export default class UnitListCard extends React.Component<
                 }
               }
             `}
-            onCompleted={this.flashSuccess}
+            onCompleted={() => message.success('保存成功')}
           >
             {(updateCardMeta, { loading }) => (
-              <Spin spinning={loading}>
-                <Row>
-                  <Col span={2}>
-                    <Icon
-                      onClick={() =>
-                        this.setState({ active: !this.state.active })
-                      }
-                      style={{ cursor: 'pointer' }}
-                      type={this.state.active ? 'right-circle' : 'left-circle'}
-                      theme="outlined"
-                    />
-                  </Col>
-                  <Col span={10}>
-                    <span className="label">昵称:</span>
-                    <Input
-                      value={this.state.nickName.join(',')}
-                      onChange={e =>
-                        this.setState({
-                          nickName: e.target.value.split(/[,， ]/),
-                        })
-                      }
-                    />
-                  </Col>
-                  <Col span={10}>
-                    <span className="label">圆爹名:</span>
-                    <Input
-                      value={this.state.conneName}
-                      onChange={e =>
-                        this.setState({ conneName: e.target.value })
-                      }
-                    />
-                  </Col>
-                  <Col span={2}>
-                    <Icon
-                      type="check-circle"
-                      theme="filled"
-                      style={{ cursor: 'pointer' }}
-                      onClick={() =>
-                        updateCardMeta({
-                          variables: {
-                            CardID: card.CardID,
-                            ConneName: this.state.conneName,
-                            NickName: this.state.nickName,
-                          },
-                        })
-                      }
-                    />
-                  </Col>
-                </Row>
+              <Spin spinning={loading || queryLoading}>
+                <Form
+                  layout="inline"
+                  onSubmit={e => {
+                    e.preventDefault();
+                    console.log('qweqweqwe');
+                    const values = getFieldsValue();
+
+                    updateCardMeta({
+                      variables: {
+                        CardID: card.CardID,
+                        ConneName: values.conneName!,
+                        NickName: values.nickName!.split(','),
+                      },
+                    });
+                  }}
+                >
+                  <Form.Item label="昵称">
+                    {getFieldDecorator('nickName', {
+                      initialValue: data.card ? data.card.NickName : '',
+                    })(<Input />)}
+                  </Form.Item>
+                  <Form.Item label="圆爹名">
+                    {getFieldDecorator('conneName', {
+                      initialValue: data.card ? data.card.ConneName : '',
+                    })(<Input />)}
+                  </Form.Item>
+                  <Form.Item>
+                    <Button htmlType="submit" type="primary">
+                      保存
+                    </Button>
+                  </Form.Item>
+                </Form>
               </Spin>
             )}
           </Mutation>
-        </div>
-      </Row>
-    );
-  }
-}
+        )}
+      </Query>
+    </div>
+  );
+};
+
+export default UnitListCard;
