@@ -10,7 +10,6 @@ import UnitListCard from './UnitListCard';
 import styles from './UnitList.module.less';
 
 const { Content } = Layout;
-const { Search } = Input;
 
 interface Data {
   cards: Card[];
@@ -21,7 +20,7 @@ interface Props extends RouteComponentProps {
   loading: boolean;
 }
 
-const UnitList: React.FC<Props> = ({ history, data }) => {
+const UnitList: React.FC<Props> = ({ history, data, loading }) => {
   const [sorter, setSorter] = useState({ key: 'CardID', order: true });
   const [search, setSearch] = useState({ content: '', type: 'all' });
   const [size, setSize] = useState({ width: 0, height: 0 });
@@ -124,7 +123,7 @@ const UnitList: React.FC<Props> = ({ history, data }) => {
   return (
     // <Spin spinning={loading}>
     <Content className={styles.unitListContent}>
-      <Search
+      <Input
         placeholder="搜索单位"
         value={search.content}
         onChange={event =>
@@ -133,7 +132,6 @@ const UnitList: React.FC<Props> = ({ history, data }) => {
             content: event.target.value,
           })
         }
-        enterButton
         addonBefore={
           <Select
             value={search.type}
@@ -159,8 +157,8 @@ const UnitList: React.FC<Props> = ({ history, data }) => {
         })}
       >
         <Col span={1}>{genSorter('#', 'CardID')}</Col>
-        <Col span={2}>{genSorter('性别', 'Kind')}</Col>
-        <Col span={5}>{genSorter('名称', 'Name')}</Col>
+        <Col span={3}>{genSorter('性别', 'Kind')}</Col>
+        <Col span={4}>{genSorter('名称', 'Name')}</Col>
         <Col span={5}>{genSorter('种族', 'Race')}</Col>
         <Col span={5}>{genSorter('职业', 'Class.ClassInit.Name')}</Col>
         <Col span={5}>{genSorter('画师', 'Illust')}</Col>
@@ -168,20 +166,32 @@ const UnitList: React.FC<Props> = ({ history, data }) => {
       <div className={styles.listContainer}>
         <List
           height={size.height}
-          itemCount={cards.length}
-          itemSize={80}
+          itemCount={loading ? 5 : cards.length}
+          itemSize={68}
           width={size.width}
           onScroll={({ scrollOffset }) => setScrolled(scrollOffset)}
         >
-          {({ index, style }) => (
-            <div key={cards[index].CardID} style={style}>
-              <UnitListCard
-                card={cards[index]}
-                showUnit={showUnit}
-                setSearch={handleSetSearch}
-              />
-            </div>
-          )}
+          {loading
+            ? ({ index, style }) => (
+                <div style={style} key={index}>
+                  <div className={classNames(styles.listCard, styles.disable)}>
+                    <Skeleton
+                      active
+                      paragraph={false}
+                      title={{ width: '100%' }}
+                    />
+                  </div>
+                </div>
+              )
+            : ({ index, style }) => (
+                <div key={cards[index].CardID} style={style}>
+                  <UnitListCard
+                    card={cards[index]}
+                    showUnit={showUnit}
+                    setSearch={handleSetSearch}
+                  />
+                </div>
+              )}
         </List>
       </div>
     </Content>

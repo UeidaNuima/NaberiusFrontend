@@ -16,6 +16,7 @@ import gql from 'graphql-tag';
 import useForm from 'rc-form-hooks';
 import Rarity from '../../Rarity';
 import styles from './UnitList.module.less';
+import { ICO_URL } from '../../../consts';
 
 interface UnitListCardProps {
   card: any;
@@ -36,93 +37,102 @@ const UnitListCard: React.FC<UnitListCardProps> = ({
   style,
 }) => {
   return (
-    <Row
-      style={style}
-      className={styles.listCard}
-      type="flex"
-      onClick={() => showUnit(card.CardID)}
-    >
-      <Col span={1} className={styles.unimportant}>
-        {card.CardID}
-      </Col>
-      <Col span={2}>
-        <span className={`gender gender-${card.Kind}`}>
-          {card.Kind === 0 && <span style={{ color: 'blue' }}>♂</span>}
-          {card.Kind === 1 && <span style={{ color: 'red' }}>♀</span>}
-        </span>
-      </Col>
-
-      <Col span={5} className="important">
-        <Rarity rare={card.Rare} />
-        <br />
-        {card.Name}
-      </Col>
-      <Col span={5} className="filter">
-        {card.Race && (
-          <span
-            onClick={e => {
-              e.stopPropagation();
-              setSearch(card.Race, 'Race');
-            }}
-          >
-            <Tag>{card.Race}</Tag>
-          </span>
-        )}
-        {card.Assign && (
-          <span
-            onClick={e => {
-              e.stopPropagation();
-              setSearch(card.Assign, 'Assign');
-            }}
-          >
-            <Tag color="yellow">{card.Assign}</Tag>
-          </span>
-        )}
-        {card.Identity && (
-          <span
-            onClick={e => {
-              e.stopPropagation();
-              setSearch(card.Identity, 'Identity');
-            }}
-          >
-            <Tag color="black">{card.Identity}</Tag>
-          </span>
-        )}
-      </Col>
-      <Col
-        span={5}
-        className="filter"
-        onClick={e => {
-          e.stopPropagation();
-          setSearch(card.Class.ClassInit.Name, 'Class.ClassInit.Name');
-        }}
+    <div style={style} className={styles.listCard}>
+      <Row
+        type="flex"
+        style={{ alignItems: 'center' }}
+        onClick={() => showUnit(card.CardID)}
+        gutter={8}
       >
-        {card.Class.ClassInit.Name}
-      </Col>
-      <Col
-        span={5}
-        className="filter"
-        onClick={e => {
-          e.stopPropagation();
-          setSearch(card.Illust, 'Illust');
-        }}
-      >
-        {card.Illust}
-      </Col>
-      <Col span={1}>
-        <Popover
-          trigger="click"
-          placement="bottomLeft"
-          content={<PopoverContent card={card} />}
-        >
-          <Icon
-            style={{ color: 'black' }}
-            onClick={e => e.stopPropagation()}
-            type="ellipsis"
+        <Col span={1} className={styles.unimportant}>
+          {card.CardID}
+        </Col>
+        <Col span={1}>
+          <span className={`gender gender-${card.Kind}`}>
+            {card.Kind === 0 && <span style={{ color: 'blue' }}>♂</span>}
+            {card.Kind === 1 && <span style={{ color: 'red' }}>♀</span>}
+          </span>
+        </Col>
+        <Col span={2}>
+          <img
+            src={`${ICO_URL}/0/${card.CardID}.png`}
+            alt={card.CardID}
+            height="48"
           />
-        </Popover>
-      </Col>
-    </Row>
+        </Col>
+
+        <Col span={4}>
+          <Rarity rare={card.Rare} />
+          <br />
+          {card.Name}
+        </Col>
+        <Col span={5}>
+          {card.Race && (
+            <span
+              onClick={e => {
+                e.stopPropagation();
+                setSearch(card.Race, 'Race');
+              }}
+            >
+              <Tag>{card.Race}</Tag>
+            </span>
+          )}
+          {card.Assign && (
+            <span
+              onClick={e => {
+                e.stopPropagation();
+                setSearch(card.Assign, 'Assign');
+              }}
+            >
+              <Tag color="yellow">{card.Assign}</Tag>
+            </span>
+          )}
+          {card.Identity && (
+            <span
+              onClick={e => {
+                e.stopPropagation();
+                setSearch(card.Identity, 'Identity');
+              }}
+            >
+              <Tag color="black">{card.Identity}</Tag>
+            </span>
+          )}
+        </Col>
+        <Col
+          span={5}
+          className="filter"
+          onClick={e => {
+            e.stopPropagation();
+            setSearch(card.Class.ClassInit.Name, 'Class.ClassInit.Name');
+          }}
+        >
+          {card.Class.ClassInit.Name}
+        </Col>
+        <Col
+          span={5}
+          className="filter"
+          onClick={e => {
+            e.stopPropagation();
+            setSearch(card.Illust, 'Illust');
+          }}
+        >
+          {card.Illust}
+        </Col>
+        <Col span={1}>
+          <Popover
+            trigger="click"
+            placement="bottomLeft"
+            content={<PopoverContent card={card} />}
+          >
+            <Icon
+              style={{ color: 'black' }}
+              onClick={e => e.stopPropagation()}
+              type="ellipsis"
+            />
+          </Popover>
+        </Col>
+      </Row>
+    </div>
   );
 };
 
