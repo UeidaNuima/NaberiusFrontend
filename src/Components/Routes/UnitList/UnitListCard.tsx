@@ -14,6 +14,8 @@ import {
 import { Mutation, Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import useForm from 'rc-form-hooks';
+import Rarity from '../../Rarity';
+import styles from './UnitList.module.less';
 
 interface UnitListCardProps {
   card: any;
@@ -36,23 +38,23 @@ const UnitListCard: React.FC<UnitListCardProps> = ({
   return (
     <Row
       style={style}
-      className="list-card"
+      className={styles.listCard}
+      type="flex"
       onClick={() => showUnit(card.CardID)}
     >
-      <Col span={1}>{card.CardID}</Col>
-      <Col span={1}>
-        <span className={`gender gender-${card.Kind}`} />
+      <Col span={1} className={styles.unimportant}>
+        {card.CardID}
       </Col>
-      <Col span={1}>
-        <span
-          className={`rarity-circle rarity-circle-${card.Rare} filter`}
-          onClick={e => {
-            e.stopPropagation();
-            setSearch(card.Rare, 'Rare');
-          }}
-        />
+      <Col span={2}>
+        <span className={`gender gender-${card.Kind}`}>
+          {card.Kind === 0 && <span style={{ color: 'blue' }}>♂</span>}
+          {card.Kind === 1 && <span style={{ color: 'red' }}>♀</span>}
+        </span>
       </Col>
+
       <Col span={5} className="important">
+        <Rarity rare={card.Rare} />
+        <br />
         {card.Name}
       </Col>
       <Col span={5} className="filter">

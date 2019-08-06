@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import logo from '../../logo.png';
+import styles from './Header.module.less';
 
 const { Header } = Layout;
 const { SubMenu, Item } = Menu;
@@ -31,13 +32,13 @@ export default withRouter(
     }
     public render() {
       return (
-        <Header className="header">
+        <Header className={styles.header}>
           <Link to="/">
-            <img alt="logo" src={logo} className="logo" />
+            <img alt="logo" src={logo} className={styles.logo} />
           </Link>
           <Menu
             mode="horizontal"
-            className="headerMenu"
+            className={styles.headerMenu}
             selectedKeys={[this.state.active]}
           >
             <Item key="unit">
@@ -57,9 +58,9 @@ export default withRouter(
                 <Link to="/ability">被动</Link>
               </Item>
             </SubMenu>
-            <Item key="emoji">
+            {/* <Item key="emoji">
               <Link to="/emoji">机器狗</Link>
-            </Item>
+            </Item> */}
           </Menu>
         </Header>
       );

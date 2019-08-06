@@ -83,7 +83,7 @@
   display: flex;
   height: 100%;
   flex-direction: column;
-  padding: 30px 50px;
+  padding: 30px;
 }
 
 .gender {
@@ -113,6 +113,52 @@
     &:before {
       content: '○';
       color: #000;
+    }
+  }
+}
+
+.sorterBlock {
+  padding: 20px 10px;
+  height: 64px;
+  overflow: hidden;
+  background: fade(#f5f6fa, 80%);
+  transition: box-shadow 0.3s;
+  &.shadow {
+    box-shadow: 0 8px 8px -4px #e2e3e8;
+  }
+  z-index: 1;
+  color: #a5aabd;
+  div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #a5aabd;
+    transition: color 0.5s ease-out;
+    &:hover {
+      color: rgba(0, 0, 0, 0.65);
+    }
+  }
+}
+
+.listContainer {
+  .listCard {
+    background: #fff;
+    line-height: 22px;
+    border: 1px solid rgba(0, 0, 0, 0);
+    border-radius: 3px;
+    padding: 12px 10px;
+    transition: all 0.5s ease-out;
+    height: 70px;
+    align-items: center;
+    color: rgba(0, 0, 0, 0.65);
+    cursor: pointer;
+    .unimportant {
+      color: #a5aabd;
+    }
+
+    &:hover {
+      box-shadow: 0 3px 15px 0 #e2e3e8;
+      border: 1px solid #4c84ff;
     }
   }
 }
