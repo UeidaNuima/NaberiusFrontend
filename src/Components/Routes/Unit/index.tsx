@@ -1,9 +1,9 @@
 import React from 'react';
 import { Query } from 'react-apollo';
-import { Spin, Popover, Layout, Tabs, Divider, Button } from 'antd';
+import { Spin, Popover, Layout, Tabs, Divider, Button, Icon } from 'antd';
 import _ from 'lodash';
 import Slider from 'react-slick';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, Link } from 'react-router-dom';
 import gql from 'graphql-tag';
 import SkillInfluenceTable from '../../SkillInfluenceTable';
 import AbilityConfigTable from '../../AbilityConfigTable';
@@ -636,13 +636,18 @@ export default class Unit extends React.Component<
                 {data && !_.isEmpty(data) && (
                   <div>
                     <h1 className="unit-title">
+                      <Link to={`/quest/${Number.parseInt(id, 10) - 1}`}>
+                        <Icon type="left" />
+                      </Link>
+
                       <span
-                        className={`rarity-circle rarity-circle-${
-                          data.card.Rare
-                        }`}
+                        className={`rarity-circle rarity-circle-${data.card.Rare}`}
                       />
                       <span className={`gender gender-${data.card.Kind}`} />
                       <span>{data.card.Name}</span>
+                      <Link to={`/unit/${Number.parseInt(id, 10) + 1}`}>
+                        <Icon type="right" />
+                      </Link>
                     </h1>
                     <p>
                       {data.card.Race && <span>&lt;{data.card.Race}&gt;</span>}
@@ -1093,9 +1098,7 @@ export default class Unit extends React.Component<
                                                             'inline-block',
                                                           width: sprite.Width,
                                                           height: sprite.Height,
-                                                          backgroundImage: `url("${PLAYER_DOT_URL}/${
-                                                            data.card.CardID
-                                                          }.png")`,
+                                                          backgroundImage: `url("${PLAYER_DOT_URL}/${data.card.CardID}.png")`,
                                                           backgroundPositionX: -sprite.X,
                                                           backgroundPositionY: -sprite.Y,
                                                         }}

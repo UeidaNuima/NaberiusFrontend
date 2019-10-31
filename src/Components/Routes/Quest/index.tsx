@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Spin, Layout, Row, Col, Tag, Switch, Tabs } from 'antd';
-import { RouteComponentProps } from 'react-router-dom';
+import { Spin, Layout, Row, Col, Tag, Switch, Tabs, Icon } from 'antd';
+import { RouteComponentProps, Link } from 'react-router-dom';
 import _ from 'lodash';
 import { ICO_URL } from '../../../consts';
 import { Data } from './Types';
@@ -163,7 +163,15 @@ export default class Quest extends React.Component<
             <Spin spinning={loading}>
               {data && data.quest && (
                 <div>
-                  <h1 className={styles.questTitle}>{data.quest.Name}</h1>
+                  <h1 className={styles.questTitle}>
+                    <Link to={`/quest/${Number.parseInt(id, 10) - 1}`}>
+                      <Icon type="left" />
+                    </Link>
+                    {data.quest.Name}
+                    <Link to={`/quest/${Number.parseInt(id, 10) + 1}`}>
+                      <Icon type="right" />
+                    </Link>
+                  </h1>
                   <div>
                     {data.quest.Charisma ? (
                       <Tag color="green">
