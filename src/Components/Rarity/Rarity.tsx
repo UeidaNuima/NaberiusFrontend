@@ -16,6 +16,14 @@ const Rarity: React.FC<{ rare: number }> = ({ rare }) => {
       return <span style={{ color: 'black' }}>★★★★★★</span>;
     case 7:
       return <span style={{ color: 'blue' }}>SAPPHIRE</span>;
+    case 10:
+      return <span style={{ textShadow: '0 0 1px deepskyblue' }}>☆☆☆☆☆</span>;
+    case 11:
+      return (
+        <span style={{ textShadow: '0 0 1px gold', color: 'black' }}>
+          ★★★★★★
+        </span>
+      );
     default:
       return <span>UNKNOWN</span>;
   }
