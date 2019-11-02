@@ -288,7 +288,8 @@ class EnemyTable extends React.Component<EnemyTableProps> {
                       const command = enemy.EntryCommand;
                       const match = /CallEvent\(([\d,]+)\)/.exec(command);
                       if (match) {
-                        return match[1].split(',').map(s => {
+                        const list = match[1].split(',');
+                        return list.map((s, index) => {
                           const recordIndex = Number.parseInt(s, 10);
                           const talk: any = _.find(
                             this.props.quest.Mission.BattleTalks,
@@ -313,9 +314,14 @@ class EnemyTable extends React.Component<EnemyTableProps> {
                               >
                                 {talk.Name}
                               </td>
-                              <td colSpan={13} style={{ textAlign: 'left' }}>
+                              <td colSpan={12} style={{ textAlign: 'left' }}>
                                 {talk.Message}
                               </td>
+                              {index === 0 && (
+                                <Popover content={command} placement="left">
+                                  <td rowSpan={list.length} />
+                                </Popover>
+                              )}
                             </tr>
                           );
                         });

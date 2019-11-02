@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Spin, Layout, Row, Col, Tag, Switch } from 'antd';
-import { RouteComponentProps } from 'react-router-dom';
+import { Spin, Layout, Row, Col, Tag, Switch, Tabs, Icon } from 'antd';
+import { RouteComponentProps, Link } from 'react-router-dom';
+import _ from 'lodash';
 import { ICO_URL } from '../../../consts';
 import { Data } from './Types';
 import EnemyTable from './EnemyTable';
@@ -91,6 +92,7 @@ export default class Quest extends React.Component<
                   RecordIndex
                 }
               }
+              MapNo
               Map {
                 Image
                 Entries {
@@ -109,6 +111,12 @@ export default class Quest extends React.Component<
                     FreeCommand
                     EntryCommand
                     DeadCommand
+                  }
+                }
+                Routes {
+                  RouteID
+                  Routes {
+                    OnEvent
                   }
                 }
                 Enemies {
@@ -155,7 +163,15 @@ export default class Quest extends React.Component<
             <Spin spinning={loading}>
               {data && data.quest && (
                 <div>
-                  <h1 className={styles.questTitle}>{data.quest.Name}</h1>
+                  <h1 className={styles.questTitle}>
+                    <Link to={`/quest/${Number.parseInt(id, 10) - 1}`}>
+                      <Icon type="left" />
+                    </Link>
+                    {data.quest.Name}
+                    <Link to={`/quest/${Number.parseInt(id, 10) + 1}`}>
+                      <Icon type="right" />
+                    </Link>
+                  </h1>
                   <div>
                     {data.quest.Charisma ? (
                       <Tag color="green">
@@ -248,6 +264,113 @@ export default class Quest extends React.Component<
                       onDrop={this.pushDrop}
                       showDuplicated={this.state.showDuplicated}
                     />
+                  )}
+                  {data && (
+                    <div>
+                      <h2>路线</h2>
+                      <Tabs>
+                        {data.quest.Map.Routes.map(routeWrapper => {
+                          const routes = routeWrapper.Routes.filter(
+                            route => route.OnEvent,
+                          );
+                          if (routes.length === 0) {
+                            return null;
+                          }
+                          return (
+                            <Tabs.TabPane
+                              tab={routeWrapper.RouteID}
+                              key={routeWrapper.RouteID.toString()}
+                            >
+                              <div className="ant-table ant-table-bordered ant-table-middle">
+                                <div className="ant-table-content">
+                                  <div className="ant-table-body">
+                                    <table>
+                                      <tbody className="ant-table-tbody">
+                                        {routes.map((route, index) => {
+                                          console.log(route.OnEvent);
+                                          const match = /CallEvent\(([\d, ]+)\)/.exec(
+                                            route.OnEvent,
+                                          );
+                                          console.log(match);
+                                          let talkTable: any;
+                                          if (match) {
+                                            const list = match[1].split(',');
+                                            talkTable = (
+                                              <div className="ant-table ant-table-bordered ant-table-middle">
+                                                <div className="ant-table-content">
+                                                  <div className="ant-table-body">
+                                                    <table>
+                                                      <tbody className="ant-table-tbody">
+                                                        {list.map(s => {
+                                                          const recordIndex = Number.parseInt(
+                                                            s,
+                                                            10,
+                                                          );
+                                                          const talk: any = _.find(
+                                                            data.quest.Mission
+                                                              .BattleTalks,
+                                                            {
+                                                              RecordIndex: recordIndex,
+                                                            },
+                                                          );
+                                                          if (!talk) {
+                                                            return null;
+                                                          }
+                                                          return (
+                                                            <tr
+                                                              key={`enemy-table-${index}-event-${recordIndex}`}
+                                                            >
+                                                              <td
+                                                                style={{
+                                                                  background:
+                                                                    '#f5f6fa',
+                                                                  fontWeight:
+                                                                    'bold',
+                                                                  textAlign:
+                                                                    'center',
+                                                                  color:
+                                                                    'rgba(0, 0, 0, 0.85)',
+                                                                }}
+                                                              >
+                                                                {talk.Name}
+                                                              </td>
+                                                              <td
+                                                                style={{
+                                                                  textAlign:
+                                                                    'left',
+                                                                }}
+                                                              >
+                                                                {talk.Message}
+                                                              </td>
+                                                            </tr>
+                                                          );
+                                                        })}
+                                                      </tbody>
+                                                    </table>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            );
+                                          }
+                                          return (
+                                            <tr key={index.toString()}>
+                                              <td>
+                                                {route.OnEvent}
+                                                {talkTable}
+                                              </td>
+                                            </tr>
+                                          );
+                                        })}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              </div>
+                            </Tabs.TabPane>
+                          );
+                        })}
+                      </Tabs>
+                    </div>
                   )}
                   {data && data.quest.EventArcs.length !== 0 && (
                     <div>

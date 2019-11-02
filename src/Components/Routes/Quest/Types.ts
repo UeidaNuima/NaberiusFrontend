@@ -70,6 +70,12 @@ export interface Data {
           DeadCommand: string;
         }>;
       }>;
+      Routes: Array<{
+        RouteID: number;
+        Routes: Array<{
+          OnEvent: string;
+        }>;
+      }>;
       Enemies: Enemy[];
     };
   };
