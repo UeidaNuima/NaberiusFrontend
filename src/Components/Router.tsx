@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { Layout } from 'antd';
 import {
   withRouter,
@@ -7,14 +7,11 @@ import {
   RouteComponentProps,
   Redirect,
 } from 'react-router-dom';
-import useRouter from 'use-react-router';
 import UserContext from '../context/UserContext';
 import Header from './Header';
 
 import Home from './Routes/Home';
 import UnitList from './Routes/UnitList';
-import Unit from './Routes/Unit';
-import UnitModal from './Routes/UnitModal';
 import QuestList from './Routes/QuestList';
 import Quest from './Routes/Quest';
 import ClassList from './Routes/ClassList';
@@ -25,24 +22,6 @@ import Login from './Routes/Login';
 
 const Router: React.FC<RouteComponentProps> = () => {
   const { isLoggedIn } = UserContext.useContainer();
-  const { location, history } = useRouter();
-  const prevLocationRef = useRef(location);
-
-  useEffect(() => {
-    // set previousLocation if props.location is not modal
-    if (
-      history.action !== 'POP' &&
-      (!location.state || !location.state.modal)
-    ) {
-      prevLocationRef.current = location;
-    }
-  }, [history.action, location]);
-
-  const isModal = !!(
-    location.state &&
-    location.state.modal &&
-    prevLocationRef.current !== location
-  ); // not initial render
 
   return !isLoggedIn ? (
     <Switch>
@@ -52,9 +31,8 @@ const Router: React.FC<RouteComponentProps> = () => {
   ) : (
     <Layout>
       <Header />
-      <Switch location={isModal ? prevLocationRef.current : location}>
-        >
-        <Route path="/unit/:CardID" component={Unit} />
+      <Switch>
+        <Route path="/unit/:CardID" component={UnitList} />
         <Route path="/quest/:QuestID" component={Quest} />
         <Route path="/unit" exact component={UnitList} />
         <Route path="/quest" exact component={QuestList} />
@@ -64,7 +42,6 @@ const Router: React.FC<RouteComponentProps> = () => {
         <Route path="/emoji" exact component={EmojiList} />
         <Route component={Home} />
       </Switch>
-      {isModal && <Route path="/unit/:CardID" component={UnitModal} />}
     </Layout>
   );
 };

@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import { Layout, Input, Row, Col, Icon, Select, Skeleton } from 'antd';
+import { Layout, Input, Row, Col, Icon, Select, Drawer } from 'antd';
 import { FixedSizeList as List } from 'react-window';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
+import useRouter from 'use-react-router';
 import classNames from 'classnames';
+import { useMediaQuery } from 'react-responsive';
 import { Card } from './types';
 import UnitListCard from './UnitListCard';
 import styles from './UnitList.module.less';
+import Unit from '../Unit';
 
 const { Content } = Layout;
 
@@ -15,16 +17,23 @@ interface Data {
   cards: Card[];
 }
 
-interface Props extends RouteComponentProps {
+interface Props {
   data?: Data;
   loading: boolean;
 }
 
-const UnitList: React.FC<Props> = ({ history, data, loading }) => {
+const UnitList: React.FC<Props> = ({ data, loading }) => {
   const [sorter, setSorter] = useState({ key: 'CardID', order: true });
   const [search, setSearch] = useState({ content: '', type: 'all' });
+
+  // 两个变量react-window用
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [scrolled, setScrolled] = useState(0);
+
+  const { match, history } = useRouter<{ CardID: string }>();
+  const { CardID } = match.params;
+
+  const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' });
 
   useEffect(() => {
     const main = document.getElementsByTagName('main')[0];
@@ -41,6 +50,7 @@ const UnitList: React.FC<Props> = ({ history, data, loading }) => {
     };
   }, []);
 
+  // 生成表头
   const genSorter = (title: string, key: string) => {
     return (
       <div
@@ -121,7 +131,6 @@ const UnitList: React.FC<Props> = ({ history, data, loading }) => {
     [];
 
   return (
-    // <Spin spinning={loading}>
     <Content className={styles.unitListContent}>
       <Input
         placeholder="搜索单位"
@@ -164,41 +173,41 @@ const UnitList: React.FC<Props> = ({ history, data, loading }) => {
         <Col span={5}>{genSorter('画师', 'Illust')}</Col>
       </Row>
       <div className={styles.listContainer}>
-        <List
-          height={size.height}
-          itemCount={loading ? 5 : cards.length}
-          itemSize={68}
-          width={size.width}
-          onScroll={({ scrollOffset }) => setScrolled(scrollOffset)}
-        >
-          {loading
-            ? ({ index, style }) => (
-                <div style={style} key={index}>
-                  <div className={classNames(styles.listCard, styles.disable)}>
-                    <Skeleton
-                      active
-                      paragraph={false}
-                      title={{ width: '100%' }}
-                    />
-                  </div>
-                </div>
-              )
-            : ({ index, style }) => (
-                <div key={cards[index].CardID} style={style}>
-                  <UnitListCard
-                    card={cards[index]}
-                    showUnit={showUnit}
-                    setSearch={handleSetSearch}
-                  />
-                </div>
-              )}
-        </List>
+        {cards && (
+          <List
+            height={size.height}
+            itemCount={cards.length}
+            itemSize={68}
+            width={size.width}
+            onScroll={({ scrollOffset }) => setScrolled(scrollOffset)}
+          >
+            {({ index, style }) => (
+              <div key={cards[index].CardID} style={style}>
+                <UnitListCard
+                  card={cards[index]}
+                  showUnit={showUnit}
+                  setSearch={handleSetSearch}
+                />
+              </div>
+            )}
+          </List>
+        )}
       </div>
+      <Drawer
+        width={isTabletOrMobile ? '100%' : '80%'}
+        visible={!!CardID}
+        destroyOnClose
+        onClose={() => history.push('/unit')}
+        getContainer={false}
+        style={{ position: 'absolute' }}
+      >
+        <Unit />
+      </Drawer>
     </Content>
   );
 };
 
-const UnitListWrapper: React.FC<RouteComponentProps> = props => {
+const UnitListWrapper: React.FC = props => {
   return (
     <Query<Data>
       query={gql`

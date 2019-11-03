@@ -14,6 +14,7 @@ import {
 import { Mutation, Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import useForm from 'rc-form-hooks';
+import Gender from '../../Gender';
 import Rarity from '../../Rarity';
 import styles from './UnitList.module.less';
 import { ICO_URL } from '../../../consts';
@@ -48,10 +49,7 @@ const UnitListCard: React.FC<UnitListCardProps> = ({
           {card.CardID}
         </Col>
         <Col span={1}>
-          <span className={`gender gender-${card.Kind}`}>
-            {card.Kind === 0 && <span style={{ color: 'blue' }}>♂</span>}
-            {card.Kind === 1 && <span style={{ color: 'red' }}>♀</span>}
-          </span>
+          <Gender gender={card.Kind} />
         </Col>
         <Col span={2}>
           <img
@@ -60,7 +58,6 @@ const UnitListCard: React.FC<UnitListCardProps> = ({
             height="48"
           />
         </Col>
-
         <Col span={4}>
           <Rarity rare={card.Rare} />
           <br />
@@ -84,7 +81,7 @@ const UnitListCard: React.FC<UnitListCardProps> = ({
                 setSearch(card.Assign, 'Assign');
               }}
             >
-              <Tag color="yellow">{card.Assign}</Tag>
+              <Tag color="magenta">{card.Assign}</Tag>
             </span>
           )}
           {card.Identity && (

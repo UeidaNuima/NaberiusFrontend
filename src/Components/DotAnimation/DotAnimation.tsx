@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Tooltip } from 'antd';
 import * as GIF from 'gif.js';
 import { PLAYER_DOT_URL } from '../../consts';
@@ -10,12 +10,15 @@ interface DotAnimationSingleEntryProps {
   cardID: number;
 }
 
-class DotAnimationSingleEntry extends React.Component<
-  DotAnimationSingleEntryProps
-> {
-  public canvas?: HTMLCanvasElement;
-  public gif: any;
-  public componentDidMount() {
+const DotAnimationSingleEntry: React.FC<DotAnimationSingleEntryProps> = ({
+  dot,
+  image,
+  EntryID,
+  cardID,
+}) => {
+  const canvas = useRef<HTMLCanvasElement>();
+  const gif = useRef<any>();
+  useEffect(() => {
     let top = 0;
     let bottom = 0;
     let left = 0;
@@ -24,7 +27,7 @@ class DotAnimationSingleEntry extends React.Component<
     let canvasHeight = 0;
     let blankWidth = 99999;
     let blankHeight = 99999;
-    const tickNum: number = this.props.dot.Length;
+    const tickNum: number = dot.Length;
     interface Sprite {
       X: number;
       Y: number;
@@ -33,26 +36,24 @@ class DotAnimationSingleEntry extends React.Component<
       OriginX: number;
       OriginY: number;
     }
-    const sprites: Sprite[] = this.props.dot.Entries[
-      this.props.EntryID
-    ].Sprites.map((sprite: any) => ({
-      X: sprite.X,
-      Y: sprite.Y,
-      Width: sprite.Width,
-      Height: sprite.Height,
-      OriginX: sprite.OriginX > 1000 ? 0 : sprite.OriginX,
-      OriginY: sprite.OriginY > 1000 ? 0 : sprite.OriginY,
-    }));
+    const sprites: Sprite[] = dot.Entries[EntryID].Sprites.map(
+      (sprite: any) => ({
+        X: sprite.X,
+        Y: sprite.Y,
+        Width: sprite.Width,
+        Height: sprite.Height,
+        OriginX: sprite.OriginX > 1000 ? 0 : sprite.OriginX,
+        OriginY: sprite.OriginY > 1000 ? 0 : sprite.OriginY,
+      }),
+    );
 
     // map sprite to frames
     let frames: Array<{
       Sprite: Sprite;
       Time: number;
-    }> = this.props.dot.Entries[this.props.EntryID].PatternNo.map(
-      (pat: any) => {
-        return { Sprite: sprites[pat.Data], Time: pat.Time };
-      },
-    );
+    }> = dot.Entries[EntryID].PatternNo.map((pat: any) => {
+      return { Sprite: sprites[pat.Data], Time: pat.Time };
+    });
 
     // get frame length
     frames = frames
@@ -81,12 +82,12 @@ class DotAnimationSingleEntry extends React.Component<
       blankWidth = Math.min(blankWidth, canvasWidth - sprite.OriginX);
       blankHeight = Math.min(blankHeight, canvasHeight - sprite.OriginY);
     });
-    this.canvas!.width = canvasWidth;
-    this.canvas!.height = canvasHeight;
+    canvas.current!.width = canvasWidth;
+    canvas.current!.height = canvasHeight;
 
     // use #08D422 as transparent color
     // just a random color
-    this.gif = new GIF({
+    gif.current = new GIF({
       workers: 2,
       quality: 1,
       workerScript: '/gif.worker.js',
@@ -97,10 +98,10 @@ class DotAnimationSingleEntry extends React.Component<
     });
 
     // load image
-    const image = new Image();
-    image.crossOrigin = 'anonymous';
-    image.src = this.props.image;
-    const ctx = this.canvas!.getContext('2d') as CanvasRenderingContext2D;
+    const imageObj = new Image();
+    imageObj.crossOrigin = 'anonymous';
+    imageObj.src = image;
+    const ctx = canvas.current!.getContext('2d') as CanvasRenderingContext2D;
 
     let currentTick = 0;
     let currentFrame = -1;
@@ -128,7 +129,7 @@ class DotAnimationSingleEntry extends React.Component<
       const sprite = frames[currentFrame].Sprite;
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
       ctx.drawImage(
-        image,
+        imageObj,
         sprite.X,
         sprite.Y,
         sprite.Width,
@@ -147,65 +148,66 @@ class DotAnimationSingleEntry extends React.Component<
         // fill the 'transparent' background
         tempCtx.fillStyle = '#08D422';
         tempCtx.fillRect(0, 0, canvasWidth, canvasHeight);
-        tempCtx.drawImage(this.canvas!, 0, 0);
-        this.gif.addFrame(tempCtx, {
+        tempCtx.drawImage(canvas.current!, 0, 0);
+        gif.current!.addFrame(tempCtx, {
           copy: true,
           delay: frames[currentFrame].Time * (1000 / 60),
         });
       }
     };
 
-    image.onload = imageLoop;
-  }
+    imageObj.onload = imageLoop;
+    return () => {
+      const cv = canvas.current!;
+      const context = cv.getContext('2d')!;
+      context.clearRect(0, 0, cv.width, cv.height);
+    };
+  }, [EntryID, dot, image]);
 
-  public render() {
-    return (
-      <div>
-        <Tooltip title="点击下载gif">
-          <canvas
-            onClick={() => {
-              this.gif.on('finished', (blob: Blob) => {
-                // crate a anchor
-                const url: string = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.style.display = 'none';
-                a.download = `${this.props.cardID}-${this.props.dot.Name}-${
-                  this.props.EntryID
-                }.gif`;
-                // and click it
-                a.click();
-              });
-              this.gif.render();
-            }}
-            style={{ cursor: 'pointer' }}
-            ref={ref => ref && (this.canvas = ref)}
-          />
-        </Tooltip>
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <Tooltip title="点击下载gif">
+        <canvas
+          onClick={() => {
+            gif.current.on('finished', (blob: Blob) => {
+              // crate a anchor
+              const url: string = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.style.display = 'none';
+              a.download = `${cardID}-${dot.Name}-${EntryID}.gif`;
+              // and click it
+              a.click();
+            });
+            gif.current.render();
+          }}
+          style={{ cursor: 'pointer' }}
+          ref={ref => ref && (canvas.current = ref)}
+        />
+      </Tooltip>
+    </div>
+  );
+};
 
 interface DotAnimationProps {
   dot: any;
   cardID: number;
 }
 
-export default class DotAnimation extends React.Component<DotAnimationProps> {
-  public render() {
-    return (
-      <div>
-        {this.props.dot.Entries.map((entry: any, index: number) => (
-          <DotAnimationSingleEntry
-            key={entry.Name}
-            dot={this.props.dot}
-            image={PLAYER_DOT_URL + `/${this.props.cardID}.png`}
-            cardID={this.props.cardID}
-            EntryID={index}
-          />
-        ))}
-      </div>
-    );
-  }
-}
+const DotAnimation: React.FC<DotAnimationProps> = ({ dot, cardID }) => {
+  return (
+    <div>
+      {dot.Entries.map((entry: any, index: number) => (
+        <DotAnimationSingleEntry
+          key={entry.Name}
+          dot={dot}
+          image={PLAYER_DOT_URL + `/${cardID}.png`}
+          cardID={cardID}
+          EntryID={index}
+        />
+      ))}
+    </div>
+  );
+};
+
+export default DotAnimation;
