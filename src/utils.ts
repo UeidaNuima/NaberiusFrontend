@@ -11,3 +11,8 @@ export class DefaultGetter {
     }
   }
 }
+
+// random choose a item from a array
+export function choose<T>(arr: T[]) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}

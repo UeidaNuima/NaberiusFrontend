@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Query } from 'react-apollo';
-import { Spin, Layout, Collapse, Row, Col, Drawer } from 'antd';
+import { Layout, Collapse, Row, Col, Drawer } from 'antd';
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import { MISSION_TYPE } from './types';
@@ -9,6 +9,7 @@ import './index.less';
 import useRouter from 'use-react-router';
 import { useMediaQuery } from 'react-responsive';
 import Quest from '../Quest';
+import Loading from '../../Loading';
 
 const { Content } = Layout;
 const Panel = Collapse.Panel;
@@ -46,48 +47,48 @@ const QuestList: React.FC = () => {
                 overflow: 'auto',
               }}
             >
-              <Spin spinning={loading}>
-                {!error && data.missions && (
-                  <Content className="mission-list-content">
-                    <Collapse bordered={false} accordion>
-                      {Object.entries(_.groupBy(data.missions, 'Type')).map(
-                        ([missionType, missions]) => (
-                          <Panel
-                            header={
-                              <span
-                                dangerouslySetInnerHTML={{
-                                  __html: MISSION_TYPE[missionType]
-                                    ? MISSION_TYPE[missionType]
-                                    : missionType,
-                                }}
-                              />
-                            }
-                            key={missionType}
-                          >
-                            <Collapse bordered={false}>
-                              {missions.map((mission: any) => (
-                                <Panel
-                                  className="mission-panel"
-                                  key={mission.MissionID}
-                                  header={
-                                    <span>
-                                      <strong>{mission.MissionID}</strong>
-                                      &nbsp;
-                                      {mission.Name}
-                                    </span>
-                                  }
-                                >
-                                  <MissionShutter mission={mission} />
-                                </Panel>
-                              ))}
-                            </Collapse>
-                          </Panel>
-                        ),
-                      )}
-                    </Collapse>
-                  </Content>
+              <Content className="mission-list-content">
+                {!loading ? (
+                  <Collapse bordered={false} accordion>
+                    {Object.entries(_.groupBy(data.missions, 'Type')).map(
+                      ([missionType, missions]) => (
+                        <Panel
+                          header={
+                            <span
+                              dangerouslySetInnerHTML={{
+                                __html: MISSION_TYPE[missionType]
+                                  ? MISSION_TYPE[missionType]
+                                  : missionType,
+                              }}
+                            />
+                          }
+                          key={missionType}
+                        >
+                          <Collapse bordered={false}>
+                            {missions.map((mission: any) => (
+                              <Panel
+                                className="mission-panel"
+                                key={mission.MissionID}
+                                header={
+                                  <span>
+                                    <strong>{mission.MissionID}</strong>
+                                    &nbsp;
+                                    {mission.Name}
+                                  </span>
+                                }
+                              >
+                                <MissionShutter mission={mission} />
+                              </Panel>
+                            ))}
+                          </Collapse>
+                        </Panel>
+                      ),
+                    )}
+                  </Collapse>
+                ) : (
+                  <Loading />
                 )}
-              </Spin>
+              </Content>
             </div>
           );
         }}

@@ -10,6 +10,7 @@ import { Card } from './types';
 import UnitListCard from './UnitListCard';
 import styles from './UnitList.module.less';
 import Unit from '../Unit';
+import Loading from '../../Loading';
 
 const { Content } = Layout;
 
@@ -173,7 +174,7 @@ const UnitList: React.FC<Props> = ({ data, loading }) => {
         <Col span={5}>{genSorter('画师', 'Illust')}</Col>
       </Row>
       <div className={styles.listContainer}>
-        {cards && (
+        {!loading ? (
           <List
             height={size.height}
             itemCount={cards.length}
@@ -191,6 +192,8 @@ const UnitList: React.FC<Props> = ({ data, loading }) => {
               </div>
             )}
           </List>
+        ) : (
+          <Loading />
         )}
       </div>
       <Drawer
