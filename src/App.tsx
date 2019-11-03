@@ -7,7 +7,7 @@ import { onError } from 'apollo-link-error';
 import { ApolloLink } from 'apollo-link';
 import { createUploadLink } from 'apollo-upload-client';
 import { ApolloProvider } from 'react-apollo';
-import { LocaleProvider } from 'antd';
+import { ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -44,7 +44,7 @@ class App extends React.Component {
   public render() {
     return (
       <HashRouter>
-        <LocaleProvider locale={zhCN}>
+        <ConfigProvider locale={zhCN}>
           <ApolloProvider client={client}>
             <UserContext.Provider>
               <Layout className="App" style={{ height: '100%' }}>
@@ -52,7 +52,7 @@ class App extends React.Component {
               </Layout>
             </UserContext.Provider>
           </ApolloProvider>
-        </LocaleProvider>
+        </ConfigProvider>
       </HashRouter>
     );
   }
