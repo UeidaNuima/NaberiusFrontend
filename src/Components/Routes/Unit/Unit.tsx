@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Query } from 'react-apollo';
 import { Spin, Popover, Layout, Tabs, Divider, Button, Icon, Tag } from 'antd';
 import _ from 'lodash';
@@ -181,17 +181,7 @@ const Unit: React.FC = () => {
   const [tabActiveKey, setTabActiveKey] = useState('');
 
   const { match } = useRouter<{ CardID: string }>();
-  const CardIDM = match.params.CardID;
-  const CardIDRef = useRef<string>();
-
-  useEffect(() => {
-    if (CardIDM) {
-      CardIDRef.current = CardIDM;
-    }
-  }, [CardIDM]);
-
-  // trick，如果CardIDM因为跳到/unit变成空了则保留上一次的数值
-  const CardID = (CardIDM || CardIDRef.current)!;
+  const { CardID } = match.params;
 
   const handleTabChange = (tabActiveKey: string) => {
     setTabActiveKey(tabActiveKey);

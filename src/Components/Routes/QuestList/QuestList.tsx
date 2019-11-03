@@ -1,26 +1,32 @@
 import * as React from 'react';
 import { Query } from 'react-apollo';
-import { Spin, Layout, Collapse, Row, Col, Affix } from 'antd';
+import { Spin, Layout, Collapse, Row, Col, Drawer } from 'antd';
 import gql from 'graphql-tag';
 import _ from 'lodash';
 import { MISSION_TYPE } from './types';
 import MissionShutter from './MissionShutter';
 import './index.less';
+import useRouter from 'use-react-router';
+import { useMediaQuery } from 'react-responsive';
+import Quest from '../Quest';
 
 const { Content } = Layout;
 const Panel = Collapse.Panel;
 
 const QuestList: React.FC = () => {
+  const { match, history } = useRouter<{ QuestID: string }>();
+  const { QuestID } = match.params;
+
+  const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' });
+
   return (
-    <Content className="container">
-      <Affix>
-        <Row className="sorter-block">
-          <Col span={2}>#</Col>
-          <Col span={2}>魅力</Col>
-          <Col span={2}>体力</Col>
-          <Col span={18}>名称</Col>
-        </Row>
-      </Affix>
+    <Content style={{ padding: 30, position: 'relative' }}>
+      <Row className="sorter-block">
+        <Col span={2}>#</Col>
+        <Col span={2}>魅力</Col>
+        <Col span={2}>体力</Col>
+        <Col span={18}>名称</Col>
+      </Row>
       <Query
         query={gql`
           query {
@@ -34,7 +40,12 @@ const QuestList: React.FC = () => {
       >
         {({ loading, error, data }: any) => {
           return (
-            <div>
+            <div
+              style={{
+                height: 'calc(100% - 35px)',
+                overflow: 'auto',
+              }}
+            >
               <Spin spinning={loading}>
                 {!error && data.missions && (
                   <Content className="mission-list-content">
@@ -81,6 +92,16 @@ const QuestList: React.FC = () => {
           );
         }}
       </Query>
+      <Drawer
+        width={isTabletOrMobile ? '100%' : '80%'}
+        visible={!!QuestID}
+        destroyOnClose
+        onClose={() => history.push('/quest')}
+        getContainer={false}
+        style={{ position: 'absolute' }}
+      >
+        {QuestID && <Quest />}
+      </Drawer>
     </Content>
   );
 };

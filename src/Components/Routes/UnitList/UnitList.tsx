@@ -201,7 +201,7 @@ const UnitList: React.FC<Props> = ({ data, loading }) => {
         getContainer={false}
         style={{ position: 'absolute' }}
       >
-        <Unit />
+        {CardID && <Unit />}
       </Drawer>
     </Content>
   );

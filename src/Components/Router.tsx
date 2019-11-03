@@ -13,7 +13,6 @@ import Header from './Header';
 import Home from './Routes/Home';
 import UnitList from './Routes/UnitList';
 import QuestList from './Routes/QuestList';
-import Quest from './Routes/Quest';
 import ClassList from './Routes/ClassList';
 import SkillList from './Routes/SkillList';
 import AbilityList from './Routes/AbilityList';
@@ -33,7 +32,7 @@ const Router: React.FC<RouteComponentProps> = () => {
       <Header />
       <Switch>
         <Route path="/unit/:CardID" component={UnitList} />
-        <Route path="/quest/:QuestID" component={Quest} />
+        <Route path="/quest/:QuestID" component={QuestList} />
         <Route path="/unit" exact component={UnitList} />
         <Route path="/quest" exact component={QuestList} />
         <Route path="/class" exact component={ClassList} />
