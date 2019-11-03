@@ -184,11 +184,14 @@ class SkillList extends React.Component<any, SkillListStates> {
                 <Spin spinning={loading}>
                   {data &&
                     data.skillInfluenceMetas &&
-                    Array.apply(maxInfluenceID).map(
-                      (dummy: any, index: number) => {
+                    Array(maxInfluenceID)
+                      .fill(1)
+                      .map((dummy: any, index: number) => {
                         const influence: any = _.find(
                           data.skillInfluenceMetas,
-                          { ID: index + 1 },
+                          {
+                            ID: index + 1,
+                          },
                         );
 
                         return (
@@ -203,8 +206,7 @@ class SkillList extends React.Component<any, SkillListStates> {
                             }
                           />
                         );
-                      },
-                    )}
+                      })}
                 </Spin>
               </Drawer>
               <Content

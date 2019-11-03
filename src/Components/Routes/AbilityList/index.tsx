@@ -169,24 +169,26 @@ class AbilityList extends React.Component<any, AbilityListStates> {
                 <Spin spinning={loading}>
                   {data &&
                     data.abilityConfigMetas &&
-                    Array.apply(maxID).map((dummy: any, index: number) => {
-                      const config: any = _.find(data.abilityConfigMetas, {
-                        ID: index + 1,
-                      });
+                    Array(maxID)
+                      .fill(1)
+                      .map((dummy: any, index: number) => {
+                        const config: any = _.find(data.abilityConfigMetas, {
+                          ID: index + 1,
+                        });
 
-                      return (
-                        <DescriptionInput
-                          key={index + 1}
-                          ID={index + 1}
-                          config={config}
-                          mutationFunction="updateAbilityConfigMeta"
-                          active={this.findIDindex(index + 1) > -1}
-                          onToggleFilter={() =>
-                            this.handleToggleFilter(index + 1)
-                          }
-                        />
-                      );
-                    })}
+                        return (
+                          <DescriptionInput
+                            key={index + 1}
+                            ID={index + 1}
+                            config={config}
+                            mutationFunction="updateAbilityConfigMeta"
+                            active={this.findIDindex(index + 1) > -1}
+                            onToggleFilter={() =>
+                              this.handleToggleFilter(index + 1)
+                            }
+                          />
+                        );
+                      })}
                 </Spin>
               </Drawer>
               <Content

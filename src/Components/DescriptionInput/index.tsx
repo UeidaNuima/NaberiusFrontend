@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Row, Spin, Icon, Input } from 'antd';
+import { Col, Row, Spin, Icon, Input, Button } from 'antd';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import classNames from 'classnames';
@@ -131,11 +131,13 @@ export default class DescriptionInput extends React.Component<
                         />
                       </Col>
                       <Col span={2} className={styles.actionCol}>
-                        <Icon
-                          type="check-circle"
-                          theme="twoTone"
+                        <Button
                           onClick={this.handleUpdate}
-                        />
+                          type="primary"
+                          style={{ marginLeft: 8, padding: 5 }}
+                        >
+                          <Icon type="check" />
+                        </Button>
                       </Col>
                     </>
                   ) : (
