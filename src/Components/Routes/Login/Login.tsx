@@ -11,7 +11,6 @@ const Login: React.FC = () => {
   const { login } = UserContext.useContainer();
   const handleLogin = async () => {
     const values = await validateFields();
-    console.log(login);
     login(values.token);
   };
   return (

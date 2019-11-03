@@ -286,11 +286,9 @@ const Quest: React.FC = () => {
                                 <table>
                                   <tbody className="ant-table-tbody">
                                     {routes.map((route, index) => {
-                                      console.log(route.OnEvent);
                                       const match = /CallEvent\(([\d, ]+)\)/.exec(
                                         route.OnEvent,
                                       );
-                                      console.log(match);
                                       let talkTable: any;
                                       if (match) {
                                         const list = match[1].split(',');

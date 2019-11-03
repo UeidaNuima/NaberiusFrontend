@@ -186,7 +186,6 @@ const PopoverContent: React.FC<{ card: any }> = ({ card }) => {
                   layout="inline"
                   onSubmit={e => {
                     e.preventDefault();
-                    console.log('qweqweqwe');
                     const values = getFieldsValue();
 
                     updateCardMeta({

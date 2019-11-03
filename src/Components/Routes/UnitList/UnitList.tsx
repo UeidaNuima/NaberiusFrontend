@@ -39,7 +39,6 @@ const UnitList: React.FC<Props> = ({ data, loading }) => {
   useEffect(() => {
     const main = document.getElementsByTagName('main')[0];
     const handleResize = () => {
-      console.log(main.offsetWidth, main.offsetHeight);
       const width = main.offsetWidth - 60;
       const height = main.offsetHeight - 150;
       setSize({ width, height });
