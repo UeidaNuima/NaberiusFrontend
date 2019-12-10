@@ -1,6 +1,7 @@
 import gql from 'graphql-tag';
 
 export interface ClassData {
+  Type: 'Init' | 'CC' | 'Evo' | 'Evo2a' | 'Evo2b';
   ClassID: number;
   Name: string;
   InitHP: number;
@@ -13,11 +14,11 @@ export interface ClassData {
   AtkArea: number;
   BlockNum: number;
   MaxLevel: number;
-  MaxLevelUnit: number;
   Explanation: string;
   Cost: number;
   AttackWait: string;
-  ClassAbilityConfig1: Array<{
+  Data_ExtraAwakeOrbs: ClassData[];
+  ClassAbilityConfigs: Array<{
     _InvokeType: number;
     _TargetType: number;
     _InfluenceType: number;
@@ -27,7 +28,7 @@ export interface ClassData {
     _Param4: number;
     _Command: string;
     _ActivateCommand: string;
-    Description: string;
+    // Description: string;
   }>;
   ClassAbilityPower1: number;
   BattleStyle?: {
@@ -50,7 +51,7 @@ export interface SkillData {
   PowerMax: number;
   LevelMax: number;
   Text: string;
-  InfluenceConfig: {
+  Configs: Array<{
     Type_Collision: number;
     Type_CollisionState: number;
     Type_ChangeFunction: number;
@@ -63,15 +64,21 @@ export interface SkillData {
     _HoldRatioUpperLimit: number;
     _Expression: string;
     _ExpressionActivate: string;
-    Description: string;
-  };
+    // Description: string;
+  }>;
+}
+
+export interface SkillWithType {
+  Type: 'Init' | 'CC' | 'Evo';
+  Skills: SkillData[];
 }
 
 export interface AbilityData {
+  Type: 'Init' | 'Evo';
   AbilityID: number;
   Text: string;
   AbilityName: string;
-  Config: {
+  Configs: Array<{
     _InvokeType: number;
     _TargetType: number;
     _InfluenceType: number;
@@ -81,10 +88,9 @@ export interface AbilityData {
     _Param4: number;
     _Command: string;
     _ActivateCommand: string;
-    Description: string;
-  };
+    // Description: string;
+  }>;
 }
-
 export interface Data {
   card: {
     CardID: number;
@@ -106,46 +112,42 @@ export interface Data {
     BonusNum2: number;
     BonusType3: number;
     BonusNum3: number;
-    Race: number;
-    Assign: number;
-    Identity: number;
-    Illust: number;
-    Dots: Array<{
-      Name: string;
-      Length: number;
-      Entries: Array<{
-        Name: string;
-        Sprites: Array<{
-          X: number;
-          Y: number;
-          Width: number;
-          Height: number;
-          OriginX: number;
-          OriginY: number;
-        }>;
-        PatternNo: {
-          Time: number;
-          Data: number;
-        };
-      }>;
-      Image: string;
-    }>;
-    Class: {
-      ClassInit: ClassData;
-      ClassCC: ClassData;
-      ClassEvo: ClassData;
-      ClassEvo2a: ClassData;
-      ClassEvo2b: ClassData;
-    };
+    RaceName: number;
+    AssignName: number;
+    IdentityName: number;
+    IllustName: string;
+    HomeCooking: number;
+    SellPrice: number;
+    BuildExp: number;
+    _TradePoint: number;
+    Dots: string;
+    // Dots: Array<{
+    //   Name: string;
+    //   Length: number;
+    //   Entries: Array<{
+    //     Name: string;
+    //     Sprites: Array<{
+    //       X: number;
+    //       Y: number;
+    //       Width: number;
+    //       Height: number;
+    //       OriginX: number;
+    //       OriginY: number;
+    //     }>;
+    //     PatternNo: {
+    //       Time: number;
+    //       Data: number;
+    //     };
+    //   }>;
+    //   Image: string;
+    // }>;
+    Classes: ClassData[];
     ImageCG: string[];
     ImageStand: string[];
-    AbilityEvoInfo: AbilityData;
-    AbilityInitInfo: AbilityData;
+    Abilities: AbilityData[];
     ClassLV0SkillID: number;
     ClassLV1SkillID: number;
-    SkillInit: SkillData[];
-    SkillCC: SkillData[];
-    SkillEvo: SkillData[];
+    Skills: SkillWithType[];
   };
 }
 
@@ -171,200 +173,87 @@ export const query = gql`
       BonusNum2
       BonusType3
       BonusNum3
-      Race
-      Assign
-      Identity
-      Illust
-      Dots {
+      RaceName
+      AssignName
+      IdentityName
+      IllustName
+      HomeCooking
+      SellPrice
+      BuildExp
+      _TradePoint
+      Dots
+      # Dots {
+      #   Name
+      #   Length
+      #   Entries {
+      #     Name
+      #     Sprites {
+      #       X
+      #       Y
+      #       Width
+      #       Height
+      #       OriginX
+      #       OriginY
+      #     }
+      #     PatternNo {
+      #       Time
+      #       Data
+      #     }
+      #   }
+      #   Image
+      # }
+      Classes {
+        Type
+        ClassID
         Name
-        Length
-        Entries {
+        InitHP
+        MaxHP
+        InitDef
+        MaxDef
+        InitAtk
+        MaxAtk
+        AtkArea
+        BlockNum
+        MaxLevel
+        Explanation
+        Cost
+        Data_ExtraAwakeOrbs {
           Name
-          Sprites {
-            X
-            Y
-            Width
-            Height
-            OriginX
-            OriginY
-          }
-          PatternNo {
-            Time
-            Data
-          }
         }
-        Image
-      }
-      Class {
-        ClassInit {
-          ClassID
-          Name
-          InitHP
-          MaxHP
-          InitDef
-          MaxDef
-          InitAtk
-          MaxAtk
-          AtkArea
-          BlockNum
-          MaxLevel
-          MaxLevelUnit
-          Explanation
-          Cost
-          AttackWait
-          ClassAbilityConfig1 {
-            _InvokeType
-            _TargetType
-            _InfluenceType
-            _Param1
-            _Param2
-            _Param3
-            _Param4
-            _Command
-            _ActivateCommand
-            Description
-          }
-          ClassAbilityPower1
-          BattleStyle {
-            Data_ID
-            Type_BattleStyle
-            _Param_01
-            _Param_02
-            _Range_01
-            _Range_02
-            _Range_03
-            _Range_04
-            _Range_05
-          }
+        AttackWait
+        ClassAbilityConfigs {
+          _InvokeType
+          _TargetType
+          _InfluenceType
+          _Param1
+          _Param2
+          _Param3
+          _Param4
+          _Command
+          _ActivateCommand
+          # Description
         }
-        ClassCC {
-          ClassID
-          Name
-          InitHP
-          MaxHP
-          InitDef
-          MaxDef
-          InitAtk
-          MaxAtk
-          AtkArea
-          BlockNum
-          MaxLevel
-          MaxLevelUnit
-          Explanation
-          Cost
-          AttackWait
-          ClassAbilityConfig1 {
-            _InvokeType
-            _TargetType
-            _InfluenceType
-            _Param1
-            _Param2
-            _Param3
-            _Param4
-            _Command
-            _ActivateCommand
-            Description
-          }
-          ClassAbilityPower1
-        }
-        ClassEvo {
-          ClassID
-          Name
-          InitHP
-          MaxHP
-          InitDef
-          MaxDef
-          InitAtk
-          MaxAtk
-          AtkArea
-          BlockNum
-          MaxLevel
-          MaxLevelUnit
-          Explanation
-          Cost
-          AttackWait
-          ClassAbilityConfig1 {
-            _InvokeType
-            _TargetType
-            _InfluenceType
-            _Param1
-            _Param2
-            _Param3
-            _Param4
-            _Command
-            _ActivateCommand
-            Description
-          }
-          ClassAbilityPower1
-        }
-        ClassEvo2a {
-          ClassID
-          Name
-          InitHP
-          MaxHP
-          InitDef
-          MaxDef
-          InitAtk
-          MaxAtk
-          AtkArea
-          BlockNum
-          MaxLevel
-          MaxLevelUnit
-          Explanation
-          Cost
-          AttackWait
-          ClassAbilityConfig1 {
-            _InvokeType
-            _TargetType
-            _InfluenceType
-            _Param1
-            _Param2
-            _Param3
-            _Param4
-            _Command
-            _ActivateCommand
-            Description
-          }
-          ClassAbilityPower1
-        }
-        ClassEvo2b {
-          ClassID
-          Name
-          InitHP
-          MaxHP
-          InitDef
-          MaxDef
-          InitAtk
-          MaxAtk
-          AtkArea
-          BlockNum
-          MaxLevel
-          MaxLevelUnit
-          Explanation
-          Cost
-          AttackWait
-          ClassAbilityConfig1 {
-            _InvokeType
-            _TargetType
-            _InfluenceType
-            _Param1
-            _Param2
-            _Param3
-            _Param4
-            _Command
-            _ActivateCommand
-            Description
-          }
-          ClassAbilityPower1
+        ClassAbilityPower1
+        BattleStyle {
+          Data_ID
+          Type_BattleStyle
+          _Param_01
+          _Param_02
+          _Range_01
+          _Range_02
+          _Range_03
+          _Range_04
+          _Range_05
         }
       }
       ImageCG
       ImageStand
-      AbilityEvoInfo {
+      Abilities {
+        Type
         AbilityID
         Text
         AbilityName
-        Config {
+        Configs {
           _InvokeType
           _TargetType
           _InfluenceType
@@ -374,95 +263,35 @@ export const query = gql`
           _Param4
           _Command
           _ActivateCommand
-          Description
-        }
-      }
-      AbilityInitInfo {
-        AbilityID
-        Text
-        AbilityName
-        Config {
-          _InvokeType
-          _TargetType
-          _InfluenceType
-          _Param1
-          _Param2
-          _Param3
-          _Param4
-          _Command
-          _ActivateCommand
-          Description
+          # Description
         }
       }
       ClassLV0SkillID
       ClassLV1SkillID
-      SkillInit {
-        SkillName
-        WaitTime
-        ContTimeMax
-        PowerMax
-        LevelMax
-        Text
-        InfluenceConfig {
-          Type_Collision
-          Type_CollisionState
-          Type_ChangeFunction
-          Data_Target
-          Data_InfluenceType
-          Data_MulValue
-          Data_MulValue2
-          Data_MulValue3
-          Data_AddValue
-          _HoldRatioUpperLimit
-          _Expression
-          _ExpressionActivate
-          Description
-        }
-      }
-      SkillCC {
-        SkillName
-        WaitTime
-        ContTimeMax
-        PowerMax
-        LevelMax
-        Text
-        InfluenceConfig {
-          Type_Collision
-          Type_CollisionState
-          Type_ChangeFunction
-          Data_Target
-          Data_InfluenceType
-          Data_MulValue
-          Data_MulValue2
-          Data_MulValue3
-          Data_AddValue
-          _HoldRatioUpperLimit
-          _Expression
-          _ExpressionActivate
-          Description
-        }
-      }
-      SkillEvo {
-        SkillName
-        WaitTime
-        ContTimeMax
-        PowerMax
-        LevelMax
-        Text
-        InfluenceConfig {
-          Type_Collision
-          Type_CollisionState
-          Type_ChangeFunction
-          Data_Target
-          Data_InfluenceType
-          Data_MulValue
-          Data_MulValue2
-          Data_MulValue3
-          Data_AddValue
-          _HoldRatioUpperLimit
-          _Expression
-          _ExpressionActivate
-          Description
+      Skills {
+        Type
+        Skills {
+          SkillName
+          WaitTime
+          ContTimeMax
+          PowerMax
+          LevelMax
+          Text
+          Configs {
+            Type_Collision
+            Type_CollisionState
+            Type_ChangeFunction
+            Data_Target
+            Data_InfluenceType
+            Data_MulValue
+            Data_MulValue2
+            Data_MulValue3
+            Data_AddValue
+            _HoldRatioUpperLimit
+            _Expression
+            _ExpressionActivate
+            # Description
+          }
         }
       }
     }

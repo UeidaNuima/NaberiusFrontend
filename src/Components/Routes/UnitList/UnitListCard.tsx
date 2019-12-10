@@ -18,9 +18,10 @@ import Gender from '../../Gender';
 import Rarity from '../../Rarity';
 import styles from './UnitList.module.less';
 import { ICO_URL } from '../../../consts';
+import { Card } from './types';
 
 interface UnitListCardProps {
-  card: any;
+  card: Card;
   showUnit: (cardID: number) => void;
   setSearch: (search: string, searchType: string) => void;
   style?: React.CSSProperties;
@@ -54,7 +55,7 @@ const UnitListCard: React.FC<UnitListCardProps> = ({
         <Col span={2}>
           <img
             src={`${ICO_URL}/0/${card.CardID}.png`}
-            alt={card.CardID}
+            alt={card.CardID.toString()}
             height="48"
           />
         </Col>
@@ -64,34 +65,34 @@ const UnitListCard: React.FC<UnitListCardProps> = ({
           {card.Name}
         </Col>
         <Col span={5}>
-          {card.Race && (
+          {card.RaceName && (
             <span
               onClick={e => {
                 e.stopPropagation();
-                setSearch(card.Race, 'Race');
+                setSearch(card.RaceName, 'Race');
               }}
             >
-              <Tag>{card.Race}</Tag>
+              <Tag>{card.RaceName}</Tag>
             </span>
           )}
-          {card.Assign && (
+          {card.AssignName && (
             <span
               onClick={e => {
                 e.stopPropagation();
-                setSearch(card.Assign, 'Assign');
+                setSearch(card.AssignName, 'Assign');
               }}
             >
-              <Tag color="magenta">{card.Assign}</Tag>
+              <Tag color="magenta">{card.AssignName}</Tag>
             </span>
           )}
-          {card.Identity && (
+          {card.IdentityName && (
             <span
               onClick={e => {
                 e.stopPropagation();
-                setSearch(card.Identity, 'Identity');
+                setSearch(card.IdentityName, 'Identity');
               }}
             >
-              <Tag color="black">{card.Identity}</Tag>
+              <Tag color="black">{card.IdentityName}</Tag>
             </span>
           )}
         </Col>
@@ -100,20 +101,20 @@ const UnitListCard: React.FC<UnitListCardProps> = ({
           className="filter"
           onClick={e => {
             e.stopPropagation();
-            setSearch(card.Class.ClassInit.Name, 'Class.ClassInit.Name');
+            setSearch(card.Classes[0].Name, 'Classes.0.Name');
           }}
         >
-          {card.Class.ClassInit.Name}
+          {card.Classes[0].Name}
         </Col>
         <Col
           span={5}
           className="filter"
           onClick={e => {
             e.stopPropagation();
-            setSearch(card.Illust, 'Illust');
+            setSearch(card.IllustName, 'Illust');
           }}
         >
-          {card.Illust}
+          {card.IllustName}
         </Col>
         <Col span={1}>
           <Popover

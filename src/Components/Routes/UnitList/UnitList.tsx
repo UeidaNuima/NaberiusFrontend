@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Input, Row, Col, Icon, Select, Drawer } from 'antd';
 import { FixedSizeList as List } from 'react-window';
-import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import useRouter from 'use-react-router';
 import classNames from 'classnames';
@@ -11,6 +10,7 @@ import UnitListCard from './UnitListCard';
 import styles from './UnitList.module.less';
 import Unit from '../Unit';
 import Loading from '../../Loading';
+import { useQuery } from '@apollo/react-hooks';
 
 const { Content } = Layout;
 
@@ -34,7 +34,7 @@ const UnitList: React.FC<Props> = ({ data, loading }) => {
   const { match, history } = useRouter<{ CardID: string }>();
   const { CardID } = match.params;
 
-  const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' });
+  const isTabletOrMobile = useMediaQuery({ query: '(max-width: 991px)' });
 
   useEffect(() => {
     const main = document.getElementsByTagName('main')[0];
@@ -155,7 +155,7 @@ const UnitList: React.FC<Props> = ({ data, loading }) => {
             <Select.Option value="Race">种族</Select.Option>
             <Select.Option value="Assign">出身</Select.Option>
             <Select.Option value="Identity">不死</Select.Option>
-            <Select.Option value="Class.ClassInit.Name">职业</Select.Option>
+            <Select.Option value="Classes[0].Name">职业</Select.Option>
             <Select.Option value="Illust">画师</Select.Option>
           </Select>
         }
@@ -169,7 +169,7 @@ const UnitList: React.FC<Props> = ({ data, loading }) => {
         <Col span={3}>{genSorter('性别', 'Kind')}</Col>
         <Col span={4}>{genSorter('名称', 'Name')}</Col>
         <Col span={5}>{genSorter('种族', 'Race')}</Col>
-        <Col span={5}>{genSorter('职业', 'Class.ClassInit.Name')}</Col>
+        <Col span={5}>{genSorter('职业', 'Class[0].Name')}</Col>
         <Col span={5}>{genSorter('画师', 'Illust')}</Col>
       </Row>
       <div className={styles.listContainer}>
@@ -210,33 +210,26 @@ const UnitList: React.FC<Props> = ({ data, loading }) => {
 };
 
 const UnitListWrapper: React.FC = props => {
-  return (
-    <Query<Data>
-      query={gql`
-        query {
-          cards {
-            CardID
+  const { data, loading } = useQuery(
+    gql`
+      query {
+        cards {
+          CardID
+          Name
+          Rare
+          Kind
+          IllustName
+          RaceName
+          AssignName
+          IdentityName
+          Classes {
             Name
-            Rare
-            Kind
-            Illust
-            Race
-            Assign
-            Identity
-            Class {
-              ClassInit {
-                Name
-              }
-            }
           }
         }
-      `}
-    >
-      {({ data, loading }) => (
-        <UnitList {...props} data={data} loading={loading} />
-      )}
-    </Query>
+      }
+    `,
   );
+  return <UnitList {...props} data={data} loading={loading} />;
 };
 
 export default UnitListWrapper;

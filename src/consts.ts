@@ -1,6 +1,6 @@
 import { DefaultGetter } from './utils';
-export const BASE_SERVER_URL = 'https://aigisapi.naberi.us';
-// export const BASE_SERVER_URL = 'http://localhost:4000';
+// export const BASE_SERVER_URL = 'https://aigisapi.naberi.us';
+export const BASE_SERVER_URL = 'http://localhost:4000';
 export const BASE_GAME_URL = 'http://assets.millennium-war.net';
 export const GAME_POSTER_URL = BASE_GAME_URL + '/00/html/image';
 export const API_URL = BASE_SERVER_URL + '/graphql';
@@ -18,13 +18,13 @@ export const ENEMY_CHANGE_COND: { [k: number]: string } = {
   5: '血量99%切换',
 };
 export const BONUS_TYPE = new DefaultGetter({
-  1: 'HP +',
-  2: '攻击 +',
-  3: '防御 +',
-  4: '射程 +',
-  5: '魔抗 +',
-  6: '后摇 -',
-  7: '技能持续 +',
-  8: '技能再动 -',
-  9: '物理攻击回避 +',
+  1: 'HP +%d',
+  2: '攻击 +%d',
+  3: '防御 +%d',
+  4: '射程 +%d',
+  5: '魔抗 +%d',
+  6: '后摇 -%d',
+  7: '技能持续 +%d%',
+  8: '技能再动 -%d%',
+  9: '物理攻击回避 +%d%',
 });

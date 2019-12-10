@@ -3,15 +3,18 @@ export interface Card {
   Name: string;
   Rare: number;
   Kind: number;
-  Illust: number;
-  Race: number;
-  Assign: number;
-  Identity: number;
+  IllustName: string;
+  RaceName: string;
+  AssignName: string;
+  IdentityName: string;
   NickName: string;
   ConneName: string;
-  Class: {
-    ClassInit: {
-      Name: string;
-    };
-  };
+  Classes: Array<{
+    Name: string;
+  }>;
+  // Class: {
+  //   ClassInit: {
+  //     Name: string;
+  //   };
+  // };
 }
