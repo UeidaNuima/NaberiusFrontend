@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Input, Row, Col, Icon, Select, Drawer } from 'antd';
+import { Layout, Input, Row, Col, Icon, Drawer, Tag } from 'antd';
 import { FixedSizeList as List } from 'react-window';
 import gql from 'graphql-tag';
 import useRouter from 'use-react-router';
@@ -23,9 +23,21 @@ interface Props {
   loading: boolean;
 }
 
+const FILTER_TYPE: { [k: string]: string } = {
+  Rare: '稀有',
+  RaceName: '种族',
+  AssignName: '出身',
+  IdentityName: '不死',
+  IllustName: '画师',
+  'Classes.0.Name': '职业',
+};
+
 const UnitList: React.FC<Props> = ({ data, loading }) => {
   const [sorter, setSorter] = useState({ key: 'CardID', order: true });
-  const [search, setSearch] = useState({ content: '', type: 'all' });
+  const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState<
+    Array<{ content: string; type: string }>
+  >([]);
 
   // 两个变量react-window用
   const [size, setSize] = useState({ width: 0, height: 0 });
@@ -90,28 +102,25 @@ const UnitList: React.FC<Props> = ({ data, loading }) => {
   };
 
   const cardFilter = (card: any) => {
-    const { type, content } = search;
-    if (type !== 'all') {
-      // card中的数据
+    let flag = JSON.stringify(card).includes(search);
+
+    filters.forEach(filter => {
+      const { type, content } = filter;
       const sourceValue = getParam(card, type);
       let parsedValue: number | string = content;
       if (typeof sourceValue === 'number') {
         parsedValue = Number.parseInt(parsedValue, 10);
       }
-      return sourceValue === parsedValue;
-    }
-
-    return JSON.stringify(card).includes(content);
+      flag = flag && sourceValue === parsedValue;
+    });
+    return flag;
   };
 
-  /**
-   * 点击搜索按钮的回调
-   */
-  const handleSetSearch = (content: string, type?: string) => {
-    setSearch({
-      content,
-      type: type || search.type,
-    });
+  const handleSetFilter = (content: string, type: string) => {
+    const filter = filters.find(f => f.content === content && f.type === type);
+    if (!filter) {
+      setFilters(fs => [...fs, { content, type }]);
+    }
   };
 
   const showUnit = (cardID: number) => {
@@ -134,43 +143,47 @@ const UnitList: React.FC<Props> = ({ data, loading }) => {
     <Content className={styles.unitListContent}>
       <Input
         placeholder="搜索单位"
-        value={search.content}
-        onChange={event =>
-          setSearch({
-            ...search,
-            content: event.target.value,
-          })
-        }
-        addonBefore={
-          <Select
-            value={search.type}
-            onChange={(value: string) =>
-              setSearch(search => ({ ...search, type: value }))
-            }
-            style={{ width: 90 }}
-          >
-            <Select.Option value="all">全部</Select.Option>
-            <Select.Option value="Rare">稀有</Select.Option>
-            <Select.Option value="Name">名称</Select.Option>
-            <Select.Option value="Race">种族</Select.Option>
-            <Select.Option value="Assign">出身</Select.Option>
-            <Select.Option value="Identity">不死</Select.Option>
-            <Select.Option value="Classes[0].Name">职业</Select.Option>
-            <Select.Option value="Illust">画师</Select.Option>
-          </Select>
-        }
+        value={search}
+        onChange={event => setSearch(event.target.value)}
       />
+      <div className={styles.filterContainer}>
+        {filters.map((filter, index) => {
+          return (
+            <Tag
+              key={index + filter.content}
+              closable
+              onClose={() => {
+                const i = filters.findIndex(
+                  f => f.content === filter.content && f.type === filter.type,
+                );
+                setFilters([...filters.slice(0, i), ...filters.slice(i + 1)]);
+              }}
+            >
+              {FILTER_TYPE[filter.type]}：{filter.content}
+            </Tag>
+          );
+        })}
+      </div>
       <Row
         className={classNames(styles.sorterBlock, {
           [styles.shadow]: scrolled !== 0,
         })}
       >
-        <Col span={1}>{genSorter('#', 'CardID')}</Col>
-        <Col span={3}>{genSorter('性别', 'Kind')}</Col>
-        <Col span={4}>{genSorter('名称', 'Name')}</Col>
-        <Col span={5}>{genSorter('种族', 'Race')}</Col>
-        <Col span={5}>{genSorter('职业', 'Class[0].Name')}</Col>
-        <Col span={5}>{genSorter('画师', 'Illust')}</Col>
+        <Col md={4} xs={8}>
+          {genSorter('#', 'CardID')}
+        </Col>
+        <Col md={4} xs={16}>
+          {genSorter('名称', 'Name')}
+        </Col>
+        <Col lg={6} xs={0}>
+          {genSorter('种族', 'Race')}
+        </Col>
+        <Col lg={5} md={8} xs={0}>
+          {genSorter('职业', 'Class[0].Name')}
+        </Col>
+        <Col lg={5} md={8} xs={0}>
+          {genSorter('画师', 'Illust')}
+        </Col>
       </Row>
       <div className={styles.listContainer}>
         {!loading ? (
@@ -186,7 +199,7 @@ const UnitList: React.FC<Props> = ({ data, loading }) => {
                 <UnitListCard
                   card={cards[index]}
                   showUnit={showUnit}
-                  setSearch={handleSetSearch}
+                  setFilter={handleSetFilter}
                 />
               </div>
             )}

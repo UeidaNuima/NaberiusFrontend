@@ -12,9 +12,4 @@ export interface Card {
   Classes: Array<{
     Name: string;
   }>;
-  // Class: {
-  //   ClassInit: {
-  //     Name: string;
-  //   };
-  // };
 }
