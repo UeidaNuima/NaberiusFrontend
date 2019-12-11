@@ -1,66 +1,65 @@
 import React from 'react';
-import { Spin, Col, Row } from 'antd';
+import { Spin, Tag } from 'antd';
 import gql from 'graphql-tag';
-import { Query } from 'react-apollo';
 import { QuestData } from './types';
 import useRouter from 'use-react-router';
+import { useQuery } from '@apollo/react-hooks';
+import styles from './QuestList.module.less';
 
-const MissionShutter: React.FC<{ mission: any }> = ({ mission }) => {
+const MissionShutter: React.FC<{ mission: any; isTabletOrMobile: boolean }> = ({
+  mission,
+  isTabletOrMobile,
+}) => {
   const { history } = useRouter();
 
   const showQuest = (questID: number) => {
     history.push(`/quest/${questID}`);
   };
-  return (
-    <Query<{
-      mission: {
-        Quests: QuestData[];
-      };
-    }>
-      query={gql`
-        query($MissionID: Int!) {
-          mission(MissionID: $MissionID) {
-            Quests {
-              Name
-              QuestID
-              Charisma
-              ActionPoint
-            }
+
+  const { loading, data } = useQuery<{ mission: { Quests: QuestData[] } }>(
+    gql`
+      query($MissionID: Int!) {
+        mission(MissionID: $MissionID) {
+          Quests {
+            Name
+            QuestID
+            Charisma
+            ActionPoint
           }
         }
-      `}
-      variables={{ MissionID: mission.MissionID }}
-    >
-      {({ loading, error, data }) => {
-        if (loading) {
-          return <Spin />;
-        }
-        if (data && data.mission.Quests.length === 0) {
-          return <div>该战役下没有关卡。</div>;
-        }
-        return (
-          data &&
-          data.mission.Quests.map((quest: any) => (
-            <Row
-              key={quest.QuestID}
-              className="list-card quest-list"
-              onClick={showQuest.bind(null, quest.QuestID)}
-            >
-              <Col span={2}>{quest.QuestID}</Col>
-              <Col span={2} className="charisma">
-                {quest.Charisma}
-              </Col>
-              <Col span={2} className="action-point">
-                {quest.ActionPoint}
-              </Col>
-              <Col className="important" span={18}>
-                {quest.Name}
-              </Col>
-            </Row>
-          ))
-        );
-      }}
-    </Query>
+      }
+    `,
+    { variables: { MissionID: mission.MissionID } },
+  );
+  return loading ? (
+    <Spin />
+  ) : data!.mission.Quests.length === 0 ? (
+    <div>该战役下没有关卡。</div>
+  ) : (
+    <div>
+      {data!.mission.Quests.map(quest => (
+        <div
+          key={quest.QuestID}
+          className={styles.listCard}
+          onClick={showQuest.bind(null, quest.QuestID)}
+        >
+          <span>{quest.QuestID}</span>
+          &nbsp;
+          <strong>{quest.Name}</strong>
+          <div
+            style={{
+              display: isTabletOrMobile ? 'block' : 'inline-block',
+              float: isTabletOrMobile ? 'none' : 'right',
+            }}
+          >
+            {quest.Charisma !== 0 && <Tag color="green">{quest.Charisma}</Tag>}
+            {quest.ActionPoint !== 0 && (
+              <Tag color="red">{quest.ActionPoint}</Tag>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
   );
 };
 
