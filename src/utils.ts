@@ -71,7 +71,12 @@ export function generateTimelines(dots: Dot) {
         Scale: { X: 1, Y: 1 },
       };
 
-      if (pattern && (pattern.Time === t || pattern.Time === undefined)) {
+      if (
+        pattern &&
+        (pattern.Time === t ||
+          pattern.Time === undefined ||
+          pattern.Time === null)
+      ) {
         frame.Sprite = {
           ...entry.Sprites[pattern.Data],
           ParsedX: 0,
@@ -159,6 +164,5 @@ export function generateTimelines(dots: Dot) {
     }),
   );
 
-  console.log(timelines);
   return timelines;
 }

@@ -8,7 +8,7 @@ import useRouter from 'use-react-router';
 import { useQuery } from '@apollo/react-hooks';
 import { useMediaQuery } from 'react-responsive';
 import Quest from '../Quest';
-import Loading from '../../Loading';
+import Loading from 'Components/Loading';
 import styles from './QuestList.module.less';
 import { useState } from 'react';
 
@@ -24,7 +24,7 @@ const QuestList: React.FC = () => {
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 991px)' });
 
   const { loading, data } = useQuery<{
-    missions: Array<{
+    Missions: Array<{
       Name: string;
       Type: string;
       MissionID: number;
@@ -32,7 +32,7 @@ const QuestList: React.FC = () => {
   }>(
     gql`
       query {
-        missions {
+        Missions {
           Name
           Type
           MissionID
@@ -41,7 +41,7 @@ const QuestList: React.FC = () => {
     `,
   );
 
-  const missions = data ? Object.entries(_.groupBy(data.missions, 'Type')) : [];
+  const missions = data ? Object.entries(_.groupBy(data.Missions, 'Type')) : [];
 
   return (
     <Layout style={{ position: 'relative' }}>
@@ -95,17 +95,17 @@ const QuestList: React.FC = () => {
             )}
           </Content>
         </div>
-        <Drawer
-          width={isTabletOrMobile ? '100%' : '80%'}
-          visible={!!QuestID}
-          destroyOnClose
-          onClose={() => history.push('/quest')}
-          getContainer={false}
-          style={{ position: 'absolute' }}
-        >
-          {QuestID && <Quest />}
-        </Drawer>
       </Content>
+      <Drawer
+        width={isTabletOrMobile ? '100%' : '80%'}
+        visible={!!QuestID}
+        destroyOnClose
+        onClose={() => history.push('/quest')}
+        getContainer={false}
+        style={{ position: 'absolute' }}
+      >
+        {QuestID && <Quest />}
+      </Drawer>
     </Layout>
   );
 };

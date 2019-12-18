@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Tooltip } from 'antd';
-import { PLAYER_DOT_URL } from '../../consts';
+import { PLAYER_DOT_URL, ENEMY_DOT_URL } from '../../consts';
 import { Dot } from '../../interfaces';
 import { generateTimelines } from '../../utils';
 import * as GIF from 'gif.js';
@@ -8,23 +8,23 @@ import * as GIF from 'gif.js';
 interface DotAnimationProps {
   dot: Dot;
   CardID: number;
+  type: 'Player' | 'Enemy';
 }
 
-const DotAnimation: React.FC<DotAnimationProps> = ({ dot, CardID }) => {
+const DotAnimation: React.FC<DotAnimationProps> = ({ dot, CardID, type }) => {
   const canvas = useRef<HTMLCanvasElement>();
   // const tempCanvas = useRef<HTMLCanvasElement>();
   const gif = useRef<any>();
   useEffect(() => {
     let top = 0;
-    let bottom = 0;
+    let bottom = 65536;
     let left = 0;
-    let right = 0;
+    let right = 65536;
     let canvasWidth = 0;
     let canvasHeight = 0;
     const tickNum: number = dot.Length;
 
     const timelines = generateTimelines(dot);
-    console.log(timelines);
 
     console.log(timelines);
 
@@ -53,7 +53,9 @@ const DotAnimation: React.FC<DotAnimationProps> = ({ dot, CardID }) => {
     // load image
     const imageObj = new Image();
     imageObj.crossOrigin = 'anonymous';
-    imageObj.src = `${PLAYER_DOT_URL}/${CardID}.png`;
+    imageObj.src = `${
+      type === 'Player' ? PLAYER_DOT_URL : ENEMY_DOT_URL
+    }/${CardID}/sprite.png`;
 
     const ctx = canvas.current!.getContext('2d') as CanvasRenderingContext2D;
 
@@ -134,7 +136,7 @@ const DotAnimation: React.FC<DotAnimationProps> = ({ dot, CardID }) => {
       imageObj.onload = null;
       gif.current = null;
     };
-  }, [dot, CardID]);
+  }, [dot, CardID, type]);
 
   return (
     <div>

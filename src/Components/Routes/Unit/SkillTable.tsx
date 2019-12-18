@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { SkillWithType, SkillData } from './type';
 import styles from './Unit.module.less';
 import { Button, Input } from 'antd';
 import { renderDescription } from '../../../utils';
+import { SkillData, SkillWithType } from 'interfaces';
 
 const SKILL_TYPE = {
   Init: '初始',

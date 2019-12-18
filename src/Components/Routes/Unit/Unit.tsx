@@ -6,7 +6,7 @@ import useRouter from 'use-react-router';
 import { BASE_GAME_URL, ICO_URL, BONUS_TYPE } from '../../../consts';
 import './index.less';
 import styles from './Unit.module.less';
-import { ClassData, Data, query } from './type';
+import { Data, query } from './type';
 import Rarity from '../../Rarity';
 import Gender from '../../Gender';
 import Loading from '../../Loading';
@@ -16,8 +16,8 @@ import classNames from 'classnames';
 import SkillTable from './SkillTable';
 import AbilityTable from './AbilityTable';
 import ClassTable from './ClassTable';
-import { Dot } from '../../../interfaces';
-import DotTable from './DotTable';
+import { Card, ClassData } from 'interfaces';
+import DotTable from 'Components/DotTable';
 
 function countMinMax(
   min: number,
@@ -34,7 +34,7 @@ function countMinMax(
 
 function classDataToUnit(
   classData: ClassData,
-  card: Data['card'],
+  card: Card,
   nearRange?: { [k: string]: number },
 ) {
   let maxLevelUnit = 0;
@@ -109,7 +109,7 @@ function classDataToUnit(
   };
 }
 
-const getStatus = (card: Data['card']) => {
+const getStatus = (card: Data['Card']) => {
   const { BattleStyle } = card.Classes[0];
   const ranges = BattleStyle && {
     Init: BattleStyle._Range_01,
@@ -148,8 +148,8 @@ const Unit: React.FC = () => {
   });
 
   if (data) {
-    if (data.card.Rare >= 10)
-      data.card.Classes = data.card.Classes.filter(cl => cl.Type === 'Evo');
+    if (data.Card.Rare >= 10)
+      data.Card.Classes = data.Card.Classes.filter(cl => cl.Type === 'Evo');
   }
 
   return (
@@ -162,29 +162,29 @@ const Unit: React.FC = () => {
               <Icon type="left" />
             </Link>
 
-            <Gender gender={data.card.Kind} />
+            <Gender gender={data.Card.Kind} />
             <div style={{ display: 'inline-block' }}>
-              <Rarity rare={data.card.Rare} />
-              <div>{data.card.Name}</div>
+              <Rarity rare={data.Card.Rare} />
+              <div>{data.Card.Name}</div>
             </div>
             <Link to={`/unit/${CardID + 1}`}>
               <Icon type="right" />
             </Link>
           </h1>
           <p>
-            {data.card.RaceName && (
+            {data.Card.RaceName && (
               <span>
-                <Tag>{data.card.RaceName}</Tag>
+                <Tag>{data.Card.RaceName}</Tag>
               </span>
             )}
-            {data.card.AssignName && (
+            {data.Card.AssignName && (
               <span>
-                <Tag color="magenta">{data.card.AssignName}</Tag>
+                <Tag color="magenta">{data.Card.AssignName}</Tag>
               </span>
             )}
-            {data.card.IdentityName && (
+            {data.Card.IdentityName && (
               <span>
-                <Tag color="black">{data.card.IdentityName}</Tag>
+                <Tag color="black">{data.Card.IdentityName}</Tag>
               </span>
             )}
           </p>
@@ -200,7 +200,7 @@ const Unit: React.FC = () => {
                   value={currentImg}
                   className={styles.radioGroup}
                 >
-                  {data.card.ImageStand.map((_, index) => (
+                  {data.Card.ImageStand.map((_, index) => (
                     <Radio.Button key={`stand${index}`} value={index}>
                       立绘{index + 1}
                     </Radio.Button>
@@ -211,7 +211,7 @@ const Unit: React.FC = () => {
                   value={currentImg}
                   className={classNames(styles.radioGroup, styles.danger)}
                 >
-                  {data.card.ImageCG.map((_, index) => (
+                  {data.Card.ImageCG.map((_, index) => (
                     <Radio.Button key={`cg${index}`} value={index + 10}>
                       CG{index + 1}
                     </Radio.Button>
@@ -224,7 +224,7 @@ const Unit: React.FC = () => {
                   value={currentText}
                   className={styles.radioGroup}
                 >
-                  {data.card.HarlemTextA.map((_, index) => (
+                  {data.Card.HarlemTextA.map((_, index) => (
                     <Radio.Button key={`a${index}`} value={index}>
                       表{index + 1}
                     </Radio.Button>
@@ -235,7 +235,7 @@ const Unit: React.FC = () => {
                   value={currentText}
                   className={classNames(styles.radioGroup, styles.danger)}
                 >
-                  {data.card.HarlemTextR.map((_, index) => (
+                  {data.Card.HarlemTextR.map((_, index) => (
                     <Radio.Button key={`r${index}`} value={index + 10}>
                       里{index + 1}
                     </Radio.Button>
@@ -263,8 +263,8 @@ const Unit: React.FC = () => {
                       className={styles.text}
                       dangerouslySetInnerHTML={{
                         __html: (currentText < 10
-                          ? data.card.HarlemTextA[currentText]
-                          : data.card.HarlemTextR[currentText - 10]
+                          ? data.Card.HarlemTextA[currentText]
+                          : data.Card.HarlemTextR[currentText - 10]
                         )
                           .replace(
                             /([＠@].*\r\n)/g,
@@ -281,8 +281,8 @@ const Unit: React.FC = () => {
                   src={
                     BASE_GAME_URL +
                     (currentImg < 10
-                      ? data.card.ImageStand[currentImg]
-                      : data.card.ImageCG[currentImg - 10])
+                      ? data.Card.ImageStand[currentImg]
+                      : data.Card.ImageCG[currentImg - 10])
                   }
                   alt={currentImg.toString()}
                 />
@@ -313,7 +313,7 @@ const Unit: React.FC = () => {
               </tr>
               <tr>
                 <th>画师</th>
-                <td colSpan={5}>{data.card.IllustName}</td>
+                <td colSpan={5}>{data.Card.IllustName}</td>
               </tr>
               <tr>
                 <th>昵称</th>
@@ -329,49 +329,49 @@ const Unit: React.FC = () => {
               </tr>
               <tr>
                 <th>手料理</th>
-                <td colSpan={5}>{data.card.HomeCooking}</td>
+                <td colSpan={5}>{data.Card.HomeCooking}</td>
               </tr>
               <tr>
                 <th>金币</th>
-                <td colSpan={2}>{data.card.SellPrice}</td>
+                <td colSpan={2}>{data.Card.SellPrice}</td>
                 <th>虹水晶</th>
-                <td colSpan={2}>{data.card._TradePoint}</td>
+                <td colSpan={2}>{data.Card._TradePoint}</td>
               </tr>
               <tr>
                 <th>魔抗</th>
-                <td colSpan={5}>{data.card.MagicResistance}</td>
+                <td colSpan={5}>{data.Card.MagicResistance}</td>
               </tr>
               <tr>
                 <th>HP补正</th>
-                <td>{data.card.MaxHPMod / 100}</td>
+                <td>{data.Card.MaxHPMod / 100}</td>
                 <th>Atk补正</th>
-                <td>{data.card.AtkMod / 100}</td>
+                <td>{data.Card.AtkMod / 100}</td>
                 <th>Def补正</th>
-                <td>{data.card.DefMod / 100}</td>
+                <td>{data.Card.DefMod / 100}</td>
               </tr>
               <tr>
                 <th>好感1</th>
                 <td>
-                  {data.card.BonusType !== 0 &&
-                    BONUS_TYPE.get(data.card.BonusType).replace(
+                  {data.Card.BonusType !== 0 &&
+                    BONUS_TYPE.get(data.Card.BonusType).replace(
                       '%d',
-                      Math.ceil(data.card.BonusNum * 1.2),
+                      Math.ceil(data.Card.BonusNum * 1.2),
                     )}
                 </td>
                 <th>好感2</th>
                 <td>
-                  {data.card.BonusType2 !== 0 &&
-                    BONUS_TYPE.get(data.card.BonusType2).replace(
+                  {data.Card.BonusType2 !== 0 &&
+                    BONUS_TYPE.get(data.Card.BonusType2).replace(
                       '%d',
-                      Math.ceil(data.card.BonusNum2 * 1.2),
+                      Math.ceil(data.Card.BonusNum2 * 1.2),
                     )}
                 </td>
                 <th>好感150</th>
                 <td>
-                  {data.card.BonusType3 !== 0 &&
-                    BONUS_TYPE.get(data.card.BonusType3).replace(
+                  {data.Card.BonusType3 !== 0 &&
+                    BONUS_TYPE.get(data.Card.BonusType3).replace(
                       '%d',
-                      Math.ceil(data.card.BonusNum3),
+                      Math.ceil(data.Card.BonusNum3),
                     )}
                 </td>
               </tr>
@@ -392,7 +392,7 @@ const Unit: React.FC = () => {
               </tr>
             </thead>
             <thead>
-              {getStatus(data.card).map((st, index) => (
+              {getStatus(data.Card).map((st, index) => (
                 <React.Fragment key={st.ClassID}>
                   <tr>
                     <td rowSpan={2}>
@@ -427,25 +427,29 @@ const Unit: React.FC = () => {
 
           <Row gutter={8}>
             <Col md={12} sm={24}>
-              <SkillTable skills={data.card.Skills} />
+              <SkillTable skills={data.Card.Skills} />
             </Col>
             <Col md={12} sm={24}>
-              <AbilityTable abilities={data.card.Abilities} />
+              <AbilityTable abilities={data.Card.Abilities} />
             </Col>
           </Row>
 
           <ClassTable
             isTabletOrMobile={isTabletOrMobile}
-            classes={data.card.Classes}
+            classes={data.Card.Classes}
           />
 
-          {data.card.Dots && (
+          {data.Card.Dots && (
             <div>
               <h2>点阵</h2>
               <Row gutter={8}>
-                {(JSON.parse(data.card.Dots) as Dot[]).map((dot, index) => (
+                {data.Card.Dots.map((dot, index) => (
                   <Col key={index} sm={24} md={12}>
-                    <DotTable dot={dot} card={data.card} />
+                    <DotTable
+                      dot={dot}
+                      CardID={data.Card.CardID}
+                      type="Player"
+                    />
                   </Col>
                 ))}
               </Row>

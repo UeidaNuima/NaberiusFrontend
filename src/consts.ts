@@ -5,10 +5,11 @@ export const BASE_GAME_URL = 'http://assets.millennium-war.net';
 export const GAME_POSTER_URL = BASE_GAME_URL + '/00/html/image';
 export const API_URL = BASE_SERVER_URL + '/graphql';
 export const STATIC_URL = BASE_SERVER_URL + '/static';
-export const PLAYER_DOT_URL = STATIC_URL + '/playerdot';
+export const PLAYER_DOT_URL = STATIC_URL + '/playerDot';
+export const ENEMY_DOT_URL = STATIC_URL + '/enemyDot';
+export const BATTLE_TALK_EVENT_URL = STATIC_URL + '/battleTalkEvent';
 export const EMOJI_URL = STATIC_URL + '/cqp';
 export const ICO_URL = STATIC_URL + '/ico';
-export const ENEMY_DOT_URL = STATIC_URL + '/enemydot';
 export const ENEMY_CHANGE_COND: { [k: number]: string } = {
   0: '条件切换',
   1: '阻挡切换',

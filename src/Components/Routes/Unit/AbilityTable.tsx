@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { AbilityData } from './type';
 import styles from './Unit.module.less';
 import { renderDescription } from '../../../utils';
 import { Button, Input } from 'antd';
 import _ from 'lodash';
+import { AbilityData } from 'interfaces';
 
 const ABILITY_TYPE = {
   Init: '初始',

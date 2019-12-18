@@ -15,7 +15,7 @@ import { useQuery } from '@apollo/react-hooks';
 const { Content } = Layout;
 
 interface Data {
-  cards: Card[];
+  Cards: Card[];
 }
 
 interface Props {
@@ -132,9 +132,8 @@ const UnitList: React.FC<Props> = ({ data, loading }) => {
 
   const cards =
     (data &&
-      data.cards &&
-      data.cards
-        .slice()
+      data.Cards &&
+      data.Cards.slice()
         .sort(cardSorter)
         .filter(cardFilter)) ||
     [];
@@ -226,7 +225,7 @@ const UnitListWrapper: React.FC = props => {
   const { data, loading } = useQuery(
     gql`
       query {
-        cards {
+        Cards {
           CardID
           Name
           Rare

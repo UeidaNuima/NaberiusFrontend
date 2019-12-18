@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { Dot } from '../../../interfaces';
-import DotAnimation from '../../DotAnimation';
-import styles from './Unit.module.less';
-import { Data } from './type';
+import { Dot } from 'interfaces';
+import DotAnimation from 'Components/DotAnimation';
+import styles from './DotTable.module.less';
 import { Button } from 'antd';
-import { PLAYER_DOT_URL } from '../../../consts';
+import { PLAYER_DOT_URL, ENEMY_DOT_URL } from 'consts';
 
-const DotTable: React.FC<{ dot: Dot; card: Data['Card'] }> = ({
-  dot,
-  card,
-}) => {
+const DotTable: React.FC<{
+  dot: Dot;
+  CardID: number;
+  type: 'Player' | 'Enemy';
+}> = ({ dot, CardID, type }) => {
   const [showConfigs, setShowConfigs] = useState(false);
   return (
     <table className={styles.table}>
@@ -22,7 +22,7 @@ const DotTable: React.FC<{ dot: Dot; card: Data['Card'] }> = ({
         <tr>
           <td style={{ width: 100 }}>{dot.Length}f</td>
           <td>
-            <DotAnimation type="Player" dot={dot} CardID={card.CardID} />
+            <DotAnimation type={type} dot={dot} CardID={CardID} />
           </td>
           <td style={{ width: 100 }}>
             <Button
@@ -46,7 +46,9 @@ const DotTable: React.FC<{ dot: Dot; card: Data['Card'] }> = ({
                           display: 'inline-block',
                           width: sprite.Width,
                           height: sprite.Height,
-                          backgroundImage: `url("${PLAYER_DOT_URL}/${card.CardID}.png")`,
+                          backgroundImage: `url("${
+                            type === 'Player' ? PLAYER_DOT_URL : ENEMY_DOT_URL
+                          }/${CardID}/sprite.png")`,
                           backgroundPositionX: -sprite.X,
                           backgroundPositionY: -sprite.Y,
                         }}

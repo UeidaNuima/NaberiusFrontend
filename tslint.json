@@ -23,6 +23,7 @@
     "jsx-no-lambda": false,
     "member-ordering": false,
     "no-shadowed-variable": false,
-    "curly": false
+    "curly": false,
+    "no-object-literal-type-assertion": false
   }
 }

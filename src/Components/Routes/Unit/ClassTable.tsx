@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { ClassData } from './type';
 import styles from './Unit.module.less';
 import { renderDescription } from '../../../utils';
 import { Button, Input } from 'antd';
+import { ClassData } from 'interfaces';
 
 const CLASS_TYPE = {
   Init: '初始',

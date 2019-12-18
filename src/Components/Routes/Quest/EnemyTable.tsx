@@ -1,358 +1,370 @@
-import React from 'react';
-import { Affix, Popover, Icon } from 'antd';
-import _ from 'lodash';
-import { ICO_URL, ENEMY_DOT_URL, ENEMY_CHANGE_COND } from '../../../consts';
-import styles from './index.module.less';
-import classNames from 'classnames';
+import React, { useState } from 'react';
+import { Button, Divider, Row, Col, Switch } from 'antd';
+import { ICO_URL, ENEMY_DOT_URL, ENEMY_CHANGE_COND } from 'consts';
+import styles from './Quest.module.less';
+import { Data } from './Types';
+import { Dot, Enemy, MapEntry } from 'interfaces';
+import { useMediaQuery } from 'react-responsive';
+import DotTable from 'Components/DotTable';
+import TalkRow from 'Components/DotAnimation/TalkRow';
+
+const getAttackSpeed = (enemy: Enemy & MapEntry, dots: Dot[]) => {
+  let length = 0;
+  for (const dot of dots) {
+    if (dot.Name === 'Attack') {
+      length = dot.Length;
+    }
+  }
+  // don't know why
+  if (!length) {
+    return null;
+  }
+  let attackSpeed = enemy.AttackWait * 2 + length;
+  if (!enemy.ATTACK_RANGE) {
+    attackSpeed += enemy.ATTACK_SPEED;
+  }
+  return attackSpeed;
+};
 
 interface EnemyTableRowsProps {
-  enemy: any;
+  enemies: Array<Enemy & MapEntry>;
   drops: string[];
-  isChange?: boolean;
+  isTabletOrMobile: boolean;
 }
 
-interface EnemyTableRowsStates {
-  showChange: boolean;
-}
+const EnemyTableRows: React.FC<EnemyTableRowsProps> = ({
+  enemies,
+  drops,
+  isTabletOrMobile,
+}) => {
+  const [expand, setExpand] = useState(false);
+  const [showTable, setShowTable] = useState<boolean[]>(
+    Array(enemies.length).fill(false),
+  );
 
-class EnemyTableRows extends React.Component<
-  EnemyTableRowsProps,
-  EnemyTableRowsStates
-> {
-  public readonly state: EnemyTableRowsStates = {
-    showChange: false,
-  };
-
-  private getAttackSpeed(enemy: any) {
-    // don't know why
-    if (!enemy.DotLength) {
-      return null;
-    }
-    let attackSpeed = enemy.AttackWait * 2 + enemy.DotLength;
-    if (!enemy.ATTACK_RANGE) {
-      attackSpeed += enemy.ATTACK_SPEED;
-    }
-    return attackSpeed;
-  }
-
-  private handleRowClick: () => void = () => {
-    this.setState(state => ({ showChange: !state.showChange }));
-  };
-
-  public render() {
-    const { enemy, drops, isChange = false } = this.props;
-    const { showChange } = this.state;
-    const enemies = (showChange && enemy.Changes) || [enemy];
-    return (
-      <>
-        {enemies.map((e: any, index: number) => (
-          <tr
-            key={index}
-            onClick={enemy.Changes ? this.handleRowClick : undefined}
-            className={classNames({
-              [styles.enemyRowWithChange]: enemy.Changes,
-              [styles.rowShow]: showChange,
-            })}
-          >
-            {index === 0 && (
-              <td rowSpan={enemies.length}>
-                {enemy.Changes && (
-                  <Icon
-                    style={{
-                      transform: showChange ? 'rotate(-90deg)' : undefined,
-                      transition: 'transform 0.3s',
+  return (
+    <>
+      {enemies.slice(0, expand ? enemies.length : 1).map((e, index) => {
+        const dots = e.Dots;
+        const previewSprite = dots[0].Entries[0].Sprites[0];
+        const types = [
+          e.SkyFlag && '飛行',
+          e.EnemyElem._EnemyElementName,
+          e.EnemyType._EnemyTypeName,
+          e._Attribute,
+        ]
+          .filter(st => st && st !== 'なし')
+          .join(' ');
+        const changeCondition = e.Param_ChangeParam
+          ? ENEMY_CHANGE_COND[e.Param_ChangeCondition]
+          : null;
+        const imgID = (e.PatternID >> 8) % 4096;
+        const dropImg =
+          e.PrizeCardID !== 0 ? (
+            <img
+              src={drops[e.PrizeCardID - 1]}
+              alt={e.PrizeCardID.toString()}
+              style={{ width: 40 }}
+            />
+          ) : null;
+        return (
+          <React.Fragment key={index}>
+            <tr
+              className={styles.compact}
+              style={{ cursor: 'pointer' }}
+              onClick={() =>
+                setShowTable(st =>
+                  st.map((v, i) => {
+                    if (i === index) return !v;
+                    return v;
+                  }),
+                )
+              }
+            >
+              <td style={{ textAlign: 'left' }}>
+                {enemies.length > 1 && index === 0 && (
+                  <Button
+                    icon={expand ? 'minus' : 'plus'}
+                    onClick={e => {
+                      e.stopPropagation();
+                      setExpand(e => !e);
                     }}
-                    type="caret-down"
-                    theme="filled"
+                    style={{
+                      width: 20,
+                      height: 20,
+                      fontSize: 10,
+                      marginRight: 5,
+                    }}
                   />
                 )}
-              </td>
-            )}
-            <td>
-              <img
-                alt={((e.PatternID >> 8) % 4096).toString()}
-                src={`${ENEMY_DOT_URL}/${(e.PatternID >> 8) % 4096}.png`}
-              />
-            </td>
-            {!isChange && <td>{e.Loop}</td>}
-            <td>{e.Types && e.Types.join(', ')}</td>
-            <td>
-              {e.TypeAttack === 300 ? '真伤' : e.MagicAttack ? '魔法' : '物理'}
-            </td>
-            <td>{this.getAttackSpeed(e)}</td>
-            <td>{e.ATTACK_RANGE ? e.ATTACK_RANGE : '近接'}</td>
-            <td>{e.HP}</td>
-            <td>{e.ATTACK_POWER}</td>
-            <td>{e.ARMOR_DEFENSE}</td>
-            <td>{e.MAGIC_DEFENSE}</td>
-            <td>{e.Param_ResistanceAssassin}</td>
-            <td>
-              {e.PrizeCardID ? (
-                <img
-                  alt={(e.PrizeCardID - 1).toString()}
-                  src={drops[e.PrizeCardID - 1]}
+                {enemies.length > 1 && index !== 0 && (
+                  <Divider style={{ margin: '0 12.5px' }} type="vertical" />
+                )}
+                <div
+                  style={{
+                    display: 'inline-block',
+                    width: previewSprite.Width,
+                    height: previewSprite.Height,
+                    backgroundImage: `url("${ENEMY_DOT_URL}/${imgID}/sprite.png")`,
+                    backgroundPositionX: -previewSprite.X,
+                    backgroundPositionY: -previewSprite.Y,
+                    zoom: Math.min(
+                      40 / previewSprite.Height,
+                      40 / previewSprite.Width,
+                    ),
+                    verticalAlign: 'middle',
+                  }}
                 />
-              ) : null}
-            </td>
-            <Popover
-              content={
-                <pre>
-                  {JSON.stringify({ ...e, Changes: undefined }, null, 2)}
-                </pre>
-              }
-              placement="left"
-            >
-              <td>
-                {e.Param_ChangeParam ? (
-                  <p>{ENEMY_CHANGE_COND[e.Param_ChangeCondition]}</p>
-                ) : null}
               </td>
-            </Popover>
-          </tr>
-        ))}
-      </>
-    );
-  }
-}
+              {!isTabletOrMobile && <td>{types}</td>}
+              <td>
+                {getAttackSpeed(e, dots)}
+                <br />
+                {e.ATTACK_RANGE}
+              </td>
+              <td>{e.HP}</td>
+              <td
+                style={{
+                  background:
+                    e.TypeAttack === 300
+                      ? '#ffdad2'
+                      : e.MagicAttack
+                      ? '#c8f1bb'
+                      : '#ccecff',
+                }}
+              >
+                {e.ATTACK_POWER}
+              </td>
+              <td>
+                {e.ARMOR_DEFENSE}
+                <br />
+                {e.MAGIC_DEFENSE}
+              </td>
+              <td>{e.Param_ResistanceAssassin}</td>
+              {!isTabletOrMobile && <td>{dropImg}</td>}
+              {!isTabletOrMobile && <td>{changeCondition}</td>}
+            </tr>
+            {showTable[index] && (
+              <tr>
+                <td colSpan={9} style={{ paddingTop: 0, paddingBottom: 0 }}>
+                  <Row gutter={8}>
+                    <Col xs={24} md={12}>
+                      <table className={styles.table}>
+                        <tbody>
+                          <tr>
+                            <th>类型</th>
+                            <td>{types}</td>
+                          </tr>
+                          {changeCondition && (
+                            <tr>
+                              <th>切换条件</th>
+                              <td>{changeCondition}</td>
+                            </tr>
+                          )}
+                          <tr>
+                            <th>循环数量</th>
+                            <td>{e.Loop}</td>
+                          </tr>
+                          <tr>
+                            <th>路线</th>
+                            <td>{e.RouteNo}</td>
+                          </tr>
+                          {e.PrizeCardID !== 0 && (
+                            <tr>
+                              <th>掉落索引</th>
+                              <td>{dropImg}</td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </Col>
+                    <Col xs={24} md={12}>
+                      {dots.map((dot, i) => (
+                        <DotTable
+                          key={i}
+                          CardID={imgID}
+                          type="Enemy"
+                          dot={dot}
+                        />
+                      ))}
+                    </Col>
+                  </Row>
+                </td>
+              </tr>
+            )}
+          </React.Fragment>
+        );
+      })}
+    </>
+  );
+};
 
 interface EnemyTableProps {
-  quest: any;
-  battleTalks: Array<{
-    Message: string;
-    Name: string;
-  }>;
-  onDrop: (treasureDrop: number[][]) => void;
-  showDuplicated: boolean;
+  data: Data;
 }
 
-class EnemyTable extends React.Component<EnemyTableProps> {
-  public componentDidMount() {
-    const entries: any = _.find(this.props.quest.Map.Entries, {
-      EntryID: this.props.quest.EntryNo,
-    });
-    const treasureDrop: number[][] = [[], [], [], [], []];
-    entries.Entries.forEach((entry: any, index: number) => {
-      if (entry.PrizeCardID) {
-        treasureDrop[entry.PrizeCardID - 1].push(index);
+const EnemyTable: React.FC<EnemyTableProps> = ({ data }) => {
+  const isTabletOrMobile = useMediaQuery({ query: '(max-width: 991px)' });
+  const { Quest: quest } = data;
+  const enemies = quest.Map.Enemies || quest.Mission.Enemies;
+  const entries = quest.Map.Entries[quest.EntryNo];
+  const mapLevel = quest.Level;
+  const [showDuplicate, setShowDuplicate] = useState(false);
+  const [showTalk, setShowTalk] = useState(true);
+  const drops = [
+    quest.Treasure1,
+    quest.Treasure2,
+    quest.Treasure3,
+    quest.Treasure4,
+    quest.Treasure5,
+  ].map(treasure => `${ICO_URL}/0/${treasure}.png`);
+  const parsedEnemies: Array<Array<Enemy & MapEntry> | MapEntry> = [];
+  const parseEnemy = (entry: MapEntry, enemyID: number = entry.EnemyID - 1) => {
+    const enemy = { ...enemies[enemyID], ...entry, EnemyID: enemyID };
+    if (!enemy.Level) {
+      enemy.Level = 100;
+    }
+    enemy.HP = (enemy.HP * mapLevel * enemy.Level) / 10000;
+    if (!enemy.ATTACK_RANGE) {
+      enemy.ATTACK_POWER =
+        (enemy.ATTACK_POWER * mapLevel * enemy.Level) / 10000;
+    }
+    return enemy;
+  };
+  for (const entry of entries) {
+    // ids between 0 and 1000 are true enemies
+    if (entry.EnemyID >= 0 && entry.EnemyID < 1000) {
+      const enemy = parseEnemy(entry);
+      const enemyGroup = [enemy];
+      if (
+        parsedEnemies.find(
+          ea =>
+            !showDuplicate &&
+            ea instanceof Array &&
+            ea[0].EnemyID === enemy.EnemyID,
+        )
+      ) {
+        continue;
       }
-    });
-    this.props.onDrop(treasureDrop);
-  }
-  public render() {
-    const quest = this.props.quest;
-    const enemies = quest.Map.Enemies || quest.Mission.Enemies;
-    const entries: any = _.find(quest.Map.Entries, {
-      EntryID: quest.EntryNo,
-    });
-    const mapLevel = quest.Level;
-    const drops = [
-      quest.Treasure1,
-      quest.Treasure2,
-      quest.Treasure3,
-      quest.Treasure4,
-      quest.Treasure5,
-    ].map((treasure: number, index: number) => `${ICO_URL}/0/${treasure}.png`);
-    const parsedEnemies: any = [];
-    const parseEnemy = (entry: any, enemyID: number = entry.EnemyID - 1) => {
-      const enemy = { ...enemies[enemyID], ...entry, EnemyID: enemyID };
-      if (!enemy.Level) {
-        enemy.Level = 100;
-      }
-      enemy.HP = (enemy.HP * mapLevel * enemy.Level) / 10000;
-      if (!enemy.ATTACK_RANGE) {
-        enemy.ATTACK_POWER =
-          (enemy.ATTACK_POWER * mapLevel * enemy.Level) / 10000;
-      }
-      return enemy;
-    };
-    entries.Entries.forEach((entry: any) => {
-      // ids between 0 and 1000 are true enemies
-      if (entry.EnemyID >= 0 && entry.EnemyID < 1000) {
-        const enemy = parseEnemy(entry);
-        if (
-          !this.props.showDuplicated &&
-          parsedEnemies.find((e: any) => e.EnemyID === enemy.EnemyID)
-        ) {
-          enemy.duplicated = true;
-        }
-        if (enemy.Param_ChangeParam) {
-          const changes = [enemy];
-          while (changes[changes.length - 1].Param_ChangeParam) {
-            const changeFrom = changes[changes.length - 1];
-            const enemyID = changeFrom.Param_ChangeParam - 1;
-            if (_.find(changes, ['EnemyID', enemyID])) {
-              break;
-            }
-            const newEnemy = parseEnemy(entry, enemyID);
-            changes.push(newEnemy);
+      if (enemy.Param_ChangeParam) {
+        while (enemyGroup[enemyGroup.length - 1].Param_ChangeParam) {
+          const changeFrom = enemyGroup[enemyGroup.length - 1];
+          const enemyID = changeFrom.Param_ChangeParam - 1;
+          if (enemyGroup.find(e => e.EnemyID === enemyID)) {
+            break;
           }
-          enemy.Changes = changes;
+          const newEnemy = parseEnemy(entry, enemyID);
+          enemyGroup.push(newEnemy);
         }
-        parsedEnemies.push(enemy);
-      } else {
-        parsedEnemies.push(entry);
       }
-    });
-    return (
-      <>
-        <Affix>
-          <div className="ant-table ant-table-bordered ant-table-middle">
-            <div className="ant-table-content">
-              <div className="ant-table-body">
-                <table style={{ textAlign: 'center' }}>
-                  <thead className="ant-table-thead" style={{ width: '100%' }}>
-                    <tr>
-                      <th style={{ width: '8%' }} />
-                      <th style={{ width: '13%' }}>点阵</th>
-                      <th style={{ width: '5%' }}>重复</th>
-                      <th style={{ width: '13%' }}>属性</th>
-                      <th style={{ width: '5%' }}>攻击属性</th>
-                      <th style={{ width: '5%' }}>攻速</th>
-                      <th style={{ width: '5%' }}>射程</th>
-                      <th style={{ width: '5%' }}>HP</th>
-                      <th style={{ width: '5%' }}>攻击</th>
-                      <th style={{ width: '5%' }}>防御</th>
-                      <th style={{ width: '5%' }}>魔抗</th>
-                      <th style={{ width: '5%' }}>暗杀补正</th>
-                      <th style={{ width: '13%' }}>掉落</th>
-                      <th style={{ width: '8%' }}>备注</th>
-                    </tr>
-                  </thead>
-                </table>
-              </div>
-            </div>
-          </div>
-        </Affix>
-        <div className="ant-table ant-table-bordered ant-table-middle">
-          <div className="ant-table-content">
-            <div className="ant-table-body">
-              <table style={{ textAlign: 'center' }}>
-                <colgroup style={{ width: '8%' }} />
-                <colgroup style={{ width: '13%' }} />
-                <colgroup style={{ width: '5%' }} />
-                <colgroup style={{ width: '13%' }} />
-                <colgroup style={{ width: '5%' }} />
-                <colgroup style={{ width: '5%' }} />
-                <colgroup style={{ width: '5%' }} />
-                <colgroup style={{ width: '5%' }} />
-                <colgroup style={{ width: '5%' }} />
-                <colgroup style={{ width: '5%' }} />
-                <colgroup style={{ width: '5%' }} />
-                <colgroup style={{ width: '5%' }} />
-                <colgroup style={{ width: '13%' }} />
-                <colgroup style={{ width: '8%' }} />
-
-                <tbody className="ant-table-tbody">
-                  {parsedEnemies.map((enemy: any, index: number) => {
-                    if (enemy.duplicated) {
-                      return null;
-                    }
-                    if (enemy.EnemyID >= 0 && enemy.EnemyID < 1000) {
-                      return (
-                        <EnemyTableRows
-                          enemy={enemy}
-                          drops={drops}
-                          key={index}
-                        />
-                      );
-                    } else if (enemy.EnemyID === -1) {
-                      // wait
-                      return null;
-                    } else if (enemy.EnemyID === 2000) {
-                      // exclution mark
-                      return null;
-                    } else if (enemy.EnemyID >= 1000 && enemy.EnemyID < 2000) {
-                      // quest event text
-                      return (
-                        <tr key={`enemy-table-${index}`}>
-                          <td
-                            style={{
-                              background: '#f5f6fa',
-                              fontWeight: 'bold',
-                              textAlign: 'center',
-                              color: 'rgba(0, 0, 0, 0.85)',
-                            }}
-                          >
-                            {this.props.battleTalks[enemy.EnemyID - 1000].Name}
-                          </td>
-                          <td colSpan={13} style={{ textAlign: 'left' }}>
-                            {
-                              this.props.battleTalks[enemy.EnemyID - 1000]
-                                .Message
-                            }
-                          </td>
-                        </tr>
-                      );
-                    } else if (enemy.EnemyID === 4201) {
-                      // command, play se or call a event, etc
-                      const command = enemy.EntryCommand;
-                      const match = /CallEvent\(([\d,]+)\)/.exec(command);
-                      if (match) {
-                        const list = match[1].split(',');
-                        return list.map((s, index) => {
-                          const recordIndex = Number.parseInt(s, 10);
-                          const talk: any = _.find(
-                            this.props.quest.Mission.BattleTalks,
-                            {
-                              RecordIndex: recordIndex,
-                            },
-                          );
-                          if (!talk) {
-                            return null;
-                          }
-                          return (
-                            <tr
-                              key={`enemy-table-${index}-event-${recordIndex}`}
-                            >
-                              <td
-                                style={{
-                                  background: '#f5f6fa',
-                                  fontWeight: 'bold',
-                                  textAlign: 'center',
-                                  color: 'rgba(0, 0, 0, 0.85)',
-                                }}
-                              >
-                                {talk.Name}
-                              </td>
-                              <td colSpan={12} style={{ textAlign: 'left' }}>
-                                {talk.Message}
-                              </td>
-                              {index === 0 && (
-                                <Popover content={command} placement="left">
-                                  <td rowSpan={list.length} />
-                                </Popover>
-                              )}
-                            </tr>
-                          );
-                        });
-                      }
-                      return (
-                        <tr
-                          style={{ display: 'none' }}
-                          key={`enemy-table-${index}`}
-                        >
-                          <td colSpan={14}>{enemy.EntryCommand}</td>
-                        </tr>
-                      );
-                    } else {
-                      return (
-                        <tr
-                          style={{ display: 'none' }}
-                          key={`enemy-table-${index}`}
-                        >
-                          <td colSpan={14}>{JSON.stringify(enemy)}</td>
-                        </tr>
-                      );
-                    }
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </>
-    );
+      parsedEnemies.push(enemyGroup);
+    } else {
+      parsedEnemies.push(entry);
+    }
   }
-}
+  return (
+    <table className={styles.table}>
+      <thead>
+        <tr>
+          <td colSpan={12}>
+            重复敌人
+            <Switch
+              checkedChildren="显示"
+              unCheckedChildren="隐藏"
+              checked={showDuplicate}
+              onChange={value => setShowDuplicate(value)}
+            />
+            <Divider type="vertical" />
+            对话
+            <Switch
+              checkedChildren="显示"
+              unCheckedChildren="隐藏"
+              checked={showTalk}
+              onChange={value => setShowTalk(value)}
+            />
+          </td>
+        </tr>
+        <tr>
+          <th rowSpan={2} style={{ width: 100 }}>
+            点阵
+          </th>
+          {!isTabletOrMobile && <th rowSpan={2}>属性</th>}
+          <th>攻速</th>
+          <th rowSpan={2}>HP</th>
+          <th rowSpan={2}>攻击</th>
+          <th>防御</th>
+          <th rowSpan={2}>暗杀</th>
+          {!isTabletOrMobile && <th rowSpan={2}>掉落</th>}
+          {!isTabletOrMobile && <th rowSpan={2}>切换</th>}
+        </tr>
+        <tr>
+          <th>射程</th>
+          <th>魔抗</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {parsedEnemies.map((enemies, index) => {
+          if (enemies instanceof Array) {
+            return (
+              <EnemyTableRows
+                isTabletOrMobile={isTabletOrMobile}
+                enemies={enemies}
+                drops={drops}
+                key={index}
+              />
+            );
+          } else if (enemies.EnemyID === -1) {
+            // wait
+            return null;
+          } else if (enemies.EnemyID === 2000) {
+            // exclution mark
+            return null;
+          } else if (enemies.EnemyID >= 1000 && enemies.EnemyID < 2000) {
+            // quest event text
+            return showTalk ? (
+              <TalkRow
+                key={`enemy-table-${index}`}
+                talk={data.QuestEventTexts[enemies.EnemyID - 1000]}
+                MissionID={quest.Mission.MissionID}
+                isTabletOrMobile={isTabletOrMobile}
+              />
+            ) : null;
+          } else if (enemies.EnemyID === 4201) {
+            // command, play se or call a event, etc
+            const command = enemies.EntryCommand;
+            const match = /CallEvent\(([\d,]+)\)/.exec(command);
+            if (match) {
+              const list = match[1].split(',');
+              return list.map((s, index) => {
+                const recordIndex = Number.parseInt(s, 10);
+                const talk = quest.Mission.BattleTalkEvents.find(
+                  e => e.RecordIndex === recordIndex,
+                );
+                if (!talk) {
+                  return null;
+                }
+                return showTalk ? (
+                  <TalkRow
+                    key={`enemy-table-${index}-event-${recordIndex}`}
+                    MissionID={quest.Mission.MissionID}
+                    talk={talk}
+                    isTabletOrMobile={isTabletOrMobile}
+                  />
+                ) : null;
+              });
+            }
+            return (
+              <tr style={{ display: 'none' }} key={`enemy-table-${index}`}>
+                <td colSpan={14}>{enemies.EntryCommand}</td>
+              </tr>
+            );
+          }
+          return null;
+        })}
+      </tbody>
+    </table>
+  );
+};
 
 export default EnemyTable;

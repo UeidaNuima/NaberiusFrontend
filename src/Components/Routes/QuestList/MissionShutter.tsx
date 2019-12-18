@@ -16,10 +16,10 @@ const MissionShutter: React.FC<{ mission: any; isTabletOrMobile: boolean }> = ({
     history.push(`/quest/${questID}`);
   };
 
-  const { loading, data } = useQuery<{ mission: { Quests: QuestData[] } }>(
+  const { loading, data } = useQuery<{ Mission: { Quests: QuestData[] } }>(
     gql`
       query($MissionID: Int!) {
-        mission(MissionID: $MissionID) {
+        Mission(MissionID: $MissionID) {
           Quests {
             Name
             QuestID
@@ -33,11 +33,11 @@ const MissionShutter: React.FC<{ mission: any; isTabletOrMobile: boolean }> = ({
   );
   return loading ? (
     <Spin />
-  ) : data!.mission.Quests.length === 0 ? (
+  ) : data!.Mission.Quests.length === 0 ? (
     <div>该战役下没有关卡。</div>
   ) : (
     <div>
-      {data!.mission.Quests.map(quest => (
+      {data!.Mission.Quests.map(quest => (
         <div
           key={quest.QuestID}
           className={styles.listCard}
