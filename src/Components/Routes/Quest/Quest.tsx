@@ -124,6 +124,10 @@ const Quest: React.FC = () => {
     }
   }
 
+  const haveDrop = dropper
+    .map(drop => drop.length !== 0)
+    .reduce((prev, curr) => prev || curr);
+
   return (
     <Content className={styles.questContainer}>
       {loading && <Loading />}
@@ -197,52 +201,58 @@ const Quest: React.FC = () => {
                     <th>设置</th>
                     <td>233</td>
                   </tr>
-                  <tr>
-                    <td colSpan={4}>
-                      <table>
-                        <tbody>
-                          <tr>
-                            {dropper.map((_, index) => {
-                              const treasure: number = (data.Quest as any)[
-                                `Treasure${index + 1}`
-                              ];
-                              return (
-                                <td style={{ width: '20%' }} key={index}>
-                                  {treasure ? (
-                                    <div>
-                                      <img
-                                        alt={treasure.toString()}
-                                        style={{ width: '100%' }}
-                                        src={`${ICO_URL}/0/${treasure}.png`}
-                                      />
-                                      {dropper[4].length === 0 && index === 4 && (
-                                        <Tag color="red" style={{ margin: 0 }}>
-                                          COM
-                                        </Tag>
-                                      )}
-                                    </div>
-                                  ) : null}
+                  {haveDrop && (
+                    <tr>
+                      <td colSpan={4}>
+                        <table>
+                          <tbody>
+                            <tr>
+                              {dropper.map((_, index) => {
+                                const treasure: number = (data.Quest as any)[
+                                  `Treasure${index + 1}`
+                                ];
+                                return (
+                                  <td style={{ width: '20%' }} key={index}>
+                                    {treasure ? (
+                                      <div>
+                                        <img
+                                          alt={treasure.toString()}
+                                          style={{ width: '100%' }}
+                                          src={`${ICO_URL}/0/${treasure}.png`}
+                                        />
+                                        {dropper[4].length === 0 &&
+                                          index === 4 && (
+                                            <Tag
+                                              color="red"
+                                              style={{ margin: 0 }}
+                                            >
+                                              COM
+                                            </Tag>
+                                          )}
+                                      </div>
+                                    ) : null}
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                            <tr>
+                              {dropper.map((drops, index) => (
+                                <td key={index}>
+                                  {drops.map((drop, i) => {
+                                    return (
+                                      <div key={i}>
+                                        <PreviewDot enemy={drop} />#{drop.Loop}
+                                      </div>
+                                    );
+                                  })}
                                 </td>
-                              );
-                            })}
-                          </tr>
-                          <tr>
-                            {dropper.map((drops, index) => (
-                              <td key={index}>
-                                {drops.map((drop, i) => {
-                                  return (
-                                    <div key={i}>
-                                      <PreviewDot enemy={drop} />#{drop.Loop}
-                                    </div>
-                                  );
-                                })}
-                              </td>
-                            ))}
-                          </tr>
-                        </tbody>
-                      </table>
-                    </td>
-                  </tr>
+                              ))}
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </Col>
