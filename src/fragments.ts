@@ -64,6 +64,15 @@ export const EnemyFragment = gql`
     Param_ResistanceAssassin
     Param_ChangeParam
     Param_ChangeCondition
+    SpecialtyConfigs {
+      Type_Influence
+      Param_1
+      Param_2
+      Param_3
+      Param_4
+      _Expression
+      _ExtParam
+    }
     EnemyElem {
       _EnemyElementName
     }

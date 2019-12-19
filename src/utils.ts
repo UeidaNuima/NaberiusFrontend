@@ -102,6 +102,11 @@ export function generateTimelines(dots: Dot) {
           timeline[t].Alpha = alphas[t - prevAlpha.Time];
         }
       }
+      if (entry.Alpha.length === 1) {
+        for (const frame of timeline) {
+          frame.Alpha = entry.Alpha[0].Data;
+        }
+      }
     }
 
     if (entry.Pos) {
@@ -124,6 +129,12 @@ export function generateTimelines(dots: Dot) {
           timeline[t].Pos.Y = posesY[t - prevPos.Time];
         }
       }
+
+      if (entry.Pos.length === 1) {
+        for (const frame of timeline) {
+          frame.Pos = { ...entry.Pos[0].Data };
+        }
+      }
     }
 
     if (entry.Scale) {
@@ -144,6 +155,11 @@ export function generateTimelines(dots: Dot) {
         for (let t = prevScale.Time; t <= nextScale.Time; t++) {
           timeline[t].Scale.X = scalesX[t - prevScale.Time];
           timeline[t].Scale.Y = scalesY[t - prevScale.Time];
+        }
+      }
+      if (entry.Scale.length === 1) {
+        for (const frame of timeline) {
+          frame.Scale = { ...entry.Scale[0].Data };
         }
       }
     }

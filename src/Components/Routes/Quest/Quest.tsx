@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import gql from 'graphql-tag';
-import { Layout, Row, Col, Tag, Icon } from 'antd';
+import { Layout, Row, Col, Tag, Icon, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import useRouter from 'use-react-router';
 import { ICO_URL } from 'consts';
@@ -14,15 +14,26 @@ import { MapEntry, Enemy } from 'interfaces';
 import { DotFragment, EnemyFragment } from 'fragments';
 import PreviewDot from './PreviewDot';
 import MapTable from './MapTable';
+import QuestTermTable from './QuestTermTable';
 
 const { Content } = Layout;
 
 const Quest: React.FC = () => {
   const { match } = useRouter<{ QuestID: string }>();
   const QuestID = Number.parseInt(match.params.QuestID, 10);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showHardTerms, setShowHardTerms] = useState(false);
 
   const { data, loading } = useQuery<Data>(
     gql`
+      fragment termConfig on QuestTermConfig {
+        Type_Influence
+        Data_Param1
+        Data_Param2
+        Data_Param3
+        Data_Param4
+        Data_Expression
+      }
       query($id: Int!) {
         Quest(QuestID: $id) {
           EventArcs {
@@ -44,6 +55,14 @@ const Quest: React.FC = () => {
           RankExp
           Gold
           Capacity
+          QuestTerms
+          _HardCondition
+          QuestTermConfigs {
+            ...termConfig
+          }
+          QuestHardTermConfigs {
+            ...termConfig
+          }
           Mission {
             MissionID
             Enemies {
@@ -193,14 +212,48 @@ const Quest: React.FC = () => {
                     <th>补正</th>
                     <td>{data.Quest.Level}</td>
                     <th>设置</th>
-                    <td>233</td>
+                    <td>
+                      {data.Quest.QuestTerms !== 0 && (
+                        <Button
+                          type="primary"
+                          size="small"
+                          onClick={() => setShowTerms(!showTerms)}
+                          icon={showTerms ? 'up' : 'down'}
+                        />
+                      )}
+                    </td>
                   </tr>
-                  <tr>
-                    <th>4☆补正</th>
-                    <td>{data.Quest.Level}</td>
-                    <th>设置</th>
-                    <td>233</td>
-                  </tr>
+                  {showTerms && (
+                    <tr>
+                      <td colSpan={4} style={{ padding: 0 }}>
+                        <QuestTermTable terms={data.Quest.QuestTermConfigs} />
+                      </td>
+                    </tr>
+                  )}
+                  {data.Quest._HardCondition !== 0 && (
+                    <tr>
+                      <th>4☆补正</th>
+                      <td>{data.Quest.Level}</td>
+                      <th>设置</th>
+                      <td>
+                        <Button
+                          type="primary"
+                          size="small"
+                          onClick={() => setShowHardTerms(!showHardTerms)}
+                          icon={showHardTerms ? 'up' : 'down'}
+                        />
+                      </td>
+                    </tr>
+                  )}
+                  {showHardTerms && (
+                    <tr>
+                      <td colSpan={4} style={{ padding: 0 }}>
+                        <QuestTermTable
+                          terms={data.Quest.QuestHardTermConfigs}
+                        />
+                      </td>
+                    </tr>
+                  )}
                   {haveDrop && (
                     <tr>
                       <td colSpan={4}>

@@ -190,6 +190,16 @@ export interface Card {
   Skills: SkillWithType[];
 }
 
+export interface SpecialtyConfig {
+  Type_Influence: number;
+  Param_1: number;
+  Param_2: number;
+  Param_3: number;
+  Param_4: number;
+  _Expression: string;
+  _ExtParam: string;
+}
+
 export interface Enemy {
   SpecialEffect: any;
   PatternID: number;
@@ -210,6 +220,7 @@ export interface Enemy {
   Param_ChangeParam: number;
   Param_ChangeCondition: number;
   TypeAttack: number;
+  SpecialtyConfigs: SpecialtyConfig[];
   EnemyElem: {
     _EnemyElementName: string;
   };
@@ -260,6 +271,15 @@ export interface Map {
   Enemies: Enemy[];
 }
 
+export interface QuestTermConfig {
+  Type_Influence: number;
+  Data_Param1: number;
+  Data_Param2: number;
+  Data_Param3: number;
+  Data_Param4: number;
+  Data_Expression: string;
+}
+
 export interface Quest {
   EventArcs: Array<{
     _TalkerName: string;
@@ -280,6 +300,10 @@ export interface Quest {
   RankExp: number;
   Gold: number;
   Capacity: number;
+  QuestTerms: number;
+  _HardCondition: number;
+  QuestTermConfigs: QuestTermConfig[];
+  QuestHardTermConfigs: QuestTermConfig[];
   Mission: {
     MissionID: number;
     Enemies: Enemy[];
