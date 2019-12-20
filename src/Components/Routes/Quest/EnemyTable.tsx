@@ -175,48 +175,74 @@ const EnemyTableRows: React.FC<EnemyTableRowsProps> = ({
                               <td>{dropImg}</td>
                             </tr>
                           )}
-                          <tr>
-                            <td colSpan={2}>
-                              <table className={styles.table}>
-                                <thead>
-                                  <tr>
-                                    <th>类型</th>
-                                    <th>p1</th>
-                                    <th>p2</th>
-                                    <th>p3</th>
-                                    <th>p4</th>
-                                  </tr>
-                                  <tr>
-                                    <th colSpan={3}>cmd</th>
-                                    <th colSpan={2}>...p</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {e.SpecialtyConfigs.map((config, index) => {
-                                    return (
-                                      <React.Fragment key={index}>
-                                        <tr>
-                                          <td>{config.Type_Influence}</td>
-                                          <td>{config.Param_1}</td>
-                                          <td>{config.Param_2}</td>
-                                          <td>{config.Param_3}</td>
-                                          <td>{config.Param_4}</td>
-                                        </tr>
-                                        <tr>
-                                          <td colSpan={3}>
-                                            {config._Expression}
-                                          </td>
-                                          <td colSpan={2}>
-                                            {config._ExtParam}
-                                          </td>
-                                        </tr>
-                                      </React.Fragment>
-                                    );
-                                  })}
-                                </tbody>
-                              </table>
-                            </td>
-                          </tr>
+                          {e.SpecialtyConfigs.length > 0 && (
+                            <tr>
+                              <td colSpan={2} style={{ padding: 0 }}>
+                                <table
+                                  className={styles.table}
+                                  style={{
+                                    margin: -1,
+                                    width: 'calc(100% + 2px)',
+                                    tableLayout: 'fixed',
+                                  }}
+                                >
+                                  <thead>
+                                    <tr>
+                                      <th>类型</th>
+                                      <th>p1</th>
+                                      <th>p2</th>
+                                      <th>p3</th>
+                                      <th>p4</th>
+                                    </tr>
+                                    <tr>
+                                      <th colSpan={3}>cmd</th>
+                                      <th colSpan={2}>...p</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {e.SpecialtyConfigs.map((config, index) => {
+                                      return (
+                                        <React.Fragment key={index}>
+                                          <tr
+                                            style={{
+                                              borderBottom:
+                                                config._Expression ||
+                                                config._ExtParam
+                                                  ? undefined
+                                                  : '2px solid #e8e8e8',
+                                            }}
+                                          >
+                                            <td>{config.Type_Influence}</td>
+                                            <td>{config.Param_1}</td>
+                                            <td>{config.Param_2}</td>
+                                            <td>{config.Param_3}</td>
+                                            <td>{config.Param_4}</td>
+                                          </tr>
+
+                                          {(config._Expression ||
+                                            config._ExtParam) && (
+                                            <tr
+                                              style={{
+                                                borderBottom:
+                                                  '2px solid #e8e8e8',
+                                              }}
+                                            >
+                                              <td colSpan={3}>
+                                                {config._Expression}
+                                              </td>
+                                              <td colSpan={2}>
+                                                {config._ExtParam}
+                                              </td>
+                                            </tr>
+                                          )}
+                                        </React.Fragment>
+                                      );
+                                    })}
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr>
+                          )}
                         </tbody>
                       </table>
                     </Col>
