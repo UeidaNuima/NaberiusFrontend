@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Icon, Tag, Radio, Row, Col, Input } from 'antd';
+import { Button, Icon, Tag, Radio, Row, Col } from 'antd';
 import _ from 'lodash';
 import { Link } from 'react-router-dom';
 import useRouter from 'use-react-router';
 import { BASE_GAME_URL, ICO_URL, BONUS_TYPE } from '../../../consts';
-import './index.less';
 import styles from './Unit.module.less';
 import { Data, query } from './type';
 import Rarity from '../../Rarity';
@@ -18,6 +17,8 @@ import AbilityTable from './AbilityTable';
 import ClassTable from './ClassTable';
 import { Card, ClassData } from 'interfaces';
 import DotTable from 'Components/DotTable';
+import ConneNameInput from './ConneNameInput';
+import NickNamesInput from './NickNamesInput';
 
 function countMinMax(
   min: number,
@@ -143,7 +144,7 @@ const Unit: React.FC = () => {
 
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 991px)' });
 
-  const { loading, data } = useQuery<Data>(query, {
+  const { loading, data, refetch } = useQuery<Data>(query, {
     variables: { id: CardID },
   });
 
@@ -154,309 +155,318 @@ const Unit: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      {loading && <Loading />}
-      {data && !_.isEmpty(data) && (
-        <div>
-          <h1 className="unit-title">
-            <Link to={`/quest/${CardID - 1}`}>
-              <Icon type="left" />
-            </Link>
+      <Loading spinning={loading}>
+        {data && !_.isEmpty(data) && (
+          <div>
+            <h1 className="unit-title">
+              <Link to={`/quest/${CardID - 1}`}>
+                <Icon type="left" />
+              </Link>
 
-            <Gender gender={data.Card.Kind} />
-            <div style={{ display: 'inline-block' }}>
-              <Rarity rare={data.Card.Rare} />
-              <div>{data.Card.Name}</div>
-            </div>
-            <Link to={`/unit/${CardID + 1}`}>
-              <Icon type="right" />
-            </Link>
-          </h1>
-          <p>
-            {data.Card.RaceName && (
-              <span>
-                <Tag>{data.Card.RaceName}</Tag>
-              </span>
-            )}
-            {data.Card.AssignName && (
-              <span>
-                <Tag color="magenta">{data.Card.AssignName}</Tag>
-              </span>
-            )}
-            {data.Card.IdentityName && (
-              <span>
-                <Tag color="black">{data.Card.IdentityName}</Tag>
-              </span>
-            )}
-          </p>
-          <div className={styles.previewContainer}>
-            <div
-              className={classNames(styles.outerRadioContainer, {
-                [styles.inset]: !isTabletOrMobile,
-              })}
-            >
-              <div className={styles.radioContainer}>
-                <Radio.Group
-                  onChange={e => setCurrentImg(e.target.value)}
-                  value={currentImg}
-                  className={styles.radioGroup}
-                >
-                  {data.Card.ImageStand.map((_, index) => (
-                    <Radio.Button key={`stand${index}`} value={index}>
-                      立绘{index + 1}
-                    </Radio.Button>
-                  ))}
-                </Radio.Group>
-                <Radio.Group
-                  onChange={e => setCurrentImg(e.target.value)}
-                  value={currentImg}
-                  className={classNames(styles.radioGroup, styles.danger)}
-                >
-                  {data.Card.ImageCG.map((_, index) => (
-                    <Radio.Button key={`cg${index}`} value={index + 10}>
-                      CG{index + 1}
-                    </Radio.Button>
-                  ))}
-                </Radio.Group>
+              <Gender gender={data.Card.Kind} />
+              <div style={{ display: 'inline-block' }}>
+                <Rarity rare={data.Card.Rare} />
+                <div>{data.Card.Name}</div>
               </div>
-              <div className={styles.radioContainer}>
-                <Radio.Group
-                  onChange={e => setCurrentText(e.target.value)}
-                  value={currentText}
-                  className={styles.radioGroup}
-                >
-                  {data.Card.HarlemTextA.map((_, index) => (
-                    <Radio.Button key={`a${index}`} value={index}>
-                      表{index + 1}
-                    </Radio.Button>
-                  ))}
-                </Radio.Group>
-                <Radio.Group
-                  onChange={e => setCurrentText(e.target.value)}
-                  value={currentText}
-                  className={classNames(styles.radioGroup, styles.danger)}
-                >
-                  {data.Card.HarlemTextR.map((_, index) => (
-                    <Radio.Button key={`r${index}`} value={index + 10}>
-                      里{index + 1}
-                    </Radio.Button>
-                  ))}
-                </Radio.Group>
-              </div>
-            </div>
-            <div className={styles.outerImageContainer}>
-              <div className={styles.imageContainer}>
-                {currentText !== undefined && (
-                  <div
-                    className={classNames(styles.textContainer, {
-                      [styles.fullScreen]: isTabletOrMobile,
-                    })}
+              <Link to={`/unit/${CardID + 1}`}>
+                <Icon type="right" />
+              </Link>
+            </h1>
+            <p>
+              {data.Card.RaceName && (
+                <span>
+                  <Tag>{data.Card.RaceName}</Tag>
+                </span>
+              )}
+              {data.Card.AssignName && (
+                <span>
+                  <Tag color="magenta">{data.Card.AssignName}</Tag>
+                </span>
+              )}
+              {data.Card.IdentityName && (
+                <span>
+                  <Tag color="black">{data.Card.IdentityName}</Tag>
+                </span>
+              )}
+            </p>
+            <div className={styles.previewContainer}>
+              <div
+                className={classNames(styles.outerRadioContainer, {
+                  [styles.inset]: !isTabletOrMobile,
+                })}
+              >
+                <div className={styles.radioContainer}>
+                  <Radio.Group
+                    onChange={e => setCurrentImg(e.target.value)}
+                    value={currentImg}
+                    className={styles.radioGroup}
                   >
-                    <Button
-                      ghost
-                      shape="circle"
-                      onClick={() => setCurrentText(undefined)}
-                      className={styles.closeButton}
-                    >
-                      <Icon type="close" />
-                    </Button>
+                    {data.Card.ImageStand.map((_, index) => (
+                      <Radio.Button key={`stand${index}`} value={index}>
+                        立绘{index + 1}
+                      </Radio.Button>
+                    ))}
+                  </Radio.Group>
+                  <Radio.Group
+                    onChange={e => setCurrentImg(e.target.value)}
+                    value={currentImg}
+                    className={classNames(styles.radioGroup, styles.danger)}
+                  >
+                    {data.Card.ImageCG.map((_, index) => (
+                      <Radio.Button key={`cg${index}`} value={index + 10}>
+                        CG{index + 1}
+                      </Radio.Button>
+                    ))}
+                  </Radio.Group>
+                </div>
+                <div className={styles.radioContainer}>
+                  <Radio.Group
+                    onChange={e => setCurrentText(e.target.value)}
+                    value={currentText}
+                    className={styles.radioGroup}
+                  >
+                    {data.Card.HarlemTextA.map((_, index) => (
+                      <Radio.Button key={`a${index}`} value={index}>
+                        表{index + 1}
+                      </Radio.Button>
+                    ))}
+                  </Radio.Group>
+                  <Radio.Group
+                    onChange={e => setCurrentText(e.target.value)}
+                    value={currentText}
+                    className={classNames(styles.radioGroup, styles.danger)}
+                  >
+                    {data.Card.HarlemTextR.map((_, index) => (
+                      <Radio.Button key={`r${index}`} value={index + 10}>
+                        里{index + 1}
+                      </Radio.Button>
+                    ))}
+                  </Radio.Group>
+                </div>
+              </div>
+              <div className={styles.outerImageContainer}>
+                <div className={styles.imageContainer}>
+                  {currentText !== undefined && (
                     <div
-                      className={styles.text}
-                      dangerouslySetInnerHTML={{
-                        __html: (currentText < 10
-                          ? data.Card.HarlemTextA[currentText]
-                          : data.Card.HarlemTextR[currentText - 10]
-                        )
-                          .replace(
-                            /([＠@].*\r\n)/g,
-                            (match, p1) =>
-                              `<span style="font-weight: bold">${p1}</span>`,
+                      className={classNames(styles.textContainer, {
+                        [styles.fullScreen]: isTabletOrMobile,
+                      })}
+                    >
+                      <Button
+                        ghost
+                        shape="circle"
+                        onClick={() => setCurrentText(undefined)}
+                        className={styles.closeButton}
+                      >
+                        <Icon type="close" />
+                      </Button>
+                      <div
+                        className={styles.text}
+                        dangerouslySetInnerHTML={{
+                          __html: (currentText < 10
+                            ? data.Card.HarlemTextA[currentText]
+                            : data.Card.HarlemTextR[currentText - 10]
                           )
-                          .replace(/\r\n/g, '<br />'),
-                      }}
-                    />
-                  </div>
-                )}
-                <img
-                  style={{ height: '100%' }}
-                  src={
-                    BASE_GAME_URL +
-                    (currentImg < 10
-                      ? data.Card.ImageStand[currentImg]
-                      : data.Card.ImageCG[currentImg - 10])
-                  }
-                  alt={currentImg.toString()}
-                />
+                            .replace(
+                              /([＠@].*\r\n)/g,
+                              (match, p1) =>
+                                `<span style="font-weight: bold">${p1}</span>`,
+                            )
+                            .replace(/\r\n/g, '<br />'),
+                        }}
+                      />
+                    </div>
+                  )}
+                  <img
+                    style={{ height: '100%' }}
+                    src={
+                      BASE_GAME_URL +
+                      (currentImg < 10
+                        ? data.Card.ImageStand[currentImg]
+                        : data.Card.ImageCG[currentImg - 10])
+                    }
+                    alt={currentImg.toString()}
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          <table className={styles.table}>
-            <tbody>
-              <tr>
-                <th>大头贴</th>
-                <td colSpan={5}>
-                  {avatars.map(avatar => (
-                    <img
-                      key={avatar}
-                      src={`${ICO_URL}/${avatar}/${CardID}.png`}
-                      alt={`${CardID}-${avatar}`}
-                      onError={() => {
-                        const index = avatars.findIndex(a => a === avatar);
-                        setAvatars([
-                          ...avatars.slice(0, index),
-                          ...avatars.slice(index + 1),
-                        ]);
-                      }}
+            <table className={styles.table}>
+              <tbody>
+                <tr>
+                  <th>大头贴</th>
+                  <td colSpan={5}>
+                    {avatars.map(avatar => (
+                      <img
+                        key={avatar}
+                        src={`${ICO_URL}/${avatar}/${CardID}.png`}
+                        alt={`${CardID}-${avatar}`}
+                        onError={() => {
+                          const index = avatars.findIndex(a => a === avatar);
+                          setAvatars([
+                            ...avatars.slice(0, index),
+                            ...avatars.slice(index + 1),
+                          ]);
+                        }}
+                      />
+                    ))}
+                  </td>
+                </tr>
+                <tr>
+                  <th>画师</th>
+                  <td colSpan={5}>{data.Card.IllustName}</td>
+                </tr>
+                <tr>
+                  <th>昵称</th>
+                  <td colSpan={5}>
+                    <NickNamesInput
+                      NickNames={data.Card.NickNames}
+                      CardID={CardID}
+                      onCompleted={refetch}
                     />
-                  ))}
-                </td>
-              </tr>
-              <tr>
-                <th>画师</th>
-                <td colSpan={5}>{data.Card.IllustName}</td>
-              </tr>
-              <tr>
-                <th>昵称</th>
-                <td colSpan={5}>
-                  <Input />
-                </td>
-              </tr>
-              <tr>
-                <th>圆爹名</th>
-                <td colSpan={5}>
-                  <Input />
-                </td>
-              </tr>
-              <tr>
-                <th>手料理</th>
-                <td colSpan={5}>{data.Card.HomeCooking}</td>
-              </tr>
-              <tr>
-                <th>金币</th>
-                <td colSpan={2}>{data.Card.SellPrice}</td>
-                <th>虹水晶</th>
-                <td colSpan={2}>{data.Card._TradePoint}</td>
-              </tr>
-              <tr>
-                <th>魔抗</th>
-                <td colSpan={5}>{data.Card.MagicResistance}</td>
-              </tr>
-              <tr>
-                <th>HP补正</th>
-                <td>{data.Card.MaxHPMod / 100}</td>
-                <th>Atk补正</th>
-                <td>{data.Card.AtkMod / 100}</td>
-                <th>Def补正</th>
-                <td>{data.Card.DefMod / 100}</td>
-              </tr>
-              <tr>
-                <th>好感1</th>
-                <td>
-                  {data.Card.BonusType !== 0 &&
-                    BONUS_TYPE.get(data.Card.BonusType).replace(
-                      '%d',
-                      Math.ceil(data.Card.BonusNum * 1.2),
-                    )}
-                </td>
-                <th>好感2</th>
-                <td>
-                  {data.Card.BonusType2 !== 0 &&
-                    BONUS_TYPE.get(data.Card.BonusType2).replace(
-                      '%d',
-                      Math.ceil(data.Card.BonusNum2 * 1.2),
-                    )}
-                </td>
-                <th>好感150</th>
-                <td>
-                  {data.Card.BonusType3 !== 0 &&
-                    BONUS_TYPE.get(data.Card.BonusType3).replace(
-                      '%d',
-                      Math.ceil(data.Card.BonusNum3),
-                    )}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>职业名</th>
-                <th>等级</th>
-                <th>HP</th>
-                <th>攻击</th>
-                <th>防御</th>
-                <th>射程</th>
-                <th>档数</th>
-                <th>Cost</th>
-              </tr>
-            </thead>
-            <thead>
-              {getStatus(data.Card).map((st, index) => (
-                <React.Fragment key={st.ClassID}>
-                  <tr>
-                    <td rowSpan={2}>
-                      {st.Type === 'Evo2a' && (
-                        <span style={{ color: '#1890ff' }}>(A) </span>
-                      )}
-                      {st.Type === 'Evo2b' && (
-                        <span style={{ color: '#52c41a' }}>(B) </span>
-                      )}
-                      {st.Name}
-                    </td>
-                    <td>1</td>
-                    <td>{st.HP[0]}</td>
-                    <td>{st.Atk[0]}</td>
-                    <td>{st.Def[0]}</td>
-                    <td rowSpan={2}>{st.range}</td>
-                    <td rowSpan={2}>{st.BlockNum}</td>
-                    <td rowSpan={2}>
-                      {st.Cost[0]}/{st.Cost[1]}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>{st.maxLevelUnit}</td>
-                    <td>{st.HP[1]}</td>
-                    <td>{st.Atk[1]}</td>
-                    <td>{st.Def[1]}</td>
-                  </tr>
-                </React.Fragment>
-              ))}
-            </thead>
-          </table>
-
-          <Row gutter={8}>
-            <Col md={12} sm={24}>
-              <SkillTable skills={data.Card.Skills} />
-            </Col>
-            <Col md={12} sm={24}>
-              <AbilityTable abilities={data.Card.Abilities} />
-            </Col>
-          </Row>
-
-          <ClassTable
-            isTabletOrMobile={isTabletOrMobile}
-            classes={data.Card.Classes}
-          />
-
-          {data.Card.Dots && (
-            <div>
-              <h2>点阵</h2>
-              <Row gutter={8}>
-                {data.Card.Dots.map((dot, index) => (
-                  <Col key={index} sm={24} md={12}>
-                    <DotTable
-                      dot={dot}
-                      CardID={data.Card.CardID}
-                      type="Player"
+                  </td>
+                </tr>
+                <tr>
+                  <th>圆爹名</th>
+                  <td colSpan={5}>
+                    <ConneNameInput
+                      ConneName={data.Card.ConneName}
+                      CardID={CardID}
+                      onCompleted={refetch}
                     />
-                  </Col>
+                  </td>
+                </tr>
+                <tr>
+                  <th>手料理</th>
+                  <td colSpan={5}>{data.Card.HomeCooking}</td>
+                </tr>
+                <tr>
+                  <th>金币</th>
+                  <td colSpan={2}>{data.Card.SellPrice}</td>
+                  <th>虹水晶</th>
+                  <td colSpan={2}>{data.Card._TradePoint}</td>
+                </tr>
+                <tr>
+                  <th>魔抗</th>
+                  <td colSpan={5}>{data.Card.MagicResistance}</td>
+                </tr>
+                <tr>
+                  <th>HP补正</th>
+                  <td>{data.Card.MaxHPMod / 100}</td>
+                  <th>Atk补正</th>
+                  <td>{data.Card.AtkMod / 100}</td>
+                  <th>Def补正</th>
+                  <td>{data.Card.DefMod / 100}</td>
+                </tr>
+                <tr>
+                  <th>好感1</th>
+                  <td>
+                    {data.Card.BonusType !== 0 &&
+                      BONUS_TYPE.get(data.Card.BonusType).replace(
+                        '%d',
+                        Math.ceil(data.Card.BonusNum * 1.2),
+                      )}
+                  </td>
+                  <th>好感2</th>
+                  <td>
+                    {data.Card.BonusType2 !== 0 &&
+                      BONUS_TYPE.get(data.Card.BonusType2).replace(
+                        '%d',
+                        Math.ceil(data.Card.BonusNum2 * 1.2),
+                      )}
+                  </td>
+                  <th>好感150</th>
+                  <td>
+                    {data.Card.BonusType3 !== 0 &&
+                      BONUS_TYPE.get(data.Card.BonusType3).replace(
+                        '%d',
+                        Math.ceil(data.Card.BonusNum3),
+                      )}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>职业名</th>
+                  <th>等级</th>
+                  <th>HP</th>
+                  <th>攻击</th>
+                  <th>防御</th>
+                  <th>射程</th>
+                  <th>档数</th>
+                  <th>Cost</th>
+                </tr>
+              </thead>
+              <thead>
+                {getStatus(data.Card).map((st, index) => (
+                  <React.Fragment key={st.ClassID}>
+                    <tr>
+                      <td rowSpan={2}>
+                        {st.Type === 'Evo2a' && (
+                          <span style={{ color: '#1890ff' }}>(A) </span>
+                        )}
+                        {st.Type === 'Evo2b' && (
+                          <span style={{ color: '#52c41a' }}>(B) </span>
+                        )}
+                        {st.Name}
+                      </td>
+                      <td>1</td>
+                      <td>{st.HP[0]}</td>
+                      <td>{st.Atk[0]}</td>
+                      <td>{st.Def[0]}</td>
+                      <td rowSpan={2}>{st.range}</td>
+                      <td rowSpan={2}>{st.BlockNum}</td>
+                      <td rowSpan={2}>
+                        {st.Cost[0]}/{st.Cost[1]}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>{st.maxLevelUnit}</td>
+                      <td>{st.HP[1]}</td>
+                      <td>{st.Atk[1]}</td>
+                      <td>{st.Def[1]}</td>
+                    </tr>
+                  </React.Fragment>
                 ))}
-              </Row>
-            </div>
-          )}
-        </div>
-      )}
+              </thead>
+            </table>
+
+            <Row gutter={8}>
+              <Col md={12} sm={24}>
+                <SkillTable skills={data.Card.Skills} />
+              </Col>
+              <Col md={12} sm={24}>
+                <AbilityTable abilities={data.Card.Abilities} />
+              </Col>
+            </Row>
+
+            <ClassTable
+              isTabletOrMobile={isTabletOrMobile}
+              classes={data.Card.Classes}
+            />
+
+            {data.Card.Dots && (
+              <div>
+                <h2>点阵</h2>
+                <Row gutter={8}>
+                  {data.Card.Dots.map((dot, index) => (
+                    <Col key={index} sm={24} md={12}>
+                      <DotTable
+                        dot={dot}
+                        CardID={data.Card.CardID}
+                        type="Player"
+                      />
+                    </Col>
+                  ))}
+                </Row>
+              </div>
+            )}
+          </div>
+        )}
+      </Loading>
     </div>
   );
 };

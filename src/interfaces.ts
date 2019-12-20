@@ -188,6 +188,8 @@ export interface Card {
   ClassLV0SkillID: number;
   ClassLV1SkillID: number;
   Skills: SkillWithType[];
+  ConneName: string;
+  NickNames: string[];
 }
 
 export interface SpecialtyConfig {

@@ -36,6 +36,8 @@ export const query = gql`
       SellPrice
       BuildExp
       _TradePoint
+      ConneName
+      NickNames
       Dots {
         ...Dot
       }
