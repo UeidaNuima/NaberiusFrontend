@@ -78,6 +78,7 @@ export interface ClassData {
   Cost: number;
   AttackWait: string;
   Data_ExtraAwakeOrbs: ClassData[];
+  NickNames: string[];
   ClassAbilityConfigs: Array<{
     _InvokeType: number;
     _TargetType: number;
@@ -102,6 +103,7 @@ export interface ClassData {
     _Range_04: number;
     _Range_05: number;
   };
+  Cards: Card[];
 }
 
 export interface SkillData {

@@ -3,9 +3,9 @@ import { Layout, Row, Col, Tooltip, Badge, Popover } from 'antd';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import moment from 'moment';
-import Card from '../../Card';
-import Pill from '../../Pill';
-import Poster from '../../Poster';
+import Card from 'Components/Card';
+import Pill from 'Components/Pill';
+import Poster from 'Components/Poster';
 import logo from '../../../logo.png';
 import payImage from './pay.png';
 import styles from './index.module.less';
@@ -81,7 +81,7 @@ export default class Home extends React.Component {
                   placement="bottom"
                   content={
                     <img
-                      alt="唯一指定邮箱minalinskyx@hotmail.com，您pay吗"
+                      alt="唯一指定邮箱minalinskyx#hotmail.com，您pay吗"
                       src={payImage}
                       width={500}
                     />

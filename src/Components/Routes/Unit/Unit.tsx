@@ -10,15 +10,15 @@ import Rarity from '../../Rarity';
 import Gender from '../../Gender';
 import Loading from '../../Loading';
 import { useQuery } from '@apollo/react-hooks';
-import { useMediaQuery } from 'react-responsive';
 import classNames from 'classnames';
 import SkillTable from './SkillTable';
 import AbilityTable from './AbilityTable';
-import ClassTable from './ClassTable';
+import ClassTable from 'Components/ClassTable';
 import { Card, ClassData } from 'interfaces';
 import DotTable from 'Components/DotTable';
 import ConneNameInput from './ConneNameInput';
 import NickNamesInput from './NickNamesInput';
+import MediaContext from 'context/MediaContext';
 
 function countMinMax(
   min: number,
@@ -142,7 +142,7 @@ const Unit: React.FC = () => {
 
   const [avatars, setAvatars] = useState([0, 1, 2, 3]);
 
-  const isTabletOrMobile = useMediaQuery({ query: '(max-width: 991px)' });
+  const { isTabletOrMobile } = MediaContext.useContainer();
 
   const { loading, data, refetch } = useQuery<Data>(query, {
     variables: { id: CardID },
@@ -443,10 +443,7 @@ const Unit: React.FC = () => {
               </Col>
             </Row>
 
-            <ClassTable
-              isTabletOrMobile={isTabletOrMobile}
-              classes={data.Card.Classes}
-            />
+            <ClassTable classes={data.Card.Classes} onCompleted={refetch} />
 
             {data.Card.Dots && (
               <div>

@@ -42,6 +42,11 @@ export const query = gql`
         ...Dot
       }
       Classes {
+        Cards {
+          Rare
+          CardID
+          Name
+        }
         Type
         ClassID
         Name
@@ -56,6 +61,7 @@ export const query = gql`
         MaxLevel
         Explanation
         Cost
+        NickNames
         Data_ExtraAwakeOrbs {
           Name
         }

@@ -26,8 +26,6 @@ const DotAnimation: React.FC<DotAnimationProps> = ({ dot, CardID, type }) => {
 
     const timelines = generateTimelines(dot);
 
-    console.log(timelines);
-
     timelines.forEach(timeline => {
       timeline.forEach(frame => {
         left = Math.max(left, frame.Sprite.ParsedX);
