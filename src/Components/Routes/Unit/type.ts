@@ -122,6 +122,12 @@ export const query = gql`
           PowerMax
           LevelMax
           Text
+          SkillID
+          Cards {
+            Rare
+            Name
+            CardID
+          }
           Configs {
             Type_Collision
             Type_CollisionState

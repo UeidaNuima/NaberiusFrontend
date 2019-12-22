@@ -113,6 +113,8 @@ export interface SkillData {
   PowerMax: number;
   LevelMax: number;
   Text: string;
+  SkillID: number;
+  Cards: Card[];
   Configs: Array<{
     Type_Collision: number;
     Type_CollisionState: number;

@@ -4,7 +4,7 @@ import { Layout, Spin, Pagination, Input } from 'antd';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import { ClassData } from 'interfaces';
-import { SingleClassTable } from 'Components/ClassTable';
+import ClassTable from 'Components/ClassTable';
 
 const { Content } = Layout;
 
@@ -75,7 +75,11 @@ const ClassList: React.FC = () => {
             .slice(50 * (currentPage - 1), 50 * currentPage)
             .map(unitClass => {
               return (
-                <SingleClassTable classData={unitClass} onCompleted={refetch} />
+                <ClassTable
+                  key={unitClass.ClassID}
+                  classData={unitClass}
+                  onCompleted={refetch}
+                />
               );
             })}
         {data && data.Classes && (

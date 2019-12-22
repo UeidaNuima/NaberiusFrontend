@@ -17,7 +17,7 @@ const CLASS_TYPE = {
   Evo2b: '二觉B',
 };
 
-const SingleClassTable: React.FC<{
+const ClassTable: React.FC<{
   classData: ClassData;
   onCompleted?: () => any;
 }> = ({ classData, onCompleted }) => {
@@ -47,10 +47,9 @@ const SingleClassTable: React.FC<{
   }, [editing]);
 
   const handleSave = async () => {
-    const resp = await setClassMeta({
+    await setClassMeta({
       variables: { ClassID: classData.ClassID, NickNames: value },
     });
-    console.log(resp);
     message.success('修改成功');
     setEditing(false);
   };
@@ -157,25 +156,23 @@ const SingleClassTable: React.FC<{
                           )}
                         </td>
                       </tr>
-                      {classData.Cards && classData.Cards.length !== 0 && (
-                        <tr>
-                          <th>拥有的卡</th>
-                          <td>
-                            {classData.Cards.sort(
-                              (c1, c2) => c2.Rare - c1.Rare,
-                            ).map(card => (
-                              <Link to={`/unit/${card.CardID}`}>
-                                <img
-                                  alt={card.CardID.toString()}
-                                  style={{ width: 40, marginLeft: 8 }}
-                                  src={`${ICO_URL}/0/${card.CardID}.png`}
-                                />
-                                {card.Name}
-                              </Link>
-                            ))}
-                          </td>
-                        </tr>
-                      )}
+                      <tr>
+                        <th>拥有的卡</th>
+                        <td>
+                          {classData.Cards.sort(
+                            (c1, c2) => c2.Rare - c1.Rare,
+                          ).map(card => (
+                            <Link key={card.CardID} to={`/unit/${card.CardID}`}>
+                              <img
+                                alt={card.CardID.toString()}
+                                style={{ width: 40, marginLeft: 8 }}
+                                src={`${ICO_URL}/0/${card.CardID}.png`}
+                              />
+                              {card.Name}
+                            </Link>
+                          ))}
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                 </Col>
@@ -238,24 +235,4 @@ const SingleClassTable: React.FC<{
   );
 };
 
-const ClassTable: React.FC<{
-  classes: ClassData[];
-  onCompleted?: () => any;
-}> = ({ classes, onCompleted }) => {
-  return (
-    <div>
-      <h2>职业</h2>
-      {classes.map(cl => (
-        <SingleClassTable
-          classData={cl}
-          key={cl.ClassID}
-          onCompleted={onCompleted}
-        />
-      ))}
-    </div>
-  );
-};
-
 export default ClassTable;
-
-export { SingleClassTable };

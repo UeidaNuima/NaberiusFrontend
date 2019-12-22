@@ -11,7 +11,7 @@ import Gender from '../../Gender';
 import Loading from '../../Loading';
 import { useQuery } from '@apollo/react-hooks';
 import classNames from 'classnames';
-import SkillTable from './SkillTable';
+import SkillTable from 'Components/SkillTable';
 import AbilityTable from './AbilityTable';
 import ClassTable from 'Components/ClassTable';
 import { Card, ClassData } from 'interfaces';
@@ -434,16 +434,29 @@ const Unit: React.FC = () => {
               </thead>
             </table>
 
-            <Row gutter={8}>
-              <Col md={12} sm={24}>
-                <SkillTable skills={data.Card.Skills} />
-              </Col>
-              <Col md={12} sm={24}>
-                <AbilityTable abilities={data.Card.Abilities} />
-              </Col>
-            </Row>
+            <div>
+              <h2>技能</h2>
+              {data.Card.Skills.map((skillWithType, index) => (
+                <SkillTable
+                  skills={skillWithType.Skills}
+                  type={skillWithType.Type}
+                  key={index}
+                />
+              ))}
+            </div>
 
-            <ClassTable classes={data.Card.Classes} onCompleted={refetch} />
+            <AbilityTable abilities={data.Card.Abilities} />
+
+            <div>
+              <h2>职业</h2>
+              {data.Card.Classes.map(cl => (
+                <ClassTable
+                  classData={cl}
+                  key={cl.ClassID}
+                  onCompleted={refetch}
+                />
+              ))}
+            </div>
 
             {data.Card.Dots && (
               <div>
