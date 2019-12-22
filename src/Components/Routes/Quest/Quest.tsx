@@ -4,7 +4,6 @@ import { Layout, Row, Col, Tag, Icon, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import useRouter from 'use-react-router';
 import { ICO_URL } from 'consts';
-import { Data } from './Types';
 import EnemyTable from './EnemyTable';
 import styles from './Quest.module.less';
 import Loading from 'Components/Loading';
@@ -15,6 +14,7 @@ import { DotFragment, EnemyFragment } from 'fragments';
 import PreviewDot from './PreviewDot';
 import MapTable from './MapTable';
 import QuestTermTable from './QuestTermTable';
+import { Quest as QuestType } from 'interfaces';
 
 const { Content } = Layout;
 
@@ -24,7 +24,14 @@ const Quest: React.FC = () => {
   const [showTerms, setShowTerms] = useState(false);
   const [showHardTerms, setShowHardTerms] = useState(false);
 
-  const { data, loading } = useQuery<Data>(
+  const { data, loading } = useQuery<{
+    Quest: QuestType;
+    QuestEventTexts: Array<{
+      Message: string;
+      Name: string;
+      FaceID: number;
+    }>;
+  }>(
     gql`
       fragment termConfig on QuestTermConfig {
         Type_Influence

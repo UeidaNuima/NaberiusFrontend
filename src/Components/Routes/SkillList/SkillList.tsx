@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { Spin, Layout, Pagination, Input } from 'antd';
 import gql from 'graphql-tag';
-import styles from './SkillList.module.less';
 import { useQuery } from '@apollo/react-hooks';
 import { SkillData } from 'interfaces';
 import SkillTable from 'Components/SkillTable';
 
 const { Content } = Layout;
-const { Search } = Input;
 
 interface Data {
   Skills: SkillData[];
@@ -23,10 +21,7 @@ const SkillList: React.FC = () => {
   };
 
   const skillFilter = (skill: any) => {
-    if (search && !JSON.stringify(skill).includes(search)) {
-      return false;
-    }
-    return true;
+    return !search || JSON.stringify(skill).includes(search);
   };
 
   const { data, loading } = useQuery<Data>(gql`
@@ -65,13 +60,12 @@ const SkillList: React.FC = () => {
   return (
     <Content className="container">
       <Spin spinning={loading}>
-        <Search
-          placeholder="搜索单位"
+        <Input
+          placeholder="搜索技能"
           value={search}
           onChange={event => {
             handleSetSearch(event.target.value);
           }}
-          enterButton
         />
         {data &&
           data.Skills &&

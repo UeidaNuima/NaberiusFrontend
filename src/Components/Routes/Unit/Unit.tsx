@@ -3,16 +3,16 @@ import { Button, Icon, Tag, Radio, Row, Col } from 'antd';
 import _ from 'lodash';
 import { Link } from 'react-router-dom';
 import useRouter from 'use-react-router';
-import { BASE_GAME_URL, ICO_URL, BONUS_TYPE } from '../../../consts';
+import { BASE_GAME_URL, ICO_URL, BONUS_TYPE } from 'consts';
 import styles from './Unit.module.less';
-import { Data, query } from './type';
-import Rarity from '../../Rarity';
-import Gender from '../../Gender';
-import Loading from '../../Loading';
+import { Data, query } from './types';
+import Rarity from 'Components/Rarity';
+import Gender from 'Components/Gender';
+import Loading from 'Components/Loading';
 import { useQuery } from '@apollo/react-hooks';
 import classNames from 'classnames';
 import SkillTable from 'Components/SkillTable';
-import AbilityTable from './AbilityTable';
+import AbilityTable from 'Components/AbilityTable';
 import ClassTable from 'Components/ClassTable';
 import { Card, ClassData } from 'interfaces';
 import DotTable from 'Components/DotTable';
@@ -445,7 +445,12 @@ const Unit: React.FC = () => {
               ))}
             </div>
 
-            <AbilityTable abilities={data.Card.Abilities} />
+            <div>
+              <h2>被动</h2>
+              {_.uniqBy(data.Card.Abilities, 'AbilityID').map(ability => (
+                <AbilityTable key={ability.AbilityID} ability={ability} />
+              ))}
+            </div>
 
             <div>
               <h2>职业</h2>

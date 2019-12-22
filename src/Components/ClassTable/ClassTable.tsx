@@ -212,8 +212,22 @@ const ClassTable: React.FC<{
                           </tr>
                           {(config._Command || config._ActivateCommand) && (
                             <tr>
-                              <td colSpan={3}>{config._Command}</td>
-                              <td colSpan={4}>{config._ActivateCommand}</td>
+                              <td
+                                colSpan={3}
+                                style={{
+                                  wordWrap: 'break-word',
+                                }}
+                              >
+                                {config._Command}
+                              </td>
+                              <td
+                                colSpan={4}
+                                style={{
+                                  wordWrap: 'break-word',
+                                }}
+                              >
+                                {config._ActivateCommand}
+                              </td>
                             </tr>
                           )}
                           <tr style={{ borderBottom: '2px solid #e8e8e8' }}>

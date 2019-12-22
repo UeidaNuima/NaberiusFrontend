@@ -94,6 +94,11 @@ export const query = gql`
       ImageCG
       ImageStand
       Abilities {
+        Cards {
+          Rare
+          CardID
+          Name
+        }
         Type
         AbilityID
         Text

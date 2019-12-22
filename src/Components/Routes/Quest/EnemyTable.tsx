@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { Button, Divider, Row, Col, Switch } from 'antd';
 import { ICO_URL, ENEMY_DOT_URL, ENEMY_CHANGE_COND } from 'consts';
 import styles from './Quest.module.less';
-import { Data } from './Types';
 import { Dot, Enemy, MapEntry } from 'interfaces';
 import { useMediaQuery } from 'react-responsive';
 import DotTable from 'Components/DotTable';
 import TalkRow from 'Components/DotAnimation/TalkRow';
+import { Quest as QuestType } from 'interfaces';
 
 const getAttackSpeed = (enemy: Enemy & MapEntry, dots: Dot[]) => {
   let length = 0;
@@ -268,7 +268,14 @@ const EnemyTableRows: React.FC<EnemyTableRowsProps> = ({
 };
 
 interface EnemyTableProps {
-  data: Data;
+  data: {
+    Quest: QuestType;
+    QuestEventTexts: Array<{
+      Message: string;
+      Name: string;
+      FaceID: number;
+    }>;
+  };
 }
 
 const EnemyTable: React.FC<EnemyTableProps> = ({ data }) => {

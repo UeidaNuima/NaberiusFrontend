@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from './SkillTable.module.less';
-import { Button, Input, Row, Col } from 'antd';
+import { Button, Row, Col } from 'antd';
 import { renderDescription } from '../../utils';
 import { SkillData } from 'interfaces';
 import MediaContext from 'context/MediaContext';
@@ -124,8 +124,22 @@ const SkillTableRows: React.FC<{ skill: SkillData }> = ({ skill }) => {
                         {(config._ExpressionActivate !== '' ||
                           config._Expression !== '') && (
                           <tr style={{ borderBottom: '2px solid #e8e8e8' }}>
-                            <td colSpan={4}>{config._Expression}</td>
-                            <td colSpan={4}>{config._ExpressionActivate}</td>
+                            <td
+                              colSpan={4}
+                              style={{
+                                wordWrap: 'break-word',
+                              }}
+                            >
+                              {config._Expression}
+                            </td>
+                            <td
+                              colSpan={4}
+                              style={{
+                                wordWrap: 'break-word',
+                              }}
+                            >
+                              {config._ExpressionActivate}
+                            </td>
                           </tr>
                         )}
                       </React.Fragment>
@@ -161,11 +175,11 @@ const SkillTable: React.FC<{
               <th>描述</th>
             </>
           )}
-          <th style={{ width: isTabletOrMobile ? '20%' : 80 }}>等级</th>
-          <th style={{ width: isTabletOrMobile ? '20%' : 80 }}>持续</th>
-          <th style={{ width: isTabletOrMobile ? '20%' : 80 }}>再动</th>
-          <th style={{ width: isTabletOrMobile ? '20%' : 80 }}>强度</th>
-          <th style={{ width: isTabletOrMobile ? '20%' : 80 }}>详细</th>
+          <th style={{ width: isTabletOrMobile ? '20%' : 60 }}>等级</th>
+          <th style={{ width: isTabletOrMobile ? '20%' : 60 }}>持续</th>
+          <th style={{ width: isTabletOrMobile ? '20%' : 60 }}>再动</th>
+          <th style={{ width: isTabletOrMobile ? '20%' : 60 }}>强度</th>
+          <th style={{ width: isTabletOrMobile ? '20%' : 60 }}>详细</th>
         </tr>
       </thead>
       <tbody>

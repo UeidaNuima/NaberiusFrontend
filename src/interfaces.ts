@@ -142,6 +142,7 @@ export interface AbilityData {
   AbilityID: number;
   Text: string;
   AbilityName: string;
+  Cards: Card[];
   Configs: Array<{
     _InvokeType: number;
     _TargetType: number;
