@@ -10,6 +10,7 @@ export const ENEMY_DOT_URL = STATIC_URL + '/enemyDot';
 export const BATTLE_TALK_EVENT_URL = STATIC_URL + '/battleTalkEvent';
 export const EMOJI_URL = STATIC_URL + '/cqp';
 export const ICO_URL = STATIC_URL + '/ico';
+export const BANNER_URL = STATIC_URL + '/banner';
 export const ENEMY_CHANGE_COND: { [k: number]: string } = {
   0: '条件切换',
   1: '阻挡切换',
