@@ -39,15 +39,31 @@ export const DotFragment = gql`
   }
 `;
 
+export const MissileFragment = gql`
+  fragment missile on Missile {
+    MissileID
+    PatternID
+    Enemy
+    Speed
+    SlowTime
+    SlowRate
+    DamageArea
+    Property
+  }
+`;
+
 export const EnemyFragment = gql`
   fragment enemy on Enemy {
+    HitEffect
+    MissileID
+    DeadEffect
     SpecialEffect
     PatternID
     Weather
     HP
     HP_MAX
     ATTACK_POWER
-    ATTACK_TYPE
+    TypeAttack
     ATTACK_RANGE
     ATTACK_SPEED
     ARMOR_DEFENSE
@@ -60,6 +76,9 @@ export const EnemyFragment = gql`
     MagicAttack
     AttackWait
     MissileID
+    Missile {
+      ...missile
+    }
     DeadEffect
     Param_ResistanceAssassin
     Param_ChangeParam
@@ -84,4 +103,5 @@ export const EnemyFragment = gql`
     }
     _Attribute
   }
+  ${MissileFragment}
 `;

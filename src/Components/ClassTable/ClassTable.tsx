@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './ClassTable.module.less';
 import { renderDescription } from '../../utils';
-import { Button, Input, Row, Col, Select, Spin, Tag, message } from 'antd';
+import { Button, Row, Col, Select, Spin, Tag, message } from 'antd';
 import { ClassData } from 'interfaces';
 import MediaContext from 'context/MediaContext';
 import { Link } from 'react-router-dom';
 import { ICO_URL } from 'consts';
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import MissileTable from 'Components/MissileTable';
 
 const CLASS_TYPE = {
   Init: '初始',
@@ -173,8 +174,16 @@ const ClassTable: React.FC<{
                           ))}
                         </td>
                       </tr>
+                      <tr>
+                        <th>职业类型</th>
+                        <td>{classData.AttackAttribute}</td>
+                      </tr>
                     </tbody>
                   </table>
+
+                  {classData.Missile && (
+                    <MissileTable missile={classData.Missile} compact />
+                  )}
                 </Col>
                 <Col xs={24} md={12}>
                   <table
@@ -201,7 +210,14 @@ const ClassTable: React.FC<{
                     <tbody>
                       {classData.ClassAbilityConfigs.map((config, index) => (
                         <React.Fragment key={index}>
-                          <tr>
+                          <tr
+                            style={{
+                              borderBottom:
+                                config._Command || config._ActivateCommand
+                                  ? undefined
+                                  : '2px solid #e8e8e8',
+                            }}
+                          >
                             <td>{config._InfluenceType}</td>
                             <td>{config._Param1}</td>
                             <td>{config._Param2}</td>
@@ -211,7 +227,7 @@ const ClassTable: React.FC<{
                             <td>{config._TargetType}</td>
                           </tr>
                           {(config._Command || config._ActivateCommand) && (
-                            <tr>
+                            <tr style={{ borderBottom: '2px solid #e8e8e8' }}>
                               <td
                                 colSpan={3}
                                 style={{
@@ -230,11 +246,6 @@ const ClassTable: React.FC<{
                               </td>
                             </tr>
                           )}
-                          <tr style={{ borderBottom: '2px solid #e8e8e8' }}>
-                            <td colSpan={7}>
-                              <Input />
-                            </td>
-                          </tr>
                         </React.Fragment>
                       ))}
                     </tbody>

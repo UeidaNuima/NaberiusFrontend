@@ -5,6 +5,7 @@ import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import { ClassData } from 'interfaces';
 import ClassTable from 'Components/ClassTable';
+import { MissileFragment } from 'fragments';
 
 const { Content } = Layout;
 
@@ -24,6 +25,10 @@ const ClassList: React.FC = () => {
   const { data, loading, refetch } = useQuery<{ Classes: ClassData[] }>(gql`
     query {
       Classes {
+        AttackAttribute
+        Missile {
+          ...missile
+        }
         ClassID
         Name
         Explanation
@@ -56,6 +61,7 @@ const ClassList: React.FC = () => {
         }
       }
     }
+    ${MissileFragment}
   `);
 
   return (

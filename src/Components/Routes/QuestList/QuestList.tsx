@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { Layout, Collapse, Drawer, Menu } from 'antd';
 import gql from 'graphql-tag';
 import _ from 'lodash';
@@ -74,9 +74,6 @@ const QuestList: React.FC = () => {
                 {missions
                   .find(m => m[0] === currentMissionType)![1]
                   .map(mission => {
-                    if (mission.MissionID === 200129) {
-                      console.log(233);
-                    }
                     return (
                       <Panel
                         key={mission.MissionID}

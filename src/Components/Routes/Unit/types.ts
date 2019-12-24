@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import { Card } from 'interfaces';
-import { DotFragment } from 'fragments';
+import { DotFragment, MissileFragment } from 'fragments';
 
 export interface Data {
   Card: Card;
@@ -42,6 +42,10 @@ export const query = gql`
         ...Dot
       }
       Classes {
+        AttackAttribute
+        Missile {
+          ...missile
+        }
         Cards {
           Rare
           CardID
@@ -153,4 +157,5 @@ export const query = gql`
     }
   }
   ${DotFragment}
+  ${MissileFragment}
 `;

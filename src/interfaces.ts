@@ -62,6 +62,8 @@ export interface Frame {
 
 export interface ClassData {
   Type: 'Init' | 'CC' | 'Evo' | 'Evo2a' | 'Evo2b';
+  AttackAttribute: number;
+  Missile?: Missile;
   ClassID: number;
   Name: string;
   InitHP: number;
@@ -207,13 +209,23 @@ export interface SpecialtyConfig {
   _ExtParam: string;
 }
 
+export interface Missile {
+  MissileID: number;
+  PatternID: number;
+  Enemy: number;
+  Speed: number;
+  SlowTime: number;
+  SlowRate: number;
+  DamageArea: number;
+  Property: string;
+}
+
 export interface Enemy {
   SpecialEffect: any;
   PatternID: number;
   HP: number;
   HP_MAX: number;
   ATTACK_POWER: number;
-  ATTACK_TYPE: number;
   ATTACK_RANGE: number;
   ATTACK_SPEED: number;
   ARMOR_DEFENSE: number;
@@ -236,6 +248,7 @@ export interface Enemy {
   };
   Dots: Dot[];
   _Attribute: string;
+  Missile?: Missile;
 }
 
 export interface MapEntry {

@@ -18,6 +18,7 @@ import SkillList from './Routes/SkillList';
 import AbilityList from './Routes/AbilityList';
 import EmojiList from './Routes/EmojiList';
 import Login from './Routes/Login';
+import MissileList from './Routes/MissileList';
 
 const Router: React.FC<RouteComponentProps> = () => {
   const { isLoggedIn } = UserContext.useContainer();
@@ -38,6 +39,7 @@ const Router: React.FC<RouteComponentProps> = () => {
         <Route path="/class" exact component={ClassList} />
         <Route path="/skill" exact component={SkillList} />
         <Route path="/ability" exact component={AbilityList} />
+        <Route path="/missile" exact component={MissileList} />
         <Route path="/emoji" exact component={EmojiList} />
         <Route component={Home} />
       </Switch>

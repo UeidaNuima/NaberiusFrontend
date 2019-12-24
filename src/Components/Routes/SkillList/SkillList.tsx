@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Spin, Layout, Pagination, Input } from 'antd';
+import { Layout, Pagination, Input } from 'antd';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import { SkillData } from 'interfaces';
 import SkillTable from 'Components/SkillTable';
+import Loading from 'Components/Loading';
 
 const { Content } = Layout;
 
@@ -59,7 +60,7 @@ const SkillList: React.FC = () => {
 
   return (
     <Content className="container">
-      <Spin spinning={loading}>
+      <Loading spinning={loading}>
         <Input
           placeholder="搜索技能"
           value={search}
@@ -81,7 +82,7 @@ const SkillList: React.FC = () => {
             total={data.Skills.filter(skillFilter).length}
           />
         )}
-      </Spin>
+      </Loading>
     </Content>
   );
 };
