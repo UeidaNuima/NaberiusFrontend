@@ -1,7 +1,7 @@
 export const MISSION_TYPE: { [k: string]: string } = {
   Assault: '投票讨伐',
   Story: '主线',
-  Emergency: '<span style="color: red">紧急<span>',
+  Emergency: '紧急',
   Reproduce: '复刻',
   DailyReproduce: '每日复刻',
   Subjugation: '大讨伐',

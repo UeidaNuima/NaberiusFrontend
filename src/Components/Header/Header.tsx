@@ -47,7 +47,7 @@ export default withRouter(
             <Item key="quest">
               <Link to="/quest">关卡</Link>
             </Item>
-            <SubMenu title="其他属性">
+            <SubMenu title="...">
               <Item key="class">
                 <Link to="/class">职业</Link>
               </Item>

@@ -1,21 +1,12 @@
 .content {
-  margin: 0 30px 0 30px;
+  text-align: center;
   .logoblock {
-    text-align: center;
     .topLogo {
       width: 200px;
     }
   }
-  .updateTime {
-    opacity: 0.8;
-    margin-left: 10px;
-  }
-  .cardDivider {
-    border: none;
-    border-bottom: 1px dashed #e6e9f0;
-  }
   .beg {
-    margin: 8px;
+    margin-top: 16px;
     text-align: center;
     color: #40a9ff;
     del {
@@ -28,5 +19,16 @@
     img {
       width: 100%;
     }
+  }
+}
+
+.calendarMonthDisabled {
+  cursor: not-allowed !important;
+  color: rgba(0, 0, 0, 0.25);
+  &:hover {
+    background: none;
+  }
+  &:active {
+    color: rgba(0, 0, 0, 0.25);
   }
 }
