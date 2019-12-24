@@ -46,19 +46,20 @@ const QuestList: React.FC = () => {
   return (
     <Layout style={{ position: 'relative' }}>
       <Sider theme="light" className={styles.sider}>
-        <Menu
-          theme="light"
-          selectedKeys={[currentMissionType]}
-          onSelect={p => setCurrentMissionType(p.key)}
-        >
-          {loading ? (
-            <Loading />
-          ) : (
-            missions.map(([key]) => (
+        {loading ? (
+          <Loading />
+        ) : (
+          <Menu
+            theme="light"
+            selectedKeys={[currentMissionType]}
+            onSelect={p => setCurrentMissionType(p.key)}
+            style={{ border: 'none' }}
+          >
+            {missions.map(([key]) => (
               <Menu.Item key={key}>{MISSION_TYPE[key]}</Menu.Item>
-            ))
-          )}
-        </Menu>
+            ))}
+          </Menu>
+        )}
       </Sider>
       <Content style={{ position: 'relative' }}>
         <div
@@ -72,23 +73,28 @@ const QuestList: React.FC = () => {
               <Collapse bordered={false}>
                 {missions
                   .find(m => m[0] === currentMissionType)![1]
-                  .map(mission => (
-                    <Panel
-                      key={mission.MissionID}
-                      header={
-                        <span>
-                          {mission.MissionID}
-                          &nbsp;
-                          <strong>{mission.Name}</strong>
-                        </span>
-                      }
-                    >
-                      <MissionShutter
-                        mission={mission}
-                        isTabletOrMobile={isTabletOrMobile}
-                      />
-                    </Panel>
-                  ))}
+                  .map(mission => {
+                    if (mission.MissionID === 200129) {
+                      console.log(233);
+                    }
+                    return (
+                      <Panel
+                        key={mission.MissionID}
+                        header={
+                          <span>
+                            {mission.MissionID}
+                            &nbsp;
+                            <strong>{mission.Name}</strong>
+                          </span>
+                        }
+                      >
+                        <MissionShutter
+                          mission={mission}
+                          isTabletOrMobile={isTabletOrMobile}
+                        />
+                      </Panel>
+                    );
+                  })}
               </Collapse>
             ) : (
               <Loading />

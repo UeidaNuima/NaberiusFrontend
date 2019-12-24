@@ -32,7 +32,7 @@ const Home: React.FC = () => {
       onCompleted: d => {
         if (d.Posters.length > 0) {
           const posterName = d.Posters[d.Posters.length - 1];
-          setDate(moment(posterName.slice(5, 13), 'YYYYMMDD'));
+          setSelectedDate(moment(posterName.slice(5, 13), 'YYYYMMDD'));
         }
       },
     },
