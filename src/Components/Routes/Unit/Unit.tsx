@@ -45,10 +45,10 @@ function classDataToUnit(
       maxLevelUnit = 99;
       break;
     case 'Evo':
-      if (card.Rare === 4) maxLevelUnit = 80;
-      if (card.Rare === 5) maxLevelUnit = 90;
-      if (card.Rare === 6) maxLevelUnit = 99;
-      if (card.Rare === 8) maxLevelUnit = 85;
+      if (card.Rare === 3) maxLevelUnit = 80;
+      if (card.Rare === 4) maxLevelUnit = 90;
+      if (card.Rare === 5) maxLevelUnit = 99;
+      if (card.Rare === 7) maxLevelUnit = 85;
       if (card.Rare === 10) maxLevelUnit = 90;
       if (card.Rare === 11) maxLevelUnit = 99;
       break;
@@ -67,11 +67,11 @@ function classDataToUnit(
       }
     // eslint-disable-next-line no-fallthrough
     case 'CC':
-      if (card.Rare === 3) maxLevelUnit = 55;
-      if (card.Rare === 4) maxLevelUnit = 60;
-      if (card.Rare === 5) maxLevelUnit = 70;
-      if (card.Rare === 6) maxLevelUnit = 80;
-      if (card.Rare === 8) maxLevelUnit = 65;
+      if (card.Rare === 2) maxLevelUnit = 55;
+      if (card.Rare === 3) maxLevelUnit = 60;
+      if (card.Rare === 4) maxLevelUnit = 70;
+      if (card.Rare === 5) maxLevelUnit = 80;
+      if (card.Rare === 7) maxLevelUnit = 65;
       break;
   }
 
