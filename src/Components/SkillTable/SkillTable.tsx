@@ -20,7 +20,7 @@ const SkillTableRows: React.FC<{ skill: SkillData }> = ({ skill }) => {
     <>
       <td>{skill.LevelMax}</td>
       <td>{skill.ContTimeMax}</td>
-      <td>{skill.WaitTime}</td>
+      <td>{skill.WaitTime - skill.LevelMax}</td>
       <td>{skill.PowerMax}</td>
       <td>
         <Button
