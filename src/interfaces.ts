@@ -61,6 +61,7 @@ export interface Frame {
 }
 
 export interface ClassData {
+  JobChange: number;
   Type: 'Init' | 'CC' | 'Evo' | 'Evo2a' | 'Evo2b';
   AttackAttribute: number;
   Missile?: Missile;

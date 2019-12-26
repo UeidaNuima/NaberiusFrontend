@@ -226,7 +226,7 @@ const ClassTable: React.FC<{
                             <td>{config._InvokeType}</td>
                             <td>{config._TargetType}</td>
                           </tr>
-                          {(config._Command || config._ActivateCommand) && (
+                          {!!(config._Command || config._ActivateCommand) && (
                             <tr style={{ borderBottom: '2px solid #e8e8e8' }}>
                               <td
                                 colSpan={3}

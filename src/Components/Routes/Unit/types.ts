@@ -42,6 +42,7 @@ export const query = gql`
         ...Dot
       }
       Classes {
+        JobChange
         AttackAttribute
         Missile {
           ...missile

@@ -61,7 +61,10 @@ function classDataToUnit(
         maxLevelUnit = 40;
         break;
       }
-      if (classData.Data_ExtraAwakeOrbs.length === 0) {
+      if (
+        classData.Data_ExtraAwakeOrbs.length === 0 &&
+        classData.JobChange !== 0
+      ) {
         maxLevelUnit = 50;
         break;
       }
@@ -70,7 +73,7 @@ function classDataToUnit(
       if (card.Rare === 2) maxLevelUnit = 55;
       if (card.Rare === 3) maxLevelUnit = 60;
       if (card.Rare === 4) maxLevelUnit = 70;
-      if (card.Rare === 5) maxLevelUnit = 80;
+      if (card.Rare === 5) maxLevelUnit = classData.MaxLevel;
       if (card.Rare === 7) maxLevelUnit = 65;
       break;
   }
