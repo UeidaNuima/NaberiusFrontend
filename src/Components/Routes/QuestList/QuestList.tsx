@@ -44,7 +44,7 @@ const QuestList: React.FC = () => {
   const missions = data ? Object.entries(_.groupBy(data.Missions, 'Type')) : [];
 
   return (
-    <Layout style={{ position: 'relative' }}>
+    <Layout style={{ position: 'relative', overflow: 'hidden' }}>
       <Sider theme="light" className={styles.sider}>
         {loading ? (
           <Loading />

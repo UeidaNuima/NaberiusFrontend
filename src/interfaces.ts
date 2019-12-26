@@ -305,6 +305,7 @@ export interface Quest {
     _TalkerName: string;
     _TalkText: string;
   }>;
+  HardInfomation: string;
   Name: string;
   Message: string;
   Charisma: number;

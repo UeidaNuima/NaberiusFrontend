@@ -48,6 +48,7 @@ const Quest: React.FC = () => {
             _TalkText
           }
           Name
+          HardInfomation
           Message
           Charisma
           EntryNo
@@ -238,19 +239,37 @@ const Quest: React.FC = () => {
                     </tr>
                   )}
                   {data.Quest._HardCondition !== 0 && (
-                    <tr>
-                      <th>4☆补正</th>
-                      <td>{data.Quest.Level}</td>
-                      <th>设置</th>
-                      <td>
-                        <Button
-                          type="primary"
-                          size="small"
-                          onClick={() => setShowHardTerms(!showHardTerms)}
-                          icon={showHardTerms ? 'up' : 'down'}
-                        />
-                      </td>
-                    </tr>
+                    <>
+                      <tr>
+                        <td colSpan={4}>
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: renderDescription(
+                                data.Quest.HardInfomation,
+                              ),
+                            }}
+                            style={{
+                              textAlign: 'left',
+                              maxWidth: '20em',
+                              margin: 'auto',
+                            }}
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>4☆补正</th>
+                        <td>{data.Quest.Level}</td>
+                        <th>设置</th>
+                        <td>
+                          <Button
+                            type="primary"
+                            size="small"
+                            onClick={() => setShowHardTerms(!showHardTerms)}
+                            icon={showHardTerms ? 'up' : 'down'}
+                          />
+                        </td>
+                      </tr>
+                    </>
                   )}
                   {showHardTerms && (
                     <tr>
