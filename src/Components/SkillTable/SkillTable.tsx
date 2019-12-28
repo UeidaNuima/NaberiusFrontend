@@ -1,16 +1,125 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styles from './SkillTable.module.less';
-import { Button, Row, Col } from 'antd';
+import { Button, Row, Col, Input, message, Spin } from 'antd';
 import { renderDescription } from '../../utils';
-import { SkillData } from 'interfaces';
+import { SkillData, SkillConfig } from 'interfaces';
 import MediaContext from 'context/MediaContext';
 import { Link } from 'react-router-dom';
 import { ICO_URL } from 'consts';
+import classNames from 'classnames';
+import { useMutation } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
 
 const SKILL_TYPE = {
   Init: '初始',
   CC: 'CC',
   Evo: '技觉',
+};
+
+const SkillConfigTableRows: React.FC<{ config: SkillConfig }> = ({
+  config,
+}) => {
+  const [value, setValue] = useState(config.Comment || '');
+
+  const [setSkillConfigMeta, { loading, data }] = useMutation<{
+    SkillConfigMeta?: { TypeID: number; Comment: string };
+  }>(
+    gql`
+      mutation($TypeID: Int!, $Comment: String) {
+        SkillConfigMeta(TypeID: $TypeID, Comment: $Comment) {
+          TypeID
+          Comment
+        }
+      }
+    `,
+    {
+      onCompleted: d => {
+        setValue(d?.SkillConfigMeta?.Comment || '');
+      },
+    },
+  );
+
+  const [editing, setEditing] = useState(false);
+  const ref = useRef<Input>(null);
+
+  useEffect(() => {
+    if (editing && ref.current) {
+      ref.current.focus();
+    }
+  }, [editing]);
+
+  const handleSave = async () => {
+    await setSkillConfigMeta({
+      variables: { TypeID: config.Data_InfluenceType, Comment: value },
+    });
+    message.success('修改成功');
+    setEditing(false);
+  };
+
+  return (
+    <tbody className={styles.configRowGroup}>
+      <tr className={styles.cover}>
+        <td
+          colSpan={8}
+          className={classNames({
+            [styles.blank]: !(data
+              ? data.SkillConfigMeta?.Comment
+              : config.Comment),
+          })}
+        >
+          {editing ? (
+            <Spin spinning={loading}>
+              <Input
+                size="small"
+                ref={ref}
+                value={value}
+                onChange={e => setValue(e.target.value)}
+                onBlur={handleSave}
+                onPressEnter={handleSave}
+              />
+            </Spin>
+          ) : (
+            <div
+              className={classNames(styles.fakeInput, styles.small)}
+              onClick={() => setEditing(true)}
+            >
+              {data ? data.SkillConfigMeta?.Comment : config.Comment}
+            </div>
+          )}
+        </td>
+      </tr>
+      <tr>
+        <td>{config.Data_InfluenceType}</td>
+        <td>{config.Data_MulValue}</td>
+        <td>{config.Data_MulValue2}</td>
+        <td>{config.Data_MulValue3}</td>
+        <td>{config.Data_AddValue}</td>
+        <td>{config.Type_Collision}</td>
+        <td>{config.Type_CollisionState}</td>
+        <td>{config.Data_Target}</td>
+      </tr>
+      {(config._ExpressionActivate !== '' || config._Expression !== '') && (
+        <tr>
+          <td
+            colSpan={4}
+            style={{
+              wordWrap: 'break-word',
+            }}
+          >
+            {config._Expression}
+          </td>
+          <td
+            colSpan={4}
+            style={{
+              wordWrap: 'break-word',
+            }}
+          >
+            {config._ExpressionActivate}
+          </td>
+        </tr>
+      )}
+    </tbody>
+  );
 };
 
 const SkillTableRows: React.FC<{ skill: SkillData }> = ({ skill }) => {
@@ -82,7 +191,10 @@ const SkillTableRows: React.FC<{ skill: SkillData }> = ({ skill }) => {
               <Col xs={24} md={12}>
                 <table
                   className={styles.table}
-                  style={{ tableLayout: 'fixed' }}
+                  style={{
+                    tableLayout: 'fixed',
+                    position: 'relative',
+                  }}
                 >
                   <thead>
                     <tr>
@@ -100,51 +212,9 @@ const SkillTableRows: React.FC<{ skill: SkillData }> = ({ skill }) => {
                       <th colSpan={4}>发动条件</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {skill.Configs.map((config, index) => (
-                      <React.Fragment key={index}>
-                        <tr
-                          style={{
-                            borderBottom:
-                              config._ExpressionActivate !== '' ||
-                              config._Expression !== ''
-                                ? 'none'
-                                : '2px solid #e8e8e8',
-                          }}
-                        >
-                          <td>{config.Data_InfluenceType}</td>
-                          <td>{config.Data_MulValue}</td>
-                          <td>{config.Data_MulValue2}</td>
-                          <td>{config.Data_MulValue3}</td>
-                          <td>{config.Data_AddValue}</td>
-                          <td>{config.Type_Collision}</td>
-                          <td>{config.Type_CollisionState}</td>
-                          <td>{config.Data_Target}</td>
-                        </tr>
-                        {(config._ExpressionActivate !== '' ||
-                          config._Expression !== '') && (
-                          <tr style={{ borderBottom: '2px solid #e8e8e8' }}>
-                            <td
-                              colSpan={4}
-                              style={{
-                                wordWrap: 'break-word',
-                              }}
-                            >
-                              {config._Expression}
-                            </td>
-                            <td
-                              colSpan={4}
-                              style={{
-                                wordWrap: 'break-word',
-                              }}
-                            >
-                              {config._ExpressionActivate}
-                            </td>
-                          </tr>
-                        )}
-                      </React.Fragment>
-                    ))}
-                  </tbody>
+                  {skill.Configs.map((config, index) => (
+                    <SkillConfigTableRows config={config} key={index} />
+                  ))}
                 </table>
               </Col>
             </Row>

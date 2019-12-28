@@ -48,6 +48,7 @@ const SkillList: React.FC = () => {
           _HoldRatioUpperLimit
           _Expression
           _ExpressionActivate
+          Commnet
         }
         Cards {
           CardID

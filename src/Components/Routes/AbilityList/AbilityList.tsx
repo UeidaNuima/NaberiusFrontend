@@ -36,6 +36,7 @@ const AbilityList: React.FC = () => {
           _Param4
           _Command
           _ActivateCommand
+          Comment
         }
         Cards {
           CardID

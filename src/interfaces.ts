@@ -60,6 +60,28 @@ export interface Frame {
   };
 }
 
+export interface AbilityConfig {
+  _InvokeType: number;
+  _TargetType: number;
+  _InfluenceType: number;
+  _Param1: number;
+  _Param2: number;
+  _Param3: number;
+  _Param4: number;
+  _Command: string;
+  _ActivateCommand: string;
+  Comment?: string;
+}
+
+export interface AbilityData {
+  Type: 'Init' | 'Evo';
+  AbilityID: number;
+  Text: string;
+  AbilityName: string;
+  Cards: Card[];
+  Configs: AbilityConfig[];
+}
+
 export interface ClassData {
   JobChange: number;
   Type: 'Init' | 'CC' | 'Evo' | 'Evo2a' | 'Evo2b';
@@ -82,18 +104,7 @@ export interface ClassData {
   AttackWait: string;
   Data_ExtraAwakeOrbs: ClassData[];
   NickNames: string[];
-  ClassAbilityConfigs: Array<{
-    _InvokeType: number;
-    _TargetType: number;
-    _InfluenceType: number;
-    _Param1: number;
-    _Param2: number;
-    _Param3: number;
-    _Param4: number;
-    _Command: string;
-    _ActivateCommand: string;
-    // Description: string;
-  }>;
+  ClassAbilityConfigs: AbilityConfig[];
   ClassAbilityPower1: number;
   BattleStyle?: {
     Data_ID: number;
@@ -109,6 +120,22 @@ export interface ClassData {
   Cards: Card[];
 }
 
+export interface SkillConfig {
+  Type_Collision: number;
+  Type_CollisionState: number;
+  Type_ChangeFunction: number;
+  Data_Target: number;
+  Data_InfluenceType: number;
+  Data_MulValue: number;
+  Data_MulValue2: number;
+  Data_MulValue3: number;
+  Data_AddValue: number;
+  _HoldRatioUpperLimit: number;
+  _Expression: string;
+  _ExpressionActivate: string;
+  Comment: string;
+}
+
 export interface SkillData {
   SkillName: string;
   WaitTime: number;
@@ -118,46 +145,12 @@ export interface SkillData {
   Text: string;
   SkillID: number;
   Cards: Card[];
-  Configs: Array<{
-    Type_Collision: number;
-    Type_CollisionState: number;
-    Type_ChangeFunction: number;
-    Data_Target: number;
-    Data_InfluenceType: number;
-    Data_MulValue: number;
-    Data_MulValue2: number;
-    Data_MulValue3: number;
-    Data_AddValue: number;
-    _HoldRatioUpperLimit: number;
-    _Expression: string;
-    _ExpressionActivate: string;
-    // Description: string;
-  }>;
+  Configs: SkillConfig[];
 }
 
 export interface SkillWithType {
   Type: 'Init' | 'CC' | 'Evo';
   Skills: SkillData[];
-}
-
-export interface AbilityData {
-  Type: 'Init' | 'Evo';
-  AbilityID: number;
-  Text: string;
-  AbilityName: string;
-  Cards: Card[];
-  Configs: Array<{
-    _InvokeType: number;
-    _TargetType: number;
-    _InfluenceType: number;
-    _Param1: number;
-    _Param2: number;
-    _Param3: number;
-    _Param4: number;
-    _Command: string;
-    _ActivateCommand: string;
-    // Description: string;
-  }>;
 }
 
 export interface Card {

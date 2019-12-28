@@ -81,7 +81,7 @@ export const query = gql`
           _Param4
           _Command
           _ActivateCommand
-          # Description
+          Comment
         }
         ClassAbilityPower1
         BattleStyle {
@@ -118,7 +118,7 @@ export const query = gql`
           _Param4
           _Command
           _ActivateCommand
-          # Description
+          Comment
         }
       }
       ClassLV0SkillID
@@ -151,7 +151,7 @@ export const query = gql`
             _HoldRatioUpperLimit
             _Expression
             _ExpressionActivate
-            # Description
+            Comment
           }
         }
       }

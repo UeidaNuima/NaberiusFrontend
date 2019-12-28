@@ -52,6 +52,7 @@ const ClassList: React.FC = () => {
           _Param4
           _Command
           _ActivateCommand
+          Comment
         }
         ClassAbilityPower1
         Cards {

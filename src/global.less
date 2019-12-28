@@ -30,9 +30,50 @@
   padding: 4px 11px;
   border-radius: 4px;
   cursor: pointer;
-  transition: border 1s;
+  transition: border 0.3s, background-color 0.3s;
   border: 1px solid rgba(255, 255, 255, 0);
   &:hover {
     border: 1px solid #e5e6eb;
+    background-color: #fff;
+  }
+  &.small {
+    height: 24px;
+    padding: 1px 7px;
+  }
+}
+
+.configRowGroup {
+  .cover {
+    left: 0;
+    position: absolute;
+    transform: scale(1);
+    width: 100%;
+    transition: opacity 0.3s;
+    td {
+      border: none;
+      padding: 6px;
+      position: absolute;
+      width: 50%;
+      right: 0;
+      top: 0;
+      text-align: right;
+      background: linear-gradient(
+        to left,
+        rgba(255, 255, 255, 1),
+        rgba(255, 255, 255, 0)
+      );
+      &.blank {
+        background: none;
+      }
+    }
+  }
+}
+
+.configRowGroup:hover {
+  .cover {
+    opacity: 0;
+    &:hover {
+      opacity: 1;
+    }
   }
 }

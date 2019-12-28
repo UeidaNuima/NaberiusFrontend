@@ -37,10 +37,9 @@ const ConneNameInput: React.FC<{
   }, [editing]);
 
   const handleSave = async () => {
-    const resp = await setCardMeta({
+    await setCardMeta({
       variables: { CardID, ConneName: value },
     });
-    console.log(resp);
     message.success('修改成功');
     setEditing(false);
   };
