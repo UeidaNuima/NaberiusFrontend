@@ -112,11 +112,7 @@ const EnemyConfigTableRows: React.FC<{ config: SpecialtyConfig }> = ({
       </tr>
 
       {!!(config._Expression || config._ExtParam) && (
-        <tr
-          style={{
-            borderBottom: '2px solid #e8e8e8',
-          }}
-        >
+        <tr>
           <td colSpan={3}>{config._Expression}</td>
           <td colSpan={2}>{config._ExtParam}</td>
         </tr>
