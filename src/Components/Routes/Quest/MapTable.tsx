@@ -48,12 +48,7 @@ const MapTable: React.FC<{ quest: Quest }> = ({ quest }) => {
       >
         <Stage width={960} height={640} scaleX={zoom} scaleY={zoom}>
           <Layer>
-            <Image
-              image={mapImg}
-              onClick={() => {
-                console.log(755);
-              }}
-            />
+            <Image image={mapImg} />
             {mapImg && heartImg && nearImg && farImg && (
               <>
                 <Image image={mapImg} />
@@ -84,6 +79,13 @@ const MapTable: React.FC<{ quest: Quest }> = ({ quest }) => {
                             range: c.range || 250,
                           }));
                         }}
+                        onTap={() => {
+                          setCircle(c => ({
+                            x: location.X,
+                            y: location.Y,
+                            range: c.range || 250,
+                          }));
+                        }}
                         onMouseEnter={() => {
                           document.body.style.cursor = 'pointer';
                         }}
@@ -108,6 +110,7 @@ const MapTable: React.FC<{ quest: Quest }> = ({ quest }) => {
                       fill="rgba(0, 255, 0, 0.3)"
                       stroke="rgba(0, 255, 0, 0.5)"
                       onClick={() => setCircle({})}
+                      onTap={() => setCircle({})}
                     />
                   )}
                 {quest.Map.Routes.map((routes, index) => {

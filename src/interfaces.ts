@@ -201,6 +201,7 @@ export interface SpecialtyConfig {
   Param_4: number;
   _Expression: string;
   _ExtParam: string;
+  Comment: string;
 }
 
 export interface Missile {
@@ -292,6 +293,7 @@ export interface QuestTermConfig {
   Data_Param3: number;
   Data_Param4: number;
   Data_Expression: string;
+  Comment: string;
 }
 
 export interface Quest {

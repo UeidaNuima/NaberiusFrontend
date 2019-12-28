@@ -91,6 +91,7 @@ export const EnemyFragment = gql`
       Param_4
       _Expression
       _ExtParam
+      Comment
     }
     EnemyElem {
       _EnemyElementName

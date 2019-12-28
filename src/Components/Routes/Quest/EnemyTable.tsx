@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
-import { Button, Divider, Row, Col, Switch } from 'antd';
+import React, { useState, useRef, useEffect } from 'react';
+import { Button, Divider, Row, Col, Switch, Input, message, Spin } from 'antd';
 import { ICO_URL, ENEMY_DOT_URL, ENEMY_CHANGE_COND } from 'consts';
 import styles from './Quest.module.less';
-import { Dot, Enemy, MapEntry } from 'interfaces';
+import { Dot, Enemy, MapEntry, SpecialtyConfig } from 'interfaces';
 import { useMediaQuery } from 'react-responsive';
 import DotTable from 'Components/DotTable';
 import TalkRow from 'Components/DotAnimation/TalkRow';
 import { Quest as QuestType } from 'interfaces';
 import MissileTable from 'Components/MissileTable';
+import { useMutation } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
+import classNames from 'classnames';
 
 const getAttackSpeed = (enemy: Enemy & MapEntry, dots: Dot[]) => {
   let length = 0;
@@ -25,6 +28,101 @@ const getAttackSpeed = (enemy: Enemy & MapEntry, dots: Dot[]) => {
     attackSpeed += enemy.ATTACK_SPEED;
   }
   return attackSpeed;
+};
+
+const EnemyConfigTableRows: React.FC<{ config: SpecialtyConfig }> = ({
+  config,
+}) => {
+  const [value, setValue] = useState(config.Comment || '');
+
+  const [setEnemyConfigMeta, { loading, data }] = useMutation<{
+    EnemyConfigMeta?: { TypeID: number; Comment: string };
+  }>(
+    gql`
+      mutation($TypeID: Int!, $Comment: String) {
+        EnemyConfigMeta(TypeID: $TypeID, Comment: $Comment) {
+          TypeID
+          Comment
+        }
+      }
+    `,
+    {
+      onCompleted: d => {
+        setValue(d?.EnemyConfigMeta?.Comment || '');
+      },
+    },
+  );
+
+  const [editing, setEditing] = useState(false);
+  const ref = useRef<Input>(null);
+
+  useEffect(() => {
+    if (editing && ref.current) {
+      ref.current.focus();
+    }
+  }, [editing]);
+
+  const handleSave = async () => {
+    await setEnemyConfigMeta({
+      variables: { TypeID: config.Type_Influence, Comment: value },
+    });
+    message.success('修改成功');
+    setEditing(false);
+  };
+
+  return (
+    <tbody className={styles.configRowGroup}>
+      <tr className={styles.cover}>
+        <td
+          colSpan={8}
+          className={classNames({
+            [styles.blank]: !(data
+              ? data.EnemyConfigMeta?.Comment
+              : config.Comment),
+          })}
+        >
+          {editing ? (
+            <Spin spinning={loading}>
+              <Input
+                size="small"
+                ref={ref}
+                value={value}
+                onChange={e => setValue(e.target.value)}
+                onBlur={handleSave}
+                onPressEnter={handleSave}
+              />
+            </Spin>
+          ) : (
+            <div
+              className={classNames(styles.fakeInput, styles.small)}
+              onClick={() => setEditing(true)}
+            >
+              {data ? data.EnemyConfigMeta?.Comment : config.Comment}
+            </div>
+          )}
+        </td>
+      </tr>
+
+      <tr>
+        <td>{config.Type_Influence}</td>
+        <td>{config.Param_1}</td>
+        <td>{config.Param_2}</td>
+        <td>{config.Param_3}</td>
+        <td>{config.Param_4}</td>
+      </tr>
+
+      {!!(config._Expression || config._ExtParam) && (
+        <tr
+          style={{
+            borderBottom: '2px solid #e8e8e8',
+          }}
+        >
+          <td colSpan={3}>{config._Expression}</td>
+          <td colSpan={2}>{config._ExtParam}</td>
+        </tr>
+      )}
+    </tbody>
+  );
 };
 
 interface EnemyTableRowsProps {
@@ -184,6 +282,7 @@ const EnemyTableRows: React.FC<EnemyTableRowsProps> = ({
                           className={styles.table}
                           style={{
                             tableLayout: 'fixed',
+                            position: 'relative',
                           }}
                         >
                           <thead>
@@ -199,41 +298,9 @@ const EnemyTableRows: React.FC<EnemyTableRowsProps> = ({
                               <th colSpan={2}>...p</th>
                             </tr>
                           </thead>
-                          <tbody>
-                            {e.SpecialtyConfigs.map((config, index) => {
-                              return (
-                                <React.Fragment key={index}>
-                                  <tr
-                                    style={{
-                                      borderBottom:
-                                        config._Expression || config._ExtParam
-                                          ? undefined
-                                          : '2px solid #e8e8e8',
-                                    }}
-                                  >
-                                    <td>{config.Type_Influence}</td>
-                                    <td>{config.Param_1}</td>
-                                    <td>{config.Param_2}</td>
-                                    <td>{config.Param_3}</td>
-                                    <td>{config.Param_4}</td>
-                                  </tr>
-
-                                  {!!(
-                                    config._Expression || config._ExtParam
-                                  ) && (
-                                    <tr
-                                      style={{
-                                        borderBottom: '2px solid #e8e8e8',
-                                      }}
-                                    >
-                                      <td colSpan={3}>{config._Expression}</td>
-                                      <td colSpan={2}>{config._ExtParam}</td>
-                                    </tr>
-                                  )}
-                                </React.Fragment>
-                              );
-                            })}
-                          </tbody>
+                          {e.SpecialtyConfigs.map((config, index) => (
+                            <EnemyConfigTableRows key={index} config={config} />
+                          ))}
                         </table>
                       )}
                       {!!(e.Missile && e.Missile.Enemy === 1) && (

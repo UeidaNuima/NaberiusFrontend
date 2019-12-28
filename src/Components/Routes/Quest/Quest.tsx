@@ -40,6 +40,7 @@ const Quest: React.FC = () => {
         Data_Param3
         Data_Param4
         Data_Expression
+        Comment
       }
       query($id: Int!) {
         Quest(QuestID: $id) {
@@ -245,7 +246,8 @@ const Quest: React.FC = () => {
                           <div
                             dangerouslySetInnerHTML={{
                               __html: renderDescription(
-                                data.Quest.HardInfomation,
+                                // TODO: delete ||
+                                data.Quest.HardInfomation || '',
                               ),
                             }}
                             style={{
