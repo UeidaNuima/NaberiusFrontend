@@ -262,20 +262,20 @@ export interface MapEntry {
   DeadCommand: string;
 }
 
+export interface MapRoute {
+  X: number;
+  Y: number;
+  JumpPoint: number;
+  WarpDelay: number;
+  WaitTime: number;
+  OnEvent?: string;
+  RouteID: number;
+}
+
 export interface Map {
   Image: string;
   Entries: MapEntry[][];
-  Routes: Array<
-    Array<{
-      X: number;
-      Y: number;
-      JumpPoint: number;
-      WarpDelay: number;
-      WaitTime: number;
-      OnEvent?: string;
-      RouteID: number;
-    }>
-  >;
+  Routes: MapRoute[][];
   Locations: Array<
     Array<{
       ObjectID: number;

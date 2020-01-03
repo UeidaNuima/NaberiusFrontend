@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Button, Divider, Row, Col, Switch, Input, message, Spin } from 'antd';
 import { ICO_URL, ENEMY_DOT_URL, ENEMY_CHANGE_COND } from 'consts';
 import styles from './Quest.module.less';
-import { Dot, Enemy, MapEntry, SpecialtyConfig } from 'interfaces';
+import { Dot, Enemy, MapEntry, SpecialtyConfig, MapRoute } from 'interfaces';
 import { useMediaQuery } from 'react-responsive';
 import DotTable from 'Components/DotTable';
 import TalkRow from 'Components/TalkRow';
@@ -125,17 +125,31 @@ interface EnemyTableRowsProps {
   enemies: Array<Enemy & MapEntry>;
   drops: string[];
   isTabletOrMobile: boolean;
+  routes: MapRoute[][];
 }
 
+// enemy group (with change)
 const EnemyTableRows: React.FC<EnemyTableRowsProps> = ({
   enemies,
   drops,
   isTabletOrMobile,
+  routes,
 }) => {
   const [expand, setExpand] = useState(false);
   const [showTable, setShowTable] = useState<boolean[]>(
     Array(enemies.length).fill(false),
   );
+
+  const routeNos = [enemies[0].RouteNo];
+  for (let i = 0; i < routeNos.length; i++) {
+    const routeNo = routeNos[i];
+    for (const route of routes[routeNo]) {
+      if (route.RouteID !== 0) {
+        routeNos.push(route.RouteID);
+        break;
+      }
+    }
+  }
 
   return (
     <>
@@ -262,7 +276,7 @@ const EnemyTableRows: React.FC<EnemyTableRowsProps> = ({
                           </tr>
                           <tr>
                             <th>路线</th>
-                            <td>{e.RouteNo}</td>
+                            <td>{routeNos.join('->')}</td>
                           </tr>
                           {e.PrizeCardID !== 0 && (
                             <tr>
@@ -340,6 +354,7 @@ const EnemyTable: React.FC<EnemyTableProps> = ({ data }) => {
   const { Quest: quest } = data;
   const enemies = quest.Map.Enemies || quest.Mission.Enemies;
   const entries = quest.Map.Entries[quest.EntryNo];
+  const routes = quest.Map.Routes;
   const mapLevel = quest.Level;
   const [showDuplicate, setShowDuplicate] = useState(false);
   const [showTalk, setShowTalk] = useState(true);
@@ -444,6 +459,7 @@ const EnemyTable: React.FC<EnemyTableProps> = ({ data }) => {
                 enemies={enemies}
                 drops={drops}
                 key={index}
+                routes={routes}
               />
             );
           } else if (enemies.EnemyID === -1) {

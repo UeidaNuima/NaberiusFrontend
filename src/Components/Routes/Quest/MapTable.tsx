@@ -35,16 +35,16 @@ const MapTable: React.FC<{ quest: Quest }> = ({ quest }) => {
     };
   }, []);
 
-  const routeNosAppend = [...routeNos];
-  for (let i = 0; i < routeNosAppend.length; i++) {
-    const routes = quest.Map.Routes[routeNosAppend[i]];
-    for (const route of routes) {
-      if (route.RouteID !== 0 && !routeNosAppend.includes(route.RouteID)) {
-        routeNosAppend.push(route.RouteID);
-        break;
-      }
-    }
-  }
+  // const routeNosAppend = [...routeNos];
+  // for (let i = 0; i < routeNosAppend.length; i++) {
+  //   const routes = quest.Map.Routes[routeNosAppend[i]];
+  //   for (const route of routes) {
+  //     if (route.RouteID !== 0 && !routeNosAppend.includes(route.RouteID)) {
+  //       routeNosAppend.push(route.RouteID);
+  //       break;
+  //     }
+  //   }
+  // }
 
   return (
     <>
@@ -125,7 +125,7 @@ const MapTable: React.FC<{ quest: Quest }> = ({ quest }) => {
                     />
                   )}
                 {quest.Map.Routes.map((routes, index) => {
-                  if (!routeNosAppend.includes(index)) {
+                  if (!routeNos.includes(index)) {
                     return null;
                   }
                   return (
