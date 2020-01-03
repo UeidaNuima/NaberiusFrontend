@@ -273,6 +273,7 @@ export interface Map {
       WarpDelay: number;
       WaitTime: number;
       OnEvent?: string;
+      RouteID: number;
     }>
   >;
   Locations: Array<

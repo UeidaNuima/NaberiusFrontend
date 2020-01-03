@@ -35,6 +35,17 @@ const MapTable: React.FC<{ quest: Quest }> = ({ quest }) => {
     };
   }, []);
 
+  const routeNosAppend = [...routeNos];
+  for (let i = 0; i < routeNosAppend.length; i++) {
+    const routes = quest.Map.Routes[routeNosAppend[i]];
+    for (const route of routes) {
+      if (route.RouteID !== 0 && !routeNosAppend.includes(route.RouteID)) {
+        routeNosAppend.push(route.RouteID);
+        break;
+      }
+    }
+  }
+
   return (
     <>
       <div
@@ -114,20 +125,27 @@ const MapTable: React.FC<{ quest: Quest }> = ({ quest }) => {
                     />
                   )}
                 {quest.Map.Routes.map((routes, index) => {
-                  if (!routeNos.includes(index)) {
+                  if (!routeNosAppend.includes(index)) {
                     return null;
                   }
                   return (
                     <React.Fragment key={index}>
-                      {routes.slice(1).map((route, i) => (
-                        <Arrow
-                          points={[routes[i].X, routes[i].Y, route.X, route.Y]}
-                          key={i}
-                          stroke="rgba(255, 255, 255, 0.7)"
-                          fill="red"
-                          strokeWidth={8}
-                        />
-                      ))}
+                      {routes.slice(1).map((route, i) => {
+                        return (
+                          <Arrow
+                            points={[
+                              routes[i].X,
+                              routes[i].Y,
+                              route.X,
+                              route.Y,
+                            ]}
+                            key={i}
+                            stroke="rgba(255, 255, 255, 0.7)"
+                            fill="red"
+                            strokeWidth={8}
+                          />
+                        );
+                      })}
                     </React.Fragment>
                   );
                 })}

@@ -107,6 +107,7 @@ const Quest: React.FC = () => {
             Routes {
               X
               Y
+              RouteID
               JumpPoint
               WarpDelay
               WaitTime
