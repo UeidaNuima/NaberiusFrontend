@@ -5,7 +5,7 @@ import styles from './Quest.module.less';
 import { Dot, Enemy, MapEntry, SpecialtyConfig } from 'interfaces';
 import { useMediaQuery } from 'react-responsive';
 import DotTable from 'Components/DotTable';
-import TalkRow from 'Components/DotAnimation/TalkRow';
+import TalkRow from 'Components/TalkRow';
 import { Quest as QuestType } from 'interfaces';
 import MissileTable from 'Components/MissileTable';
 import { useMutation } from '@apollo/react-hooks';

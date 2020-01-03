@@ -15,6 +15,7 @@ import PreviewDot from './PreviewDot';
 import MapTable from './MapTable';
 import QuestTermTable from './QuestTermTable';
 import { Quest as QuestType } from 'interfaces';
+import TalkRow from 'Components/TalkRow';
 
 const { Content } = Layout;
 
@@ -360,6 +361,24 @@ const Quest: React.FC = () => {
                         />
                       </td>
                     </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          {data && data.Quest.Mission.BattleTalkEvents.length !== 0 && (
+            <div>
+              <h2>Mission对话</h2>
+              <table className={styles.table}>
+                <colgroup style={{ width: 100 }} />
+                <tbody>
+                  {data.Quest.Mission.BattleTalkEvents.map((talk, index) => (
+                    <TalkRow
+                      key={index}
+                      talk={talk}
+                      MissionID={data.Quest.Mission.MissionID}
+                      isTabletOrMobile={false}
+                    />
                   ))}
                 </tbody>
               </table>
