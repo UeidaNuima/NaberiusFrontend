@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import gql from 'graphql-tag';
-import { Layout, Row, Col, Tag, Icon, Button } from 'antd';
+import { Layout, Row, Col, Tag, Icon, Button, Switch } from 'antd';
 import { Link } from 'react-router-dom';
 import useRouter from 'use-react-router';
 import { ICO_URL } from 'consts';
@@ -24,6 +24,7 @@ const Quest: React.FC = () => {
   const QuestID = Number.parseInt(match.params.QuestID, 10);
   const [showTerms, setShowTerms] = useState(false);
   const [showHardTerms, setShowHardTerms] = useState(false);
+  const [showMissionTalks, setShowMissionTalks] = useState(false);
 
   const { data, loading } = useQuery<{
     Quest: QuestType;
@@ -368,20 +369,30 @@ const Quest: React.FC = () => {
           )}
           {data && data.Quest.Mission.BattleTalkEvents.length !== 0 && (
             <div>
-              <h2>Mission对话</h2>
-              <table className={styles.table}>
-                <colgroup style={{ width: 100 }} />
-                <tbody>
-                  {data.Quest.Mission.BattleTalkEvents.map((talk, index) => (
-                    <TalkRow
-                      key={index}
-                      talk={talk}
-                      MissionID={data.Quest.Mission.MissionID}
-                      isTabletOrMobile={false}
-                    />
-                  ))}
-                </tbody>
-              </table>
+              <h2>
+                Mission对话&nbsp;
+                <Switch
+                  checkedChildren="显示"
+                  unCheckedChildren="折叠"
+                  checked={showMissionTalks}
+                  onChange={value => setShowMissionTalks(value)}
+                />
+              </h2>
+              {showMissionTalks && (
+                <table className={styles.table}>
+                  <colgroup style={{ width: 100 }} />
+                  <tbody>
+                    {data.Quest.Mission.BattleTalkEvents.map((talk, index) => (
+                      <TalkRow
+                        key={index}
+                        talk={talk}
+                        MissionID={data.Quest.Mission.MissionID}
+                        isTabletOrMobile={false}
+                      />
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           )}
         </div>
