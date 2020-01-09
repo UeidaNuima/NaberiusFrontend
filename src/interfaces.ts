@@ -320,6 +320,7 @@ export interface Quest {
   Capacity: number;
   QuestTerms: number;
   _HardCondition: number;
+  _HardLevel: number;
   QuestTermConfigs: QuestTermConfig[];
   QuestHardTermConfigs: QuestTermConfig[];
   Mission: {

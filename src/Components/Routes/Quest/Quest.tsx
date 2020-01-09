@@ -68,6 +68,7 @@ const Quest: React.FC = () => {
           Capacity
           QuestTerms
           _HardCondition
+          _HardLevel
           QuestTermConfigs {
             ...termConfig
           }
@@ -263,7 +264,7 @@ const Quest: React.FC = () => {
                       </tr>
                       <tr>
                         <th>4☆补正</th>
-                        <td>{data.Quest.Level}</td>
+                        <td>{data.Quest._HardLevel}</td>
                         <th>设置</th>
                         <td>
                           <Button
