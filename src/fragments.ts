@@ -54,6 +54,7 @@ export const MissileFragment = gql`
 
 export const EnemyFragment = gql`
   fragment enemy on Enemy {
+    DotRate
     HitEffect
     MissileID
     DeadEffect

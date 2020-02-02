@@ -229,7 +229,7 @@ const EnemyTableRows: React.FC<EnemyTableRowsProps> = ({
               <td>
                 {getAttackSpeed(e, dots)}
                 <br />
-                {e.ATTACK_RANGE}
+                {Math.ceil(e.ATTACK_RANGE * e.DotRate)}
               </td>
               <td>{e.HP}</td>
               <td

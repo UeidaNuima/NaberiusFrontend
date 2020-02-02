@@ -216,7 +216,8 @@ export interface Missile {
 }
 
 export interface Enemy {
-  SpecialEffect: any;
+  DotRate: number;
+  SpecialEffect: number;
   PatternID: number;
   HP: number;
   HP_MAX: number;
