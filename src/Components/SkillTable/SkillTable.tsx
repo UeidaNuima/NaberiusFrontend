@@ -92,7 +92,7 @@ const SkillConfigTableRows: React.FC<{ config: SkillConfig }> = ({
         <td>{config.Data_InfluenceType}</td>
         <td>{config.Data_MulValue}</td>
         <td>{config.Data_MulValue2}</td>
-        <td>{config.Data_MulValue3}</td>
+        <td>{config._HoldRatioUpperLimit}</td>
         <td>{config.Data_AddValue}</td>
         <td>{config.Type_Collision}</td>
         <td>{config.Type_CollisionState}</td>
