@@ -191,6 +191,11 @@ const Unit: React.FC = () => {
                   <Tag color="black">{data.Card.IdentityName}</Tag>
                 </span>
               )}
+              {data.Card.GenusName && (
+                <span>
+                  <Tag color="blue">{data.Card.GenusName}</Tag>
+                </span>
+              )}
             </p>
             <div className={styles.previewContainer}>
               <div

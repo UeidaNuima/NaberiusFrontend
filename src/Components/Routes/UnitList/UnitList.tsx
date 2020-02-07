@@ -234,6 +234,7 @@ const UnitListWrapper: React.FC = props => {
           RaceName
           AssignName
           IdentityName
+          GenusName
           Classes {
             Name
           }

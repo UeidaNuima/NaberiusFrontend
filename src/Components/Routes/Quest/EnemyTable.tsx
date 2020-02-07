@@ -2,7 +2,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Button, Divider, Row, Col, Switch, Input, message, Spin } from 'antd';
 import { ICO_URL, ENEMY_DOT_URL, ENEMY_CHANGE_COND } from 'consts';
 import styles from './Quest.module.less';
-import { Dot, Enemy, MapEntry, SpecialtyConfig, MapRoute } from 'interfaces';
+import {
+  Dot,
+  Enemy,
+  MapEntry,
+  EnemySpecialtyConfig,
+  MapRoute,
+} from 'interfaces';
 import { useMediaQuery } from 'react-responsive';
 import DotTable from 'Components/DotTable';
 import TalkRow from 'Components/TalkRow';
@@ -30,7 +36,7 @@ const getAttackSpeed = (enemy: Enemy & MapEntry, dots: Dot[]) => {
   return attackSpeed;
 };
 
-const EnemyConfigTableRows: React.FC<{ config: SpecialtyConfig }> = ({
+const EnemyConfigTableRows: React.FC<{ config: EnemySpecialtyConfig }> = ({
   config,
 }) => {
   const [value, setValue] = useState(config.Comment || '');

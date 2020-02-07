@@ -83,6 +83,16 @@ const UnitListCard: React.FC<UnitListCardProps> = ({
               <Tag color="black">{card.IdentityName}</Tag>
             </span>
           )}
+          {card.GenusName && (
+            <span
+              onClick={e => {
+                e.stopPropagation();
+                setFilter(card.GenusName, 'GenusName');
+              }}
+            >
+              <Tag color="blue">{card.GenusName}</Tag>
+            </span>
+          )}
         </Col>
         <Col
           lg={5}

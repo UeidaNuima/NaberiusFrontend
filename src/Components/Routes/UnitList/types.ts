@@ -9,6 +9,7 @@ export interface Card {
   IdentityName: string;
   NickName: string;
   ConneName: string;
+  GenusName: string;
   Classes: Array<{
     Name: string;
   }>;

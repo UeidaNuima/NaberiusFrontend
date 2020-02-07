@@ -153,6 +153,17 @@ export interface SkillWithType {
   Skills: SkillData[];
 }
 
+export interface UnitSpeciatyConfigs {
+  ID_Card: number;
+  Type_Specialty: number;
+  Value_Specialty: number;
+  Value_Param1: number;
+  Value_Param2: number;
+  Value_Param3: number;
+  Value_Param4: number;
+  Command: string;
+}
+
 export interface Card {
   CardID: number;
   _AwakePattern: number;
@@ -173,9 +184,10 @@ export interface Card {
   BonusNum2: number;
   BonusType3: number;
   BonusNum3: number;
-  RaceName: number;
-  AssignName: number;
-  IdentityName: number;
+  RaceName: string;
+  AssignName: string;
+  IdentityName: string;
+  GenusName: string;
   IllustName: string;
   HomeCooking: number;
   SellPrice: number;
@@ -191,9 +203,10 @@ export interface Card {
   Skills: SkillWithType[];
   ConneName: string;
   NickNames: string[];
+  SpecialtyConfigs: UnitSpeciatyConfigs[];
 }
 
-export interface SpecialtyConfig {
+export interface EnemySpecialtyConfig {
   Type_Influence: number;
   Param_1: number;
   Param_2: number;
@@ -235,7 +248,7 @@ export interface Enemy {
   Param_ChangeParam: number;
   Param_ChangeCondition: number;
   TypeAttack: number;
-  SpecialtyConfigs: SpecialtyConfig[];
+  SpecialtyConfigs: EnemySpecialtyConfig[];
   EnemyElem: {
     _EnemyElementName: string;
   };

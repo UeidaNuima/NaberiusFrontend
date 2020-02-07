@@ -9,6 +9,16 @@ export interface Data {
 export const query = gql`
   query($id: Int!) {
     Card(CardID: $id) {
+      SpecialtyConfigs {
+        ID_Card
+        Type_Specialty
+        Value_Specialty
+        Value_Param1
+        Value_Param2
+        Value_Param3
+        Value_Param4
+        Command
+      }
       CardID
       _AwakePattern
       HarlemTextR
