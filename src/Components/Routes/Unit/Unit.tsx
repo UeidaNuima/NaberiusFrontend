@@ -19,6 +19,7 @@ import DotTable from 'Components/DotTable';
 import ConneNameInput from './ConneNameInput';
 import NickNamesInput from './NickNamesInput';
 import MediaContext from 'context/MediaContext';
+import UnitSpecialtyTable from './UnitSpecialtyTable';
 
 function countMinMax(
   min: number,
@@ -149,6 +150,7 @@ const Unit: React.FC = () => {
 
   const { loading, data, refetch } = useQuery<Data>(query, {
     variables: { id: CardID },
+    fetchPolicy: 'network-only',
   });
 
   if (data) {
@@ -459,6 +461,13 @@ const Unit: React.FC = () => {
                 <AbilityTable key={ability.AbilityID} ability={ability} />
               ))}
             </div>
+
+            {data.Card.SpecialtyConfigs.length > 0 && (
+              <div>
+                <h2>单位设置</h2>
+                <UnitSpecialtyTable configs={data.Card.SpecialtyConfigs} />
+              </div>
+            )}
 
             <div>
               <h2>职业</h2>

@@ -18,6 +18,7 @@ export const query = gql`
         Value_Param3
         Value_Param4
         Command
+        Comment
       }
       CardID
       _AwakePattern

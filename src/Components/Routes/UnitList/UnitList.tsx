@@ -27,6 +27,7 @@ const FILTER_TYPE: { [k: string]: string } = {
   Rare: '稀有',
   RaceName: '种族',
   AssignName: '出身',
+  GenusName: '限定',
   IdentityName: '不死',
   IllustName: '画师',
   'Classes.0.Name': '职业',

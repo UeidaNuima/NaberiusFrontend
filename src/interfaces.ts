@@ -153,7 +153,7 @@ export interface SkillWithType {
   Skills: SkillData[];
 }
 
-export interface UnitSpeciatyConfigs {
+export interface UnitSpeciatyConfig {
   ID_Card: number;
   Type_Specialty: number;
   Value_Specialty: number;
@@ -162,6 +162,7 @@ export interface UnitSpeciatyConfigs {
   Value_Param3: number;
   Value_Param4: number;
   Command: string;
+  Comment: string;
 }
 
 export interface Card {
@@ -203,7 +204,7 @@ export interface Card {
   Skills: SkillWithType[];
   ConneName: string;
   NickNames: string[];
-  SpecialtyConfigs: UnitSpeciatyConfigs[];
+  SpecialtyConfigs: UnitSpeciatyConfig[];
 }
 
 export interface EnemySpecialtyConfig {
