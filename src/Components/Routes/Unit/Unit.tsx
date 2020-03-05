@@ -131,7 +131,7 @@ const getStatus = (card: Data['Card']) => {
     const index = classes.findIndex(
       cl => cl.Type === `Evo2${card._AwakePattern === 1 ? 'b' : 'a'}`,
     );
-    classes.splice(index, 1);
+    if (classes.length >= 4) classes.splice(index, 1);
   }
 
   return classes.map(cl => classDataToUnit(cl, card, ranges));
