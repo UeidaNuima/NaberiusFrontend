@@ -53,7 +53,7 @@ const EnemyConfigTableRows: React.FC<{ config: EnemySpecialtyConfig }> = ({
       }
     `,
     {
-      onCompleted: d => {
+      onCompleted: (d) => {
         setValue(d?.EnemyConfigMeta?.Comment || '');
       },
     },
@@ -93,7 +93,7 @@ const EnemyConfigTableRows: React.FC<{ config: EnemySpecialtyConfig }> = ({
                 size="small"
                 ref={ref}
                 value={value}
-                onChange={e => setValue(e.target.value)}
+                onChange={(e) => setValue(e.target.value)}
                 onBlur={handleSave}
                 onPressEnter={handleSave}
               />
@@ -168,7 +168,7 @@ const EnemyTableRows: React.FC<EnemyTableRowsProps> = ({
           e.EnemyType._EnemyTypeName,
           e._Attribute,
         ]
-          .filter(st => st && st !== 'なし')
+          .filter((st) => st && st !== 'なし')
           .join(' ');
         const changeCondition = e.Param_ChangeParam
           ? ENEMY_CHANGE_COND[e.Param_ChangeCondition]
@@ -188,7 +188,7 @@ const EnemyTableRows: React.FC<EnemyTableRowsProps> = ({
               className={styles.compact}
               style={{ cursor: 'pointer' }}
               onClick={() =>
-                setShowTable(st =>
+                setShowTable((st) =>
                   st.map((v, i) => {
                     if (i === index) return !v;
                     return v;
@@ -200,9 +200,9 @@ const EnemyTableRows: React.FC<EnemyTableRowsProps> = ({
                 {enemies.length > 1 && index === 0 && (
                   <Button
                     icon={expand ? 'minus' : 'plus'}
-                    onClick={e => {
+                    onClick={(e) => {
                       e.stopPropagation();
-                      setExpand(e => !e);
+                      setExpand((e) => !e);
                     }}
                     style={{
                       width: 20,
@@ -235,7 +235,7 @@ const EnemyTableRows: React.FC<EnemyTableRowsProps> = ({
               <td>
                 {getAttackSpeed(e, dots)}
                 <br />
-                {Math.ceil(e.ATTACK_RANGE * e.DotRate)}
+                {Math.ceil((e.ATTACK_RANGE * e.DotRate) / 1.5)}
               </td>
               <td>{e.HP}</td>
               <td
@@ -370,7 +370,7 @@ const EnemyTable: React.FC<EnemyTableProps> = ({ data }) => {
     quest.Treasure3,
     quest.Treasure4,
     quest.Treasure5,
-  ].map(treasure => `${ICO_URL}/0/${treasure}.png`);
+  ].map((treasure) => `${ICO_URL}/0/${treasure}.png`);
   const parsedEnemies: Array<Array<Enemy & MapEntry> | MapEntry> = [];
   const parseEnemy = (entry: MapEntry, enemyID: number = entry.EnemyID - 1) => {
     const enemy = { ...enemies[enemyID], ...entry, EnemyID: enemyID };
@@ -391,7 +391,7 @@ const EnemyTable: React.FC<EnemyTableProps> = ({ data }) => {
       const enemyGroup = [enemy];
       if (
         parsedEnemies.find(
-          ea =>
+          (ea) =>
             !showDuplicate &&
             ea instanceof Array &&
             ea[0].EnemyID === enemy.EnemyID,
@@ -403,7 +403,7 @@ const EnemyTable: React.FC<EnemyTableProps> = ({ data }) => {
         while (enemyGroup[enemyGroup.length - 1].Param_ChangeParam) {
           const changeFrom = enemyGroup[enemyGroup.length - 1];
           const enemyID = changeFrom.Param_ChangeParam - 1;
-          if (enemyGroup.find(e => e.EnemyID === enemyID)) {
+          if (enemyGroup.find((e) => e.EnemyID === enemyID)) {
             break;
           }
           const newEnemy = parseEnemy(entry, enemyID);
@@ -425,7 +425,7 @@ const EnemyTable: React.FC<EnemyTableProps> = ({ data }) => {
               checkedChildren="显示"
               unCheckedChildren="隐藏"
               checked={showDuplicate}
-              onChange={value => setShowDuplicate(value)}
+              onChange={(value) => setShowDuplicate(value)}
             />
             <Divider type="vertical" />
             对话
@@ -433,7 +433,7 @@ const EnemyTable: React.FC<EnemyTableProps> = ({ data }) => {
               checkedChildren="显示"
               unCheckedChildren="隐藏"
               checked={showTalk}
-              onChange={value => setShowTalk(value)}
+              onChange={(value) => setShowTalk(value)}
             />
           </td>
         </tr>
@@ -493,7 +493,7 @@ const EnemyTable: React.FC<EnemyTableProps> = ({ data }) => {
               return list.map((s, index) => {
                 const recordIndex = Number.parseInt(s, 10);
                 const talk = quest.Mission.BattleTalkEvents.find(
-                  e => e.RecordIndex === recordIndex,
+                  (e) => e.RecordIndex === recordIndex,
                 );
                 if (!talk) {
                   return null;
