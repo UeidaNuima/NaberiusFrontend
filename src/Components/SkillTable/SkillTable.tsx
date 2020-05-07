@@ -33,7 +33,7 @@ const SkillConfigTableRows: React.FC<{ config: SkillConfig }> = ({
       }
     `,
     {
-      onCompleted: d => {
+      onCompleted: (d) => {
         setValue(d?.SkillConfigMeta?.Comment || '');
       },
     },
@@ -73,7 +73,7 @@ const SkillConfigTableRows: React.FC<{ config: SkillConfig }> = ({
                 size="small"
                 ref={ref}
                 value={value}
-                onChange={e => setValue(e.target.value)}
+                onChange={(e) => setValue(e.target.value)}
                 onBlur={handleSave}
                 onPressEnter={handleSave}
               />
@@ -92,7 +92,7 @@ const SkillConfigTableRows: React.FC<{ config: SkillConfig }> = ({
         <td>{config.Data_InfluenceType}</td>
         <td>{config.Data_MulValue}</td>
         <td>{config.Data_MulValue2}</td>
-        <td>{config._HoldRatioUpperLimit}</td>
+        <td>{config._HoldRatioUpperLimit || config.Data_MulValue3}</td>
         <td>{config.Data_AddValue}</td>
         <td>{config.Type_Collision}</td>
         <td>{config.Type_CollisionState}</td>
@@ -172,7 +172,7 @@ const SkillTableRows: React.FC<{ skill: SkillData }> = ({ skill }) => {
                       <th style={{ width: '6em' }}>拥有的卡</th>
                       <td>
                         {skill.Cards.sort((c1, c2) => c2.Rare - c1.Rare).map(
-                          card => (
+                          (card) => (
                             <Link key={card.CardID} to={`/unit/${card.CardID}`}>
                               <img
                                 alt={card.CardID.toString()}
