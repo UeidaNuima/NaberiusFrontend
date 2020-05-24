@@ -236,6 +236,7 @@ const UnitListWrapper: React.FC = (props) => {
           AssignName
           IdentityName
           GenusName
+          NickNames
           Classes {
             Name
           }
