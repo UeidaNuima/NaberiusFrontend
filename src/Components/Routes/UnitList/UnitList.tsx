@@ -28,7 +28,7 @@ const FILTER_TYPE: { [k: string]: string } = {
   RaceName: '种族',
   AssignName: '出身',
   GenusName: '限定',
-  IdentityName: '不死',
+  IdentityName: '属性',
   IllustName: '画师',
   'Classes.0.Name': '职业',
 };
@@ -105,7 +105,7 @@ const UnitList: React.FC<Props> = ({ data, loading }) => {
   const cardFilter = (card: any) => {
     let flag = JSON.stringify(card).includes(search);
 
-    filters.forEach(filter => {
+    filters.forEach((filter) => {
       const { type, content } = filter;
       const sourceValue = getParam(card, type);
       let parsedValue: number | string = content;
@@ -118,9 +118,11 @@ const UnitList: React.FC<Props> = ({ data, loading }) => {
   };
 
   const handleSetFilter = (content: string, type: string) => {
-    const filter = filters.find(f => f.content === content && f.type === type);
+    const filter = filters.find(
+      (f) => f.content === content && f.type === type,
+    );
     if (!filter) {
-      setFilters(fs => [...fs, { content, type }]);
+      setFilters((fs) => [...fs, { content, type }]);
     }
   };
 
@@ -134,9 +136,7 @@ const UnitList: React.FC<Props> = ({ data, loading }) => {
   const cards =
     (data &&
       data.Cards &&
-      data.Cards.slice()
-        .sort(cardSorter)
-        .filter(cardFilter)) ||
+      data.Cards.slice().sort(cardSorter).filter(cardFilter)) ||
     [];
 
   return (
@@ -144,7 +144,7 @@ const UnitList: React.FC<Props> = ({ data, loading }) => {
       <Input
         placeholder="搜索单位"
         value={search}
-        onChange={event => setSearch(event.target.value)}
+        onChange={(event) => setSearch(event.target.value)}
       />
       <div className={styles.filterContainer}>
         {filters.map((filter, index) => {
@@ -154,7 +154,7 @@ const UnitList: React.FC<Props> = ({ data, loading }) => {
               closable
               onClose={() => {
                 const i = filters.findIndex(
-                  f => f.content === filter.content && f.type === filter.type,
+                  (f) => f.content === filter.content && f.type === filter.type,
                 );
                 setFilters([...filters.slice(0, i), ...filters.slice(i + 1)]);
               }}
@@ -222,7 +222,7 @@ const UnitList: React.FC<Props> = ({ data, loading }) => {
   );
 };
 
-const UnitListWrapper: React.FC = props => {
+const UnitListWrapper: React.FC = (props) => {
   const { data, loading } = useQuery(
     gql`
       query {
