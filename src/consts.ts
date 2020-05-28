@@ -30,4 +30,5 @@ export const BONUS_TYPE = new DefaultGetter({
   7: '技能持续 +%d%',
   8: '技能再动 -%d%',
   9: '物理攻击回避 +%d%',
+  11: '贯通概率 +%d%',
 });
