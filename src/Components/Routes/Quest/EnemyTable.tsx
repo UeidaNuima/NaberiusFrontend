@@ -370,7 +370,12 @@ const EnemyTable: React.FC<EnemyTableProps> = ({ data }) => {
     quest.Treasure3,
     quest.Treasure4,
     quest.Treasure5,
-  ].map((treasure) => `${ICO_URL}/0/${treasure}.png`);
+  ].map(
+    (treasure) =>
+      `${ICO_URL}/0/${
+        (treasure >= 1000 && treasure < 2000 ? '_' : '') + treasure
+      }.png`,
+  );
   const parsedEnemies: Array<Array<Enemy & MapEntry> | MapEntry> = [];
   const parseEnemy = (entry: MapEntry, enemyID: number = entry.EnemyID - 1) => {
     const enemy = { ...enemies[enemyID], ...entry, EnemyID: enemyID };

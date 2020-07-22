@@ -157,7 +157,7 @@ const Quest: React.FC = () => {
   }
 
   const haveDrop = dropper
-    .map(drop => drop.length !== 0)
+    .map((drop) => drop.length !== 0)
     .reduce((prev, curr) => prev || curr);
 
   return (
@@ -303,7 +303,11 @@ const Quest: React.FC = () => {
                                         <img
                                           alt={treasure.toString()}
                                           style={{ width: '100%' }}
-                                          src={`${ICO_URL}/0/${treasure}.png`}
+                                          src={`${ICO_URL}/0/${
+                                            (treasure >= 1000 && treasure < 2000
+                                              ? '_'
+                                              : '') + treasure
+                                          }.png`}
                                         />
                                         {dropper[4].length === 0 &&
                                           index === 4 && (
@@ -377,7 +381,7 @@ const Quest: React.FC = () => {
                   checkedChildren="显示"
                   unCheckedChildren="折叠"
                   checked={showMissionTalks}
-                  onChange={value => setShowMissionTalks(value)}
+                  onChange={(value) => setShowMissionTalks(value)}
                 />
               </h2>
               {showMissionTalks && (
