@@ -147,10 +147,15 @@ const EnemyTableRows: React.FC<EnemyTableRowsProps> = ({
   );
 
   const routeNos = [enemies[0].RouteNo];
+  let f = false;
   for (let i = 0; i < routeNos.length; i++) {
     const routeNo = routeNos[i];
     for (const route of routes[routeNo]) {
-      if (route.RouteID !== 0) {
+      // 循环route
+      if (route.RouteID !== 0 && (!routeNos.includes(route.RouteID) || !f)) {
+        if (routeNos.includes(route.RouteID)) {
+          f = true;
+        }
         routeNos.push(route.RouteID);
         break;
       }
