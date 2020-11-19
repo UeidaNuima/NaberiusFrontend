@@ -25,9 +25,12 @@ const DotAnimation: React.FC<DotAnimationProps> = ({ dot, CardID, type }) => {
     const tickNum: number = dot.Length;
 
     const timelines = generateTimelines(dot);
+    if (timelines.length === 0) {
+      return;
+    }
 
-    timelines.forEach(timeline => {
-      timeline.forEach(frame => {
+    timelines.forEach((timeline) => {
+      timeline.forEach((frame) => {
         left = Math.max(left, frame.Sprite.ParsedX);
         right = Math.min(
           right,
@@ -86,7 +89,7 @@ const DotAnimation: React.FC<DotAnimationProps> = ({ dot, CardID, type }) => {
 
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-      timelines.forEach(timeline => {
+      timelines.forEach((timeline) => {
         const frame = timeline[currentTick];
         const sprite = frame.Sprite;
         // set alpha
@@ -140,9 +143,9 @@ const DotAnimation: React.FC<DotAnimationProps> = ({ dot, CardID, type }) => {
     <div>
       <Tooltip title="点击下载gif">
         <canvas
-          ref={ref => ref && (canvas.current = ref)}
+          ref={(ref) => ref && (canvas.current = ref)}
           onClick={() => {
-            gif.current.render();
+            gif.current?.render();
           }}
         />
       </Tooltip>

@@ -47,7 +47,10 @@ function range(min: number, max: number, length: number) {
 export function generateTimelines(dots: Dot) {
   const timelines: Frame[][] = [];
   const frameNum = dots.Length;
-  dots.Entries.forEach(entry => {
+  for (const entry of dots.Entries) {
+    if (!entry.Sprites) {
+      continue
+    }
     const timeline: Frame[] = [];
     let patternPos = 0;
     for (let t = 0; t <= frameNum; t++) {
@@ -165,7 +168,7 @@ export function generateTimelines(dots: Dot) {
     }
 
     timelines.push(timeline);
-  });
+  }
 
   timelines.forEach(timeline =>
     timeline.forEach(frame => {
