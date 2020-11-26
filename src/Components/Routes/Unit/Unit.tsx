@@ -129,12 +129,12 @@ const getStatus = (card: Data['Card']) => {
 
   if (card._AwakePattern === 1 || card._AwakePattern === 2) {
     const index = classes.findIndex(
-      cl => cl.Type === `Evo2${card._AwakePattern === 1 ? 'b' : 'a'}`,
+      (cl) => cl.Type === `Evo2${card._AwakePattern === 1 ? 'b' : 'a'}`,
     );
     if (classes.length >= 4) classes.splice(index, 1);
   }
 
-  return classes.map(cl => classDataToUnit(cl, card, ranges));
+  return classes.map((cl) => classDataToUnit(cl, card, ranges));
 };
 
 const Unit: React.FC = () => {
@@ -155,7 +155,7 @@ const Unit: React.FC = () => {
 
   if (data) {
     if (data.Card.Rare >= 10)
-      data.Card.Classes = data.Card.Classes.filter(cl => cl.Type === 'Evo');
+      data.Card.Classes = data.Card.Classes.filter((cl) => cl.Type === 'Evo');
   }
 
   return (
@@ -207,7 +207,7 @@ const Unit: React.FC = () => {
               >
                 <div className={styles.radioContainer}>
                   <Radio.Group
-                    onChange={e => setCurrentImg(e.target.value)}
+                    onChange={(e) => setCurrentImg(e.target.value)}
                     value={currentImg}
                     className={styles.radioGroup}
                   >
@@ -218,7 +218,7 @@ const Unit: React.FC = () => {
                     ))}
                   </Radio.Group>
                   <Radio.Group
-                    onChange={e => setCurrentImg(e.target.value)}
+                    onChange={(e) => setCurrentImg(e.target.value)}
                     value={currentImg}
                     className={classNames(styles.radioGroup, styles.danger)}
                   >
@@ -231,7 +231,7 @@ const Unit: React.FC = () => {
                 </div>
                 <div className={styles.radioContainer}>
                   <Radio.Group
-                    onChange={e => setCurrentText(e.target.value)}
+                    onChange={(e) => setCurrentText(e.target.value)}
                     value={currentText}
                     className={styles.radioGroup}
                   >
@@ -242,7 +242,7 @@ const Unit: React.FC = () => {
                     ))}
                   </Radio.Group>
                   <Radio.Group
-                    onChange={e => setCurrentText(e.target.value)}
+                    onChange={(e) => setCurrentText(e.target.value)}
                     value={currentText}
                     className={classNames(styles.radioGroup, styles.danger)}
                   >
@@ -293,7 +293,9 @@ const Unit: React.FC = () => {
                       BASE_GAME_URL +
                       (currentImg < 10
                         ? data.Card.ImageStand[currentImg]
-                        : data.Card.ImageCG[currentImg - 10])
+                        : data.Card.ImageCG[currentImg - 10]
+                            .replace(/https?:\/\//g, '')
+                            .replace('drc1bk94f7rq8.cloudfront.net', ''))
                     }
                     alt={currentImg.toString()}
                   />
@@ -306,13 +308,13 @@ const Unit: React.FC = () => {
                 <tr>
                   <th>大头贴</th>
                   <td colSpan={5}>
-                    {avatars.map(avatar => (
+                    {avatars.map((avatar) => (
                       <img
                         key={avatar}
                         src={`${ICO_URL}/${avatar}/${CardID}.png`}
                         alt={`${CardID}-${avatar}`}
                         onError={() => {
-                          const index = avatars.findIndex(a => a === avatar);
+                          const index = avatars.findIndex((a) => a === avatar);
                           setAvatars([
                             ...avatars.slice(0, index),
                             ...avatars.slice(index + 1),
@@ -457,7 +459,7 @@ const Unit: React.FC = () => {
 
             <div>
               <h2>被动</h2>
-              {_.uniqBy(data.Card.Abilities, 'AbilityID').map(ability => (
+              {_.uniqBy(data.Card.Abilities, 'AbilityID').map((ability) => (
                 <AbilityTable key={ability.AbilityID} ability={ability} />
               ))}
             </div>
@@ -471,7 +473,7 @@ const Unit: React.FC = () => {
 
             <div>
               <h2>职业</h2>
-              {data.Card.Classes.map(cl => (
+              {data.Card.Classes.map((cl) => (
                 <ClassTable
                   classData={cl}
                   key={cl.ClassID}
