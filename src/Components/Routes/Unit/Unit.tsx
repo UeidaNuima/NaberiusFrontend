@@ -278,11 +278,11 @@ const Unit: React.FC = () => {
                             : data.Card.HarlemTextR[currentText - 10]
                           )
                             .replace(
-                              /([＠@].*\r\n)/g,
+                              /([＠@].*\r?\n)/g,
                               (match, p1) =>
                                 `<span style="font-weight: bold">${p1}</span>`,
                             )
-                            .replace(/\r\n/g, '<br />'),
+                            .replace(/\r?\n/g, '<br />'),
                         }}
                       />
                     </div>
