@@ -1,8 +1,8 @@
 export interface Card {
-  CardID: number;
+  CardID: string;
   Name: string;
-  Rare: number;
-  Kind: number;
+  Rare: string;
+  Kind: string;
   IllustName: string;
   RaceName: string;
   AssignName: string;

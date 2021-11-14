@@ -126,7 +126,7 @@ const UnitList: React.FC<Props> = ({ data, loading }) => {
     }
   };
 
-  const showUnit = (cardID: number) => {
+  const showUnit = (cardID: string) => {
     history.push({
       pathname: `/unit/${cardID}`,
       state: { modal: true },
@@ -136,7 +136,13 @@ const UnitList: React.FC<Props> = ({ data, loading }) => {
   const cards =
     (data &&
       data.Cards &&
-      data.Cards.slice().sort(cardSorter).filter(cardFilter)) ||
+      data.Cards.slice()
+        .map((card) => ({
+          ...card,
+          CardID: Number.parseInt(card.CardID, 10),
+        }))
+        .sort(cardSorter)
+        .filter(cardFilter)) ||
     [];
 
   return (
@@ -197,7 +203,10 @@ const UnitList: React.FC<Props> = ({ data, loading }) => {
             {({ index, style }) => (
               <div key={cards[index].CardID} style={style}>
                 <UnitListCard
-                  card={cards[index]}
+                  card={{
+                    ...cards[index],
+                    CardID: String(cards[index].CardID),
+                  }}
                   showUnit={showUnit}
                   setFilter={handleSetFilter}
                 />

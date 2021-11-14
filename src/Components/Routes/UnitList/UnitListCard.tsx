@@ -8,7 +8,7 @@ import classNames from 'classnames';
 
 interface UnitListCardProps {
   card: Card;
-  showUnit: (cardID: number) => void;
+  showUnit: (cardID: string) => void;
   setFilter: (search: string, searchType: string) => void;
   style?: React.CSSProperties;
 }
@@ -28,8 +28,8 @@ const UnitListCard: React.FC<UnitListCardProps> = ({
     <div
       style={style}
       className={classNames(styles.listCard, {
-        [styles.male]: card.Kind === 1,
-        [styles.female]: card.Kind === 0,
+        [styles.male]: Number.parseInt(card.Kind) === 1,
+        [styles.female]: Number.parseInt(card.Kind) === 0,
       })}
     >
       <Row
@@ -48,14 +48,14 @@ const UnitListCard: React.FC<UnitListCardProps> = ({
           />
         </Col>
         <Col md={4} xs={16}>
-          <Rarity rare={card.Rare} />
+          <Rarity rare={Number.parseInt(card.Rare, 10)} />
           <br />
           {card.Name}
         </Col>
         <Col lg={6} xs={0}>
           {card.RaceName && (
             <span
-              onClick={e => {
+              onClick={(e) => {
                 e.stopPropagation();
                 setFilter(card.RaceName, 'RaceName');
               }}
@@ -65,7 +65,7 @@ const UnitListCard: React.FC<UnitListCardProps> = ({
           )}
           {card.AssignName && (
             <span
-              onClick={e => {
+              onClick={(e) => {
                 e.stopPropagation();
                 setFilter(card.AssignName, 'AssignName');
               }}
@@ -75,7 +75,7 @@ const UnitListCard: React.FC<UnitListCardProps> = ({
           )}
           {card.IdentityName && (
             <span
-              onClick={e => {
+              onClick={(e) => {
                 e.stopPropagation();
                 setFilter(card.IdentityName, 'IdentityName');
               }}
@@ -85,7 +85,7 @@ const UnitListCard: React.FC<UnitListCardProps> = ({
           )}
           {card.GenusName && (
             <span
-              onClick={e => {
+              onClick={(e) => {
                 e.stopPropagation();
                 setFilter(card.GenusName, 'GenusName');
               }}
@@ -99,7 +99,7 @@ const UnitListCard: React.FC<UnitListCardProps> = ({
           md={8}
           xs={0}
           className="filter"
-          onClick={e => {
+          onClick={(e) => {
             e.stopPropagation();
             setFilter(card.Classes[0].Name, 'Classes.0.Name');
           }}
@@ -111,7 +111,7 @@ const UnitListCard: React.FC<UnitListCardProps> = ({
           md={8}
           xs={0}
           className="filter"
-          onClick={e => {
+          onClick={(e) => {
             e.stopPropagation();
             setFilter(card.IllustName, 'IllustName');
           }}
