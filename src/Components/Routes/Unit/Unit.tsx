@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Icon, Tag, Radio, Row, Col } from 'antd';
 import _ from 'lodash';
 import { Link } from 'react-router-dom';
 import useRouter from 'use-react-router';
-import { BASE_GAME_URL, ICO_URL, BONUS_TYPE } from 'consts';
+import {
+  ICO_URL,
+  BONUS_TYPE,
+  PLAYER_STAND_CG_URL,
+  PLAYER_HARLEM_CG_URL,
+} from 'consts';
 import styles from './Unit.module.less';
 import { Data, query } from './types';
 import Rarity from 'Components/Rarity';
@@ -141,7 +146,7 @@ const Unit: React.FC = () => {
   const { match } = useRouter<{ CardID: string }>();
   const CardID = Number.parseInt(match.params.CardID, 10);
 
-  const [currentImg, setCurrentImg] = useState(0);
+  const [currentImg, setCurrentImg] = useState('');
   const [currentText, setCurrentText] = useState<number>();
 
   const [avatars, setAvatars] = useState([0, 1, 2, 3]);
@@ -157,6 +162,12 @@ const Unit: React.FC = () => {
     if (data.Card.Rare >= 10)
       data.Card.Classes = data.Card.Classes.filter((cl) => cl.Type === 'Evo');
   }
+
+  useEffect(() => {
+    if (data?.Card.ImageStand?.[0]) {
+      setCurrentImg(data.Card.ImageStand[0])
+    }
+  }, [data])
 
   return (
     <div className={styles.container}>
@@ -211,9 +222,10 @@ const Unit: React.FC = () => {
                     value={currentImg}
                     className={styles.radioGroup}
                   >
-                    {data.Card.ImageStand.map((_, index) => (
-                      <Radio.Button key={`stand${index}`} value={index}>
-                        立绘{index + 1}
+                    {data.Card.ImageStand.map((imgName, index) => (
+                      <Radio.Button key={imgName} value={imgName}>
+                        立绘
+                        {Number.parseInt(imgName[imgName.length - 5], 10) + 1}
                       </Radio.Button>
                     ))}
                   </Radio.Group>
@@ -222,9 +234,9 @@ const Unit: React.FC = () => {
                     value={currentImg}
                     className={classNames(styles.radioGroup, styles.danger)}
                   >
-                    {data.Card.ImageCG.map((_, index) => (
-                      <Radio.Button key={`cg${index}`} value={index + 10}>
-                        CG{index + 1}
+                    {data.Card.ImageCG.map((imgName, index) => (
+                      <Radio.Button key={imgName} value={imgName}>
+                        CG{Number.parseInt(imgName[imgName.length - 5], 10) + 1}
                       </Radio.Button>
                     ))}
                   </Radio.Group>
@@ -290,12 +302,9 @@ const Unit: React.FC = () => {
                   <img
                     style={{ height: '100%' }}
                     src={
-                      BASE_GAME_URL +
-                      (currentImg < 10
-                        ? data.Card.ImageStand[currentImg]
-                        : data.Card.ImageCG[currentImg - 10]
-                            .replace(/https?:\/\//g, '')
-                            .replace('drc1bk94f7rq8.cloudfront.net', ''))
+                      currentImg.includes('card')
+                        ? `${PLAYER_STAND_CG_URL}/${currentImg}`
+                        : `${PLAYER_HARLEM_CG_URL}/${currentImg}`
                     }
                     alt={currentImg.toString()}
                   />

@@ -363,7 +363,7 @@ interface EnemyTableProps {
 const EnemyTable: React.FC<EnemyTableProps> = ({ data }) => {
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 991px)' });
   const { Quest: quest } = data;
-  const enemies = quest.Map.Enemies || quest.Mission.Enemies;
+  const enemies = quest.Map.Enemies;
   const entries = quest.Map.Entries[quest.EntryNo];
   const routes = quest.Map.Routes;
   const mapLevel = quest.Level;

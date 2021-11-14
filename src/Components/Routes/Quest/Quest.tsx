@@ -77,9 +77,6 @@ const Quest: React.FC = () => {
           }
           Mission {
             MissionID
-            Enemies {
-              ...enemy
-            }
             BattleTalkEvents {
               Message
               Name
@@ -140,7 +137,7 @@ const Quest: React.FC = () => {
   const dropper: Array<Array<Enemy & MapEntry>> = [[], [], [], [], []];
   let enemiesCount = 0;
   if (data) {
-    const enemies = data.Quest.Map.Enemies || data.Quest.Mission.Enemies;
+    const enemies = data.Quest.Map.Enemies;
     const entries = data.Quest.Map.Entries[data.Quest.EntryNo];
     for (const entry of entries) {
       if (entry.EnemyID >= 0 && entry.EnemyID < 1000) {
@@ -373,7 +370,7 @@ const Quest: React.FC = () => {
               </table>
             </div>
           )}
-          {data && data.Quest.Mission.BattleTalkEvents.length !== 0 && (
+          {data && data.Quest.Mission.BattleTalkEvents?.length !== 0 && (
             <div>
               <h2>
                 Mission对话&nbsp;

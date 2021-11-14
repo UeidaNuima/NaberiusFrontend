@@ -340,7 +340,6 @@ export interface Quest {
   QuestHardTermConfigs: QuestTermConfig[];
   Mission: {
     MissionID: number;
-    Enemies: Enemy[];
     BattleTalkEvents: Array<{
       Message: string;
       Name: string;
