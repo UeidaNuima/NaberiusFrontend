@@ -289,6 +289,7 @@ export interface MapRoute {
 
 export interface Map {
   Image: string;
+  MapName: string;
   Entries: MapEntry[][];
   Routes: MapRoute[][];
   Locations: Array<

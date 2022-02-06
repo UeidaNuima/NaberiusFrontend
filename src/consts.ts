@@ -14,6 +14,7 @@ export const ICO_URL = STATIC_URL + '/ico';
 export const BANNER_URL = STATIC_URL + '/banner';
 export const PLAYER_STAND_CG_URL = STATIC_URL + '/standCG';
 export const PLAYER_HARLEM_CG_URL = STATIC_URL + '/harlemCG';
+export const MAP_IMAGE_URL = STATIC_URL + '/map';
 
 export const ENEMY_CHANGE_COND: { [k: number]: string } = {
   0: '条件切换',

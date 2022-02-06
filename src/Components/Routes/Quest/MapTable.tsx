@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Quest } from 'interfaces';
-import { STATIC_URL } from 'consts';
+import { MAP_IMAGE_URL, STATIC_URL } from 'consts';
 import { Stage, Layer, Image, Circle, Arrow } from 'react-konva';
 import useImage from 'use-image';
 import styles from './Quest.module.less';
@@ -8,7 +8,9 @@ import { InputNumber, Select } from 'antd';
 
 const MapTable: React.FC<{ quest: Quest }> = ({ quest }) => {
   const [mapImg] = useImage(
-    'http://assets.millennium-war.net' + quest.Map.Image,
+    quest.Map.Image
+      ? 'http://assets.millennium-war.net' + quest.Map.Image
+      : `${MAP_IMAGE_URL}/${quest.Map.MapName}.png`,
   );
   const [heartImg] = useImage(STATIC_URL + '/heart.png');
   const [nearImg] = useImage(STATIC_URL + '/near.png');
@@ -84,14 +86,14 @@ const MapTable: React.FC<{ quest: Quest }> = ({ quest }) => {
                     return (
                       <Image
                         onClick={() => {
-                          setCircle(c => ({
+                          setCircle((c) => ({
                             x: location.X,
                             y: location.Y,
                             range: c.range || 250,
                           }));
                         }}
                         onTap={() => {
-                          setCircle(c => ({
+                          setCircle((c) => ({
                             x: location.X,
                             y: location.Y,
                             range: c.range || 250,
@@ -163,10 +165,10 @@ const MapTable: React.FC<{ quest: Quest }> = ({ quest }) => {
                 min={0}
                 style={{ width: '100%' }}
                 value={circle.range}
-                onChange={value =>
+                onChange={(value) =>
                   value &&
                   value >= 0 &&
-                  setCircle(c => ({ ...c, range: value && value }))
+                  setCircle((c) => ({ ...c, range: value && value }))
                 }
                 placeholder="点一下上图里的配置位"
               />

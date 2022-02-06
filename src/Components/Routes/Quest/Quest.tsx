@@ -44,7 +44,7 @@ const Quest: React.FC = () => {
         Data_Expression
         Comment
       }
-      query($id: Int!) {
+      query ($id: Int!) {
         Quest(QuestID: $id) {
           EventArcs {
             _TalkerName
@@ -86,6 +86,7 @@ const Quest: React.FC = () => {
           }
           MapNo
           Map {
+            MapName
             Image
             Entries {
               EnemyID
