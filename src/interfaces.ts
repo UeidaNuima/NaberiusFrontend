@@ -256,7 +256,7 @@ export interface Enemy {
   EnemyType: {
     _EnemyTypeName: string;
   };
-  Dots: Dot[];
+  Dots?: Dot[];
   _Attribute: string;
   Missile?: Missile;
 }

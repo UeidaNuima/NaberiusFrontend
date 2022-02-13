@@ -45,7 +45,7 @@ const EnemyConfigTableRows: React.FC<{ config: EnemySpecialtyConfig }> = ({
     EnemyConfigMeta?: { TypeID: number; Comment: string };
   }>(
     gql`
-      mutation($TypeID: Int!, $Comment: String) {
+      mutation ($TypeID: Int!, $Comment: String) {
         EnemyConfigMeta(TypeID: $TypeID, Comment: $Comment) {
           TypeID
           Comment
@@ -166,7 +166,7 @@ const EnemyTableRows: React.FC<EnemyTableRowsProps> = ({
     <>
       {enemies.slice(0, expand ? enemies.length : 1).map((e, index) => {
         const dots = e.Dots;
-        const previewSprite = dots[0].Entries[0].Sprites[0];
+        const previewSprite = dots?.[0].Entries[0].Sprites[0];
         const types = [
           e.SkyFlag && '飛行',
           e.EnemyElem._EnemyElementName,
@@ -220,25 +220,27 @@ const EnemyTableRows: React.FC<EnemyTableRowsProps> = ({
                 {enemies.length > 1 && index !== 0 && (
                   <Divider style={{ margin: '0 12.5px' }} type="vertical" />
                 )}
-                <div
-                  style={{
-                    display: 'inline-block',
-                    width: previewSprite.Width,
-                    height: previewSprite.Height,
-                    backgroundImage: `url("${ENEMY_DOT_URL}/${imgID}/sprite.png")`,
-                    backgroundPositionX: -previewSprite.X,
-                    backgroundPositionY: -previewSprite.Y,
-                    zoom: Math.min(
-                      40 / previewSprite.Height,
-                      40 / previewSprite.Width,
-                    ),
-                    verticalAlign: 'middle',
-                  }}
-                />
+                {previewSprite && (
+                  <div
+                    style={{
+                      display: 'inline-block',
+                      width: previewSprite.Width,
+                      height: previewSprite.Height,
+                      backgroundImage: `url("${ENEMY_DOT_URL}/${imgID}/sprite.png")`,
+                      backgroundPositionX: -previewSprite.X,
+                      backgroundPositionY: -previewSprite.Y,
+                      zoom: Math.min(
+                        40 / previewSprite.Height,
+                        40 / previewSprite.Width,
+                      ),
+                      verticalAlign: 'middle',
+                    }}
+                  />
+                )}
               </td>
               {!isTabletOrMobile && <td>{types}</td>}
               <td>
-                {getAttackSpeed(e, dots)}
+                {dots && getAttackSpeed(e, dots)}
                 <br />
                 {Math.ceil((e.ATTACK_RANGE * e.DotRate) / 1.5)}
               </td>
@@ -329,14 +331,15 @@ const EnemyTableRows: React.FC<EnemyTableRowsProps> = ({
                       )}
                     </Col>
                     <Col xs={24} md={12}>
-                      {dots.map((dot, i) => (
-                        <DotTable
-                          key={i}
-                          CardID={imgID}
-                          type="Enemy"
-                          dot={dot}
-                        />
-                      ))}
+                      {dots &&
+                        dots.map((dot, i) => (
+                          <DotTable
+                            key={i}
+                            CardID={imgID}
+                            type="Enemy"
+                            dot={dot}
+                          />
+                        ))}
                     </Col>
                   </Row>
                 </td>
