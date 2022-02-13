@@ -24,7 +24,7 @@ const AbilityConfigTableRows: React.FC<{ config: AbilityConfig }> = ({
     AbilityConfigMeta?: { TypeID: number; Comment: string };
   }>(
     gql`
-      mutation($TypeID: Int!, $Comment: String) {
+      mutation ($TypeID: Int!, $Comment: String) {
         AbilityConfigMeta(TypeID: $TypeID, Comment: $Comment) {
           TypeID
           Comment
@@ -32,7 +32,7 @@ const AbilityConfigTableRows: React.FC<{ config: AbilityConfig }> = ({
       }
     `,
     {
-      onCompleted: d => {
+      onCompleted: (d) => {
         setValue(d?.AbilityConfigMeta?.Comment || '');
       },
     },
@@ -72,7 +72,7 @@ const AbilityConfigTableRows: React.FC<{ config: AbilityConfig }> = ({
                 size="small"
                 ref={ref}
                 value={value}
-                onChange={e => setValue(e.target.value)}
+                onChange={(e) => setValue(e.target.value)}
                 onBlur={handleSave}
                 onPressEnter={handleSave}
               />
@@ -174,8 +174,10 @@ const AbilityTable: React.FC<{ ability: AbilityData }> = ({ ability }) => {
                         <th style={{ width: '6em' }}>拥有的卡</th>
                         <td>
                           {ability.Cards.sort(
-                            (c1, c2) => c2.Rare - c1.Rare,
-                          ).map(card => (
+                            (c1, c2) =>
+                              Number.parseInt(c2.Rare, 10) -
+                              Number.parseInt(c1.Rare, 10),
+                          ).map((card) => (
                             <Link key={card.CardID} to={`/unit/${card.CardID}`}>
                               <img
                                 alt={card.CardID.toString()}

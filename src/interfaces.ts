@@ -171,13 +171,13 @@ export interface Card {
   HarlemTextR: string[];
   HarlemTextA: string[];
   Name: number;
-  Rare: number;
+  Rare: string;
   Kind: number;
   MaxHPMod: number;
   AtkMod: number;
   DefMod: number;
-  CostModValue: number;
-  CostDecValue: number;
+  CostModValue: string;
+  CostDecValue: string;
   MagicResistance: number;
   BonusType: number;
   BonusNum: number;

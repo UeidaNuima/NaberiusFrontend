@@ -45,25 +45,26 @@ function classDataToUnit(
   nearRange?: { [k: string]: number },
 ) {
   let maxLevelUnit = 0;
+  const rarity = Number.parseInt(card.Rare, 10);
   switch (classData.Type) {
     case 'Evo2a':
     case 'Evo2b':
       maxLevelUnit = 99;
       break;
     case 'Evo':
-      if (card.Rare === 3) maxLevelUnit = 80;
-      if (card.Rare === 4) maxLevelUnit = 90;
-      if (card.Rare === 5) maxLevelUnit = 99;
-      if (card.Rare === 7) maxLevelUnit = 85;
-      if (card.Rare === 10) maxLevelUnit = 90;
-      if (card.Rare === 11) maxLevelUnit = 99;
+      if (rarity === 3) maxLevelUnit = 80;
+      if (rarity === 4) maxLevelUnit = 90;
+      if (rarity === 5) maxLevelUnit = 99;
+      if (rarity === 7) maxLevelUnit = 85;
+      if (rarity === 10) maxLevelUnit = 90;
+      if (rarity === 11) maxLevelUnit = 99;
       break;
     case 'Init':
-      if (card.Rare === 0) {
+      if (rarity === 0) {
         maxLevelUnit = 30;
         break;
       }
-      if (card.Rare === 1) {
+      if (rarity === 1) {
         maxLevelUnit = 40;
         break;
       }
@@ -76,11 +77,11 @@ function classDataToUnit(
       }
     // eslint-disable-next-line no-fallthrough
     case 'CC':
-      if (card.Rare === 2) maxLevelUnit = 55;
-      if (card.Rare === 3) maxLevelUnit = 60;
-      if (card.Rare === 4) maxLevelUnit = 70;
-      if (card.Rare === 5) maxLevelUnit = classData.MaxLevel;
-      if (card.Rare === 7) maxLevelUnit = 65;
+      if (rarity === 2) maxLevelUnit = 55;
+      if (rarity === 3) maxLevelUnit = 60;
+      if (rarity === 4) maxLevelUnit = 70;
+      if (rarity === 5) maxLevelUnit = classData.MaxLevel;
+      if (rarity === 7) maxLevelUnit = 65;
       break;
   }
 
@@ -108,8 +109,10 @@ function classDataToUnit(
       card.DefMod,
     ),
     Cost: [
-      classData.Cost + card.CostModValue,
-      classData.Cost + card.CostModValue - card.CostDecValue,
+      classData.Cost + Number.parseInt(card.CostModValue, 10),
+      classData.Cost +
+        Number.parseInt(card.CostModValue, 10) -
+        Number.parseInt(card.CostDecValue, 10),
     ],
     range:
       nearRange && nearRange[classData.Type] !== 0
@@ -159,15 +162,15 @@ const Unit: React.FC = () => {
   });
 
   if (data) {
-    if (data.Card.Rare >= 10)
+    if (Number.parseInt(data.Card.Rare, 10) >= 10)
       data.Card.Classes = data.Card.Classes.filter((cl) => cl.Type === 'Evo');
   }
 
   useEffect(() => {
     if (data?.Card.ImageStand?.[0]) {
-      setCurrentImg(data.Card.ImageStand[0])
+      setCurrentImg(data.Card.ImageStand[0]);
     }
-  }, [data])
+  }, [data]);
 
   return (
     <div className={styles.container}>
@@ -181,7 +184,7 @@ const Unit: React.FC = () => {
 
               <Gender gender={data.Card.Kind} />
               <div style={{ display: 'inline-block' }}>
-                <Rarity rare={data.Card.Rare} />
+                <Rarity rare={Number.parseInt(data.Card.Rare)} />
                 <div>{data.Card.Name}</div>
               </div>
               <Link to={`/unit/${CardID + 1}`}>

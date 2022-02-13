@@ -25,7 +25,7 @@ const SkillConfigTableRows: React.FC<{ config: SkillConfig }> = ({
     SkillConfigMeta?: { TypeID: number; Comment: string };
   }>(
     gql`
-      mutation($TypeID: Int!, $Comment: String) {
+      mutation ($TypeID: Int!, $Comment: String) {
         SkillConfigMeta(TypeID: $TypeID, Comment: $Comment) {
           TypeID
           Comment
@@ -171,18 +171,20 @@ const SkillTableRows: React.FC<{ skill: SkillData }> = ({ skill }) => {
                     <tr>
                       <th style={{ width: '6em' }}>拥有的卡</th>
                       <td>
-                        {skill.Cards.sort((c1, c2) => c2.Rare - c1.Rare).map(
-                          (card) => (
-                            <Link key={card.CardID} to={`/unit/${card.CardID}`}>
-                              <img
-                                alt={card.CardID.toString()}
-                                style={{ width: 40, marginLeft: 8 }}
-                                src={`${ICO_URL}/0/${card.CardID}.png`}
-                              />
-                              {card.Name}
-                            </Link>
-                          ),
-                        )}
+                        {skill.Cards.sort(
+                          (c1, c2) =>
+                            Number.parseInt(c2.Rare, 10) -
+                            Number.parseInt(c1.Rare, 10),
+                        ).map((card) => (
+                          <Link key={card.CardID} to={`/unit/${card.CardID}`}>
+                            <img
+                              alt={card.CardID.toString()}
+                              style={{ width: 40, marginLeft: 8 }}
+                              src={`${ICO_URL}/0/${card.CardID}.png`}
+                            />
+                            {card.Name}
+                          </Link>
+                        ))}
                       </td>
                     </tr>
                   </tbody>
