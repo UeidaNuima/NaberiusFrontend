@@ -31,7 +31,7 @@
     "less": "^3.9.0",
     "less-loader": "^5.0.0",
     "lodash": "^4.17.19",
-    "moment": "^2.22.2",
+    "moment": "^2.29.4",
     "rc-form-hooks": "^0.0.1-alpha.4",
     "react": "^16.8.6",
     "react-apollo": "^2.5.6",
